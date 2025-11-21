@@ -1,0 +1,12 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/Uniwork/CSC8503/Built Project/cmake_install.cmake",
+		"D:/Uniwork/CSC8503/Built Project/NCLCoreClasses/cmake_install.cmake",
+		"D:/Uniwork/CSC8503/Built Project/CSC8503CoreClasses/cmake_install.cmake",
+		"D:/Uniwork/CSC8503/Built Project/CSC8503/cmake_install.cmake",
+		"D:/Uniwork/CSC8503/Built Project/GLTFLoader/cmake_install.cmake",
+		"D:/Uniwork/CSC8503/Built Project/OpenGLRendering/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

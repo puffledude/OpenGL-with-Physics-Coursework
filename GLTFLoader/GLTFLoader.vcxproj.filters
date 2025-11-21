@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\GLTFLoader\GLTFLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\GLTFLoader\GLTFLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\GLTFLoader\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\GLTFLoader\tiny_gltf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Uniwork\CSC8503\CSC8503 2025\GLTFLoader\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6AE46CAC-63E8-3190-80E6-50E44AD08B27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CBD5A509-9ED0-30BB-B022-850795A929C7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Uniwork\CSC8503\Built Project\NCLCoreClasses\CMakeFiles\NCLCoreClasses.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Assets.cpp">
+      <Filter>Asset Handling</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\SimpleFont.cpp">
+      <Filter>Asset Handling</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\TextureLoader.cpp">
+      <Filter>Asset Handling</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\TextureWriter.cpp">
+      <Filter>Asset Handling</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Maths.cpp">
+      <Filter>Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Plane.cpp">
+      <Filter>Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Frustum.cpp">
+      <Filter>Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Quaternion.cpp">
+      <Filter>Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MeshAnimation.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Mesh.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MshLoader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MeshMaterial.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\RendererBase.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Shader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\GameTimer.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Keyboard.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Mouse.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Window.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Controller.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\KeyboardMouseController.cpp">
+      <Filter>Windowing and Input</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Keyboard.cpp">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Mouse.cpp">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Window.cpp">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Assets.h">
+      <Filter>Asset Handling</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\SimpleFont.h">
+      <Filter>Asset Handling</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\TextureLoader.h">
+      <Filter>Asset Handling</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\TextureWriter.h">
+      <Filter>Asset Handling</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Maths.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Plane.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Frustum.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Quaternion.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Vector.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Matrix.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MeshAnimation.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Mesh.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Buffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MshLoader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\MeshMaterial.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\RendererBase.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Shader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Texture.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\GameTimer.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Keyboard.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Mouse.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Window.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Controller.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\KeyboardMouseController.h">
+      <Filter>Windowing and Input</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Keyboard.h">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Mouse.h">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\Win32Window.h">
+      <Filter>Windowing and Input\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\Built Project\NCLCoreClasses\CMakeFiles\NCLCoreClasses.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Uniwork\CSC8503\Built Project\NCLCoreClasses\CMakeFiles\NCLCoreClasses.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Uniwork\CSC8503\CSC8503 2025\NCLCoreClasses\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Asset Handling">
+      <UniqueIdentifier>{38E2D379-BDB4-3131-9FD2-A6DEF29E7968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6AE46CAC-63E8-3190-80E6-50E44AD08B27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Maths">
+      <UniqueIdentifier>{EA75FD1E-A7BE-3AAC-87A4-FAF42D8E086D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{859BE691-FBA9-3EFE-B50D-43C411E3B330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{8ABB5525-7D44-3C05-8B1A-06EA981DAE27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CBD5A509-9ED0-30BB-B022-850795A929C7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windowing and Input">
+      <UniqueIdentifier>{B1B2526C-F059-3B29-8BE2-FCC086A51983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windowing and Input\Win32">
+      <UniqueIdentifier>{823E96F0-1060-30B9-9226-1F76FE53571F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
