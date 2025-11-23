@@ -1,7 +1,0 @@
-D:/Uniwork/CSC8503/Built Project/CMakeFiles/ALL_BUILD.dir
-D:/Uniwork/CSC8503/Built Project/CMakeFiles/ZERO_CHECK.dir
-D:/Uniwork/CSC8503/Built Project/NCLCoreClasses/CMakeFiles/NCLCoreClasses.dir
-D:/Uniwork/CSC8503/Built Project/CSC8503CoreClasses/CMakeFiles/CSC8503CoreClasses.dir
-D:/Uniwork/CSC8503/Built Project/CSC8503/CMakeFiles/CSC8503.dir
-D:/Uniwork/CSC8503/Built Project/GLTFLoader/CMakeFiles/GLTFLoader.dir
-D:/Uniwork/CSC8503/Built Project/OpenGLRendering/CMakeFiles/OpenGLRendering.dir
