@@ -9,3 +9,5 @@
 /.vs
 /Build
 /out/build/x64-Debug
+/out
+/x64
