@@ -383,7 +383,9 @@ void TutorialGame::CreatedMixedGrid(int numRows, int numCols, float rowSpacing, 
 				if (rand() % 3 == 0) {
 					AddSphereToWorld(position, sphereRadius, 5.0f, true);
 				}
-				AddSphereToWorld(position, sphereRadius, 5.0f);
+				else {
+					AddSphereToWorld(position, sphereRadius, 5.0f);
+				}
 			}
 		}
 	}
