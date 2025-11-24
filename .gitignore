@@ -7,7 +7,9 @@
 *.db
 /.vs/CSC8503/FileContentIndex/read.lock
 /.vs
-/Build
+/Build/
 /out/build/x64-Debug
-/out
-/x64
+/out/
+/x64/
+**/*.dir
+CMakeFiles/
