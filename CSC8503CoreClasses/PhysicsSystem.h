@@ -24,6 +24,14 @@ namespace NCL {
 				globalDamping = d;
 			}
 
+			float GetLinearDamping() const {
+				return linearDamping;
+			}
+
+			void SetLinearDamping(float d) {
+				linearDamping = d;
+			}
+
 			void SetGravity(const Vector3& g);
 		protected:
 			void BasicCollisionDetection();
@@ -48,6 +56,7 @@ namespace NCL {
 			Vector3 gravity;
 			float	dTOffset;
 			float	globalDamping;
+			float linearDamping;
 
 			std::set<CollisionDetection::CollisionInfo>		allCollisions;
 			std::set<CollisionDetection::CollisionInfo>		broadphaseCollisions;
