@@ -141,18 +141,99 @@ bool CollisionDetection::AABBTest(const Vector3& posA, const Vector3& posB, cons
 //AABB/AABB Collisions
 bool CollisionDetection::AABBIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
 	const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+	
+	Vector3 boxASize = volumeA.GetHalfDimensions();
+	Vector3 boxBSize = volumeB.GetHalfDimensions();
+
+	Vector3 boxApos = worldTransformA.GetPosition();
+	Vector3 boxBpos = worldTransformB.GetPosition();
+
+	bool overlap = AABBTest(boxApos, boxBpos, boxASize, boxBSize);
+
+	if (overlap) {
+		static const Vector3 faces[6] = 
+		{
+			Vector3(-1, 0, 0), Vector3(1, 0, 0),
+			Vector3(0, -1, 0), Vector3(0, 1, 0),
+			Vector3(0, 0, -1), Vector3(0, 0, 1)
+		};
+
+		Vector3 maxA = boxApos + boxASize;
+		Vector3 minA = boxApos - boxASize;
+
+		Vector3 maxB = boxBpos + boxBSize;
+		Vector3 minB = boxBpos - boxBSize;
+
+		float distances[6] = 
+		{
+			(maxB.x - minA.x),
+			(maxA.x - minB.x),
+			(maxB.y - minA.y),
+			(maxA.y - minB.y),
+			(maxB.z - minA.z),
+			(maxA.z - minB.z),
+		};
+
+		float penetration = FLT_MAX;
+
+		Vector3 bestAxis;
+
+		for (int i = 0; i < 6; i++) {
+			if ( distances[i] < penetration) {
+				penetration = distances[i];
+				bestAxis = faces[i];
+			}
+		}
+
+		collisionInfo.AddContactPoint(Vector3(), Vector3(), bestAxis, penetration);
+		return true;
+
+	}
 	return false;
 }
 
 //Sphere / Sphere Collision
 bool CollisionDetection::SphereIntersection(const SphereVolume& volumeA, const Transform& worldTransformA,
 	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+	
+	float radii = volumeA.GetRadius() + volumeB.GetRadius();
+	Vector3 delta = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+
+	float deltaLength = Vector::Length(delta);
+
+	if (deltaLength < radii) {
+		float penetration = (radii - deltaLength);
+		Vector3 normal = Vector::Normalise(delta);
+		Vector3 localA = normal * volumeA.GetRadius();
+		Vector3 localB = -normal * volumeB.GetRadius();
+
+		collisionInfo.AddContactPoint(localA, localB, normal, penetration);
+		return true;
+
+	}
 	return false;
 }
 
 //AABB - Sphere Collision
 bool CollisionDetection::AABBSphereIntersection(const AABBVolume& volumeA, const Transform& worldTransformA,
 	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+	
+	Vector3 boxSize = volumeA.GetHalfDimensions();
+
+	Vector3 delta = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+
+	Vector3 closestPoint = Vector::Clamp(delta, -boxSize, boxSize);
+
+	Vector3 localPoint = delta - closestPoint;
+	float distance = Vector::Length(localPoint);
+	if (distance < volumeB.GetRadius()) {
+		float penetration = volumeB.GetRadius() - distance;
+		Vector3 normal = Vector::Normalise(localPoint);
+		Vector3 localA = Vector3();
+		Vector3 localB = -normal * volumeB.GetRadius();
+		collisionInfo.AddContactPoint(localA, localB, normal, penetration);
+		return true;
+	}
 	return false;
 }
 
