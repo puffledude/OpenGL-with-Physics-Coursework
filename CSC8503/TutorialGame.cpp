@@ -228,7 +228,7 @@ rigid body representation. This and the cube function will let you build a lot o
 physics worlds. You'll probably need another function for the creation of OBB cubes too.
 
 */
-GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass) {
+GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius, float inverseMass, bool hollow) {
 	GameObject* sphere = new GameObject();
 
 	Vector3 sphereSize = Vector3(radius, radius, radius);
@@ -243,8 +243,12 @@ GameObject* TutorialGame::AddSphereToWorld(const Vector3& position, float radius
 	sphere->SetPhysicsObject(new PhysicsObject(sphere->GetTransform(), sphere->GetBoundingVolume()));
 
 	sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
-	sphere->GetPhysicsObject()->InitSphereInertia();
-
+	if (hollow) {
+		sphere->GetPhysicsObject()->InitHollowSphereInertia();
+	}
+	else {
+		sphere->GetPhysicsObject()->InitSphereInertia();
+	}
 	world.AddGameObject(sphere);
 
 	return sphere;
@@ -376,7 +380,10 @@ void TutorialGame::CreatedMixedGrid(int numRows, int numCols, float rowSpacing, 
 				}
 			}
 			else {
-				AddSphereToWorld(position, sphereRadius);
+				if (rand() % 3 == 0) {
+					AddSphereToWorld(position, sphereRadius, 1.0f, true);
+				}
+				AddSphereToWorld(position, sphereRadius, 1.0f);
 			}
 		}
 	}
