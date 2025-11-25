@@ -553,7 +553,7 @@ void TutorialGame::DebugObjectMovement() {
 
 void TutorialGame::BridgeConstraintTest() {
 
-	Vector3 cubeSize = Vector3(8, 8, 8);
+	Vector3 cubeSize = Vector3(6, 6, 6);
 
 	float invCubeMass = 5;
 	int numLinks = 10;
