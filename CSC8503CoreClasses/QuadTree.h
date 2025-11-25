@@ -50,15 +50,29 @@ namespace NCL {
 
 			void Split() 
 			{
+				Vector2 halfSize = size / 2.0f;
+				children = new QuadTreeNode<T>[4];
+				children[0] = QuadTreeNode<T>(position+Vector2(-halfSize.x, halfSize.y), halfSize);
+				children[1] = QuadTreeNode<T>(position + Vector2(halfSize.x, halfSize.y), halfSize);
+				children[2] = QuadTreeNode<T>(position + Vector2(-halfSize.x, -halfSize.y), halfSize);
+				children[3] = QuadTreeNode<T>(position + Vector2(halfSize.x, -halfSize.y), halfSize);
 			}
 
 			void DebugDraw() 
 			{
 			}
 
-			void OperateOnContents(QuadTreeFunc& func) 
+			void OperateOnContents(QuadTreeFunc& func)
 			{
+				if(children) {
+					for(int i=0; i<4; ++i) {
+						children[i].OperateOnContents(func);
+					}
+				} else {
+					func(contents);
+				}
 			}
+			
 
 		protected:
 			std::list< QuadTreeEntry<T> >	contents;
