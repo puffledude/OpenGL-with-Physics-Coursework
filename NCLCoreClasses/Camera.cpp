@@ -36,7 +36,7 @@ void Camera::UpdateCamera(float dt) {
 	position += yawRotation * Vector3(activeController->GetNamedAxis("Sidestep"), 0, 0) * frameSpeed;
 
 	position.y += activeController->GetNamedAxis("UpDown") * frameSpeed;
-	
+
 }
 
 /*
@@ -57,4 +57,10 @@ Matrix4 PerspectiveCamera::BuildProjectionMatrix(float currentAspect) const {
 
 Matrix4 OrhographicCamera::BuildProjectionMatrix(float currentAspect) const {
 	return Matrix::Orthographic(left, right, bottom, top, nearPlane, farPlane);
+}
+
+void Camera::outputPosition() 
+{
+	std::cout << "Camera Position: " << position.x << ", " << position.y << ", " << position.z << std::endl;
+
 }
