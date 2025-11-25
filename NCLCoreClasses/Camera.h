@@ -81,6 +81,8 @@ namespace NCL {
 		float	GetSpeed() const	{ return speed; }
 		Camera& SetSpeed(float s)	{ speed = s; return *this; }
 
+		void outputPosition();
+
 	protected:
 		float	nearPlane;
 		float	farPlane;
@@ -91,6 +93,8 @@ namespace NCL {
 		float	speed;
 
 		const Controller* activeController = nullptr;
+
+		
 	};
 
 	class OrhographicCamera : public Camera {

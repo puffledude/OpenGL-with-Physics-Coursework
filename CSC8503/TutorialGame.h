@@ -37,6 +37,8 @@ namespace NCL {
 			void CreatedMixedGrid(int numRows, int numCols, float rowSpacing, float colSpacing);
 			void CreateAABBGrid(int numRows, int numCols, float rowSpacing, float colSpacing, const NCL::Maths::Vector3& cubeDims);
 
+			void BridgeConstraintTest();
+
 			bool SelectObject();
 			void MoveSelectedObject();
 			void DebugObjectMovement();
