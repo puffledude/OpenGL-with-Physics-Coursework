@@ -515,7 +515,7 @@ bool CollisionDetection::RayBoxIntersection(const Ray&r, const Vector3& boxPos, 
 bool CollisionDetection::RayAABBIntersection(const Ray&r, const Transform& worldTransform, 
 	const AABBVolume& volume, RayCollision& collision) {
 	Vector3 boxPos = worldTransform.GetPosition();
-	Vector3 boxSize = volume.GetHalfDimensions() * worldTransform.GetScale();
+	Vector3 boxSize = volume.GetHalfDimensions();
 	return RayBoxIntersection(r, boxPos, boxSize, collision);
 }
 
