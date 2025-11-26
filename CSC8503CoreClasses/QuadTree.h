@@ -54,7 +54,7 @@ namespace NCL {
 
 				if (children) {  //Has children, not a leaf node.
 					for (int i = 0; i < 4; ++i) {
-						children[i].insert(object, objectPos, objectSize, depthLeft - 1, maxSize);
+						children[i].Insert(object, objectPos, objectSize, depthLeft - 1, maxSize);
 					}
 				}
 
