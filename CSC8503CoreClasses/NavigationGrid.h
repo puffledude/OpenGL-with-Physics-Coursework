@@ -1,6 +1,7 @@
 #pragma once
 #include "NavigationMap.h"
 #include <string>
+#include <queue>
 namespace NCL {
 	namespace CSC8503 {
 		struct GridNode {
@@ -15,6 +16,8 @@ namespace NCL {
 			float g;
 
 			int type;
+			bool inOpen;
+			bool inClosed;
 
 			GridNode() {
 				for (int i = 0; i < 4; ++i) {
@@ -24,6 +27,8 @@ namespace NCL {
 				f = 0;
 				g = 0;
 				type = 0;
+				bool inOpen = false;
+				bool inClosed = false;
 				parent = nullptr;
 			}
 			~GridNode() {	}
@@ -39,7 +44,7 @@ namespace NCL {
 				
 		protected:
 			bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
-			GridNode*	RemoveBestNode(std::vector<GridNode*>& list) const;
+			//GridNode*	RemoveBestNode(std::priority_queue<GridNode*>& list) const;
 			float		Heuristic(GridNode* hNode, GridNode* endNode) const;
 			int nodeSize;
 			int gridWidth;

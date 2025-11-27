@@ -1,6 +1,6 @@
 #include "NavigationGrid.h"
 #include "Assets.h"
-
+#include <queue>
 #include <fstream>
 
 using namespace NCL;
@@ -96,55 +96,82 @@ bool NavigationGrid::FindPath(const Vector3& from, const Vector3& to, Navigation
 	GridNode* startNode = &allNodes[(fromZ * gridWidth) + fromX];
 	GridNode* endNode	= &allNodes[(toZ * gridWidth) + toX];
 
-	std::vector<GridNode*>  openList;
-	std::vector<GridNode*>  closedList;
+	for (int i = 0; i < gridWidth * gridHeight; ++i) {
+		allNodes[i].f = FLT_MAX;
+		allNodes[i].g = FLT_MAX;
+		allNodes[i].parent = nullptr;
+		allNodes[i].inOpen = false;
+		allNodes[i].inClosed = false;
+	}
 
-	openList.push_back(startNode);
+	//Could maybe change open list to priority queue
+	//And closed list to just a list
+
+	//std::vector<GridNode*>  openList;
+
+	auto cmp = [](const GridNode* a, const GridNode* b) {
+		return a->f > b->f;};
+
+	std::priority_queue<GridNode*,std::vector<GridNode*> ,decltype(cmp)> openList(cmp);
+	//std::vector<GridNode*>  closedList;
+
+	
 
 	startNode->f = 0;
 	startNode->g = 0;
 	startNode->parent = nullptr;
+	openList.emplace(startNode);
+	startNode->inOpen = true;
 
 	GridNode* currentBestNode = nullptr;
 
 	while (!openList.empty()) {
-		currentBestNode = RemoveBestNode(openList);
+		 GridNode* currentBestNode = openList.top();
+        openList.pop();
 
-		if (currentBestNode == endNode) {			//we've found the path!
-			GridNode* node = endNode;
-			while (node != nullptr) {
-				outPath.PushWaypoint(node->position);
-				node = node->parent;
-			}
-			return true;
-		}
+        // skip stale versions
+        if (currentBestNode->inClosed) continue;
+
+		currentBestNode->inOpen = false;
+		currentBestNode->inClosed = true;
+
+        if (currentBestNode == endNode) {
+            GridNode* node = endNode;
+            while (node) {
+                outPath.PushWaypoint(node->position);
+                node = node->parent;
+            }
+            return true;
+        }
 		else {
 			for (int i = 0; i < 4; ++i) {
 				GridNode* neighbour = currentBestNode->connected[i];
 				if (!neighbour) { //might not be connected...
 					continue;
 				}	
-				bool inClosed	= NodeInList(neighbour, closedList);
+				bool inClosed = neighbour->inClosed;
 				if (inClosed) {
 					continue; //already discarded this neighbour...
 				}
+				
 
 				float h = Heuristic(neighbour, endNode);				
 				float g = currentBestNode->g + currentBestNode->costs[i];
 				float f = h + g;
 
-				bool inOpen		= NodeInList(neighbour, openList);
+				bool inOpen = neighbour->inOpen;
 
 				if (!inOpen) { //first time we've seen this neighbour
-					openList.emplace_back(neighbour);
+					neighbour->inOpen = true;
 				}
 				if (!inOpen || f < neighbour->f) {//might be a better route to this neighbour
 					neighbour->parent = currentBestNode;
 					neighbour->f = f;
 					neighbour->g = g;
+					openList.push(neighbour);
 				}
 			}
-			closedList.emplace_back(currentBestNode);
+			
 		}
 	}
 	return false; //open list emptied out with no path!
@@ -155,21 +182,25 @@ bool NavigationGrid::NodeInList(GridNode* n, std::vector<GridNode*>& list) const
 	return i == list.end() ? false : true;
 }
 
-GridNode*  NavigationGrid::RemoveBestNode(std::vector<GridNode*>& list) const {
-	std::vector<GridNode*>::iterator bestI = list.begin();
-
-	GridNode* bestNode = *list.begin();
-
-	for (auto i = list.begin(); i != list.end(); ++i) {
-		if ((*i)->f < bestNode->f) {
-			bestNode	= (*i);
-			bestI		= i;
-		}
-	}
-	list.erase(bestI);
-
-	return bestNode;
-}
+//GridNode*  NavigationGrid::RemoveBestNode(std::priority_queue<GridNode*, std::vector<GridNode*>, decltype(cmp)> list) const {
+//
+//	GridNode* bestNode = list.top();
+//	list.pop();
+//
+//	//std::priority_queue<GridNode*>::iterator bestI = list.begin();
+//
+//	//GridNode* bestNode = *list.begin();
+//
+//	//for (auto i = list.begin(); i != list.end(); ++i) {
+//	//	if ((*i)->f < bestNode->f) {
+//	//		bestNode	= (*i);
+//	//		bestI		= i;
+//	//	}
+//	//}
+//	//list.erase(bestI);
+//
+//	return bestNode;
+//}
 
 float NavigationGrid::Heuristic(GridNode* hNode, GridNode* endNode) const {
 	return Vector::Length(hNode->position - endNode->position);
