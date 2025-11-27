@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderObject.h"
+#include "StateGameObject.h"
 namespace NCL {
 	class Controller;
 
@@ -90,6 +91,9 @@ namespace NCL {
 			}
 
 			GameObject* objClosest = nullptr;
+
+			StateGameObject* AddStateObjectToWorld(const NCL::Maths::Vector3& position);
+			StateGameObject* testStateGameObject;
 		};
 	}
 }

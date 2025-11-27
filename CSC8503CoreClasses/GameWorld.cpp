@@ -88,6 +88,14 @@ bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObje
 	//The simplest raycast just goes through each object and sees if there's a collision
 	RayCollision collision;
 
+	/*vector<GameObject*> collidableObjects;
+	for (auto& i : ) {
+		if ()
+	}*/
+
+
+	//Replace the gameObjects here with a list of objects the ray might collide with.
+	//If ray isn't within the same quadtree node as the object, don't add it to this list.
 	for (auto& i : gameObjects) {
 		if (!i->GetBoundingVolume()) { //objects might not be collideable etc...
 			continue;
@@ -95,6 +103,8 @@ bool GameWorld::Raycast(Ray& r, RayCollision& closestCollision, bool closestObje
 		if (i == ignoreThis) {
 			continue;
 		}
+		
+
 		RayCollision thisCollision;
 		if (CollisionDetection::RayIntersection(r, *i, thisCollision)) {
 				
