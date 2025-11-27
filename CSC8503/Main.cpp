@@ -42,11 +42,34 @@ using namespace CSC8503;
 #include <thread>
 #include <sstream>
 
+std::vector<Vector3> testNodes;
 void TestPathfinding() {
+
+	
+	NavigationGrid grid("TestGrid1.txt");
+
+	NavigationPath outPath;
+
+	Vector3 startPos(80, 0, 10);
+	Vector3 endPos(80, 0, 80);
+
+	bool found = grid.FindPath(startPos, endPos, outPath);
+	Vector3 pos;
+	while (outPath.PopWaypoint(pos))
+	{
+		testNodes.push_back(pos);
+	}
 }
 
 void DisplayPathfinding() {
+	for (int i = 1; i < testNodes.size(); ++i) {
+		Vector3 a = testNodes[i - 1];
+		Vector3 b = testNodes[i];
+
+		Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+	}
 }
+
 
 void TestStateMachine() {
 
@@ -121,7 +144,7 @@ int main() {
 #endif
 
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
-
+	TestPathfinding();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();
@@ -143,11 +166,12 @@ int main() {
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
 		g->UpdateGame(dt);
-
+		DisplayPathfinding();
 		world->UpdateWorld(dt);
 		physics->Update(dt);
 		renderer->Update(dt);	
 		renderer->Render();
+		
 		
 		Debug::UpdateRenderables(dt);
 	}
