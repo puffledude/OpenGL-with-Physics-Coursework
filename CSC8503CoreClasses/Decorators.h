@@ -11,6 +11,13 @@ public:
 		childNode = child;
 	}
 
+	void Reset() override {
+		currentState = Initialise;
+		if (childNode) {
+			childNode->Reset();
+		}
+	}
+
 	virtual BehaviourState Execute(float dt) override = 0;
 
 

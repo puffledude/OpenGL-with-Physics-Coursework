@@ -203,7 +203,7 @@ void TestBehaviourTree() {
 	selection->AddChild(lookForItems);
 
 	Inverter* inverter = new Inverter("Inverter on Items");
-	inverter->SetChild(lookForItems);
+	inverter->SetChild(selection);
 
 	BehaviourSequence* root = new BehaviourSequence("Root Sequence");
 	root->AddChild(sequence);
