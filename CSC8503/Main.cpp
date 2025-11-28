@@ -14,6 +14,7 @@
 
 #include "TutorialGame.h"
 #include "NetworkedGame.h"
+#include "ParallelBehaviour.h"
 
 #include "PushdownMachine.h"
 
@@ -105,6 +106,124 @@ void TestStateMachine() {
 
 }
 
+void TestBehaviourTree() {
+	float behaviourTimer;
+	float distanceToTarget;
+	BehaviourAction* findKey = new BehaviourAction("Find Key", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == Initialise) {
+			std::cout << "Finding Key...\n";
+			behaviourTimer = rand() & 100;
+			state = Ongoing;
+		}
+		else if (state == Ongoing) {
+			behaviourTimer -= dt;
+			if (behaviourTimer <= 0) {
+				std::cout << "Found Key!\n";
+				return Success;
+			}
+		}
+		return state;
+		});
+
+	BehaviourAction* goToRoom = new BehaviourAction("Go to Room", [&](float dt, BehaviourState state)->BehaviourState {
+
+		if (state == Initialise) {
+			std::cout << "Going to Room...\n";
+			state = Ongoing;
+		}
+		else if (state == Ongoing) {
+			distanceToTarget -= dt * 10;
+			if (distanceToTarget <= 0) {
+				std::cout << "Reached Room!\n";
+				return Success;
+			}
+		}
+		return state;
+		});
+
+	BehaviourAction* openDoor = new BehaviourAction("Open Door", [&](float dt, BehaviourState state)->BehaviourState {
+		if (state == Initialise) {
+			std::cout << "Opening Door...\n";
+			return Success;
+		}
+		return state;
+		});
+
+	BehaviourAction* lookForTreasure = new BehaviourAction("Look for Treasure", 
+		[&](float dt, BehaviourState state)->BehaviourState {
+			if (state == Initialise) {
+				std::cout << "Looking for Treasure...\n";
+				return Ongoing;
+			}
+			else if (state == Ongoing) {
+				bool found = rand() % 2;
+				if (found) {
+					std::cout << "Found Treasure!\n";
+					return Success;
+				}
+				std::cout << "Couldn't find Treasure.\n";
+				return Failure;
+
+			}
+		return state;
+		});
+
+	BehaviourAction* lookForItems = new BehaviourAction("Look for Items",
+		[&](float dt, BehaviourState state)->BehaviourState {
+			if (state == Initialise) {
+				std::cout << "Looking for Items...\n";
+				return Ongoing;
+			}
+			else if (state == Ongoing) {
+				bool found = rand() % 2;
+				if (found) {
+					std::cout << "Found Items!\n";
+					return Success;
+				}
+				std::cout << "Couldn't find Items.\n";
+				return Failure;
+			}
+			return state;
+		});
+
+
+	BehaviourSequence* sequence = new BehaviourSequence("Room Sequence");
+
+	sequence->AddChild(findKey);
+	sequence->AddChild(goToRoom);
+	sequence->AddChild(openDoor);
+
+	/*BehaviourSelector* selection = new BehaviourSelector("Loot Selection");
+	selection->AddChild(lookForTreasure);
+	selection->AddChild(lookForItems);*/
+
+	ParallelBehaviour* selection = new ParallelBehaviour("Loot Parallel");
+	selection->AddChild(lookForTreasure);
+	selection->AddChild(lookForItems);
+
+	BehaviourSequence* root = new BehaviourSequence("Root Sequence");
+	root->AddChild(sequence);
+	root->AddChild(selection);
+
+
+	for (int i = 0; i < 5; ++i) {
+		std::cout << "---- Behaviour Tree Iteration " << i << " ----\n";
+		root->Reset();
+		distanceToTarget = rand() % 250;
+		BehaviourState state = Ongoing;
+		while (state == Ongoing) {
+			state = root->Execute(1.0f);
+		}
+		if (state == Success) {
+			std::cout << "Behaviour Tree Succeeded!\n";
+		}
+		else {
+			std::cout << "Behaviour Tree Failed!\n";
+		}
+	}
+	std::cout << "All done" << std::endl;
+}
+
 
 
 /*
@@ -144,6 +263,7 @@ int main() {
 #endif
 
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
+	TestBehaviourTree();
 	TestPathfinding();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
