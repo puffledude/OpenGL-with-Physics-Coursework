@@ -24,6 +24,7 @@
 #include "BehaviourSelector.h"
 #include "BehaviourSequence.h"
 #include "BehaviourAction.h"
+#include "Inverter.h"
 
 #include "PhysicsSystem.h"
 
@@ -201,9 +202,12 @@ void TestBehaviourTree() {
 	selection->AddChild(lookForTreasure);
 	selection->AddChild(lookForItems);
 
+	Inverter* inverter = new Inverter("Inverter on Items");
+	inverter->SetChild(lookForItems);
+
 	BehaviourSequence* root = new BehaviourSequence("Root Sequence");
 	root->AddChild(sequence);
-	root->AddChild(selection);
+	root->AddChild(inverter);
 
 
 	for (int i = 0; i < 5; ++i) {
