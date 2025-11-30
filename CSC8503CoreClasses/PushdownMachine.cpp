@@ -3,7 +3,7 @@
 
 using namespace NCL::CSC8503;
 
-PushdownMachine::PushdownMachine(PushdownState* initialState)
+PushdownMachine::PushdownMachine(PushdownState* initialState) :activeState(nullptr)
 {
 	this->initialState = initialState;
 }

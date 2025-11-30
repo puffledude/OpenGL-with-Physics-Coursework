@@ -17,6 +17,7 @@
 #include "ParallelBehaviour.h"
 
 #include "PushdownMachine.h"
+#include "introScreen.h"
 
 #include "PushdownState.h"
 
@@ -43,6 +44,7 @@ using namespace CSC8503;
 #include <chrono>
 #include <thread>
 #include <sstream>
+
 
 std::vector<Vector3> testNodes;
 void TestPathfinding() {
@@ -228,6 +230,17 @@ void TestBehaviourTree() {
 	std::cout << "All done" << std::endl;
 }
 
+void TestPushDownAutomata(Window* w) {
+	PushdownMachine machine(new IntroScreen(w));
+
+	while (w->UpdateWindow()) {
+		float dt = w->GetTimer().GetTimeDeltaSeconds();
+		if (!machine.Update(dt)) {
+			return;
+		}
+	}
+
+}
 
 
 /*
@@ -269,6 +282,7 @@ int main() {
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
 	TestBehaviourTree();
 	TestPathfinding();
+	TestPushDownAutomata(w);
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();
