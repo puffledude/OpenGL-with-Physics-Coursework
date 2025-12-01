@@ -14,6 +14,7 @@
 
 #include "TutorialGame.h"
 #include "NetworkedGame.h"
+#include "TestPacketReceiver.h"
 #include "ParallelBehaviour.h"
 
 #include "PushdownMachine.h"
@@ -243,6 +244,35 @@ void TestPushDownAutomata(Window* w) {
 }
 
 
+void TestNetworking() {
+	NetworkBase::Initialise();
+	TestPacketReceiver serverReceiver("Server");
+	TestPacketReceiver clientReceiver("Client");
+
+	int port = NetworkBase::GetDefaultPort();
+	GameServer* server = new GameServer(port, 1);
+	GameClient* client = new GameClient();
+
+	server->RegisterPacketHandler(String_Message, &serverReceiver);
+	client->RegisterPacketHandler(String_Message, &clientReceiver);
+
+	bool canConnect = client->Connect(127, 0, 0, 1, port);
+
+	for (int i = 0; i < 100; ++i) {
+		StringPacket serverPacket = StringPacket("Hello from server! Packet #" + std::to_string(i));
+		server->SendGlobalPacket(serverPacket);
+
+		StringPacket clientPacket = StringPacket("Hello from client! Packet #" + std::to_string(i));
+		client->SendPacket(clientPacket);
+		server->UpdateServer();
+		client->UpdateClient();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+	}
+	NetworkBase::Destroy();
+}
+
 /*
 
 The main function should look pretty familar to you!
@@ -282,7 +312,8 @@ int main() {
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
 	TestBehaviourTree();
 	TestPathfinding();
-	TestPushDownAutomata(w);
+	//TestPushDownAutomata(w);
+	TestNetworking();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
 	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KeyCodes::ESCAPE)) {
 		float dt = w->GetTimer().GetTimeDeltaSeconds();

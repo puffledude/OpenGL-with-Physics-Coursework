@@ -35,6 +35,25 @@ struct GamePacket {
 	}
 };
 
+struct StringPacket : public GamePacket {
+	char str[256];
+	
+	StringPacket(const std::string& message) {
+		type = BasicNetworkMessages::String_Message;
+		size = (short)message.length();
+
+		memcpy(str, message.c_str(), size);
+	};
+
+	std::string GetStringFromDta() const {
+		std::string realString(str);
+		realString.resize(size);
+		return realString;
+	}
+
+};
+
+
 class PacketReceiver {
 public:
 	virtual void ReceivePacket(int type, GamePacket* payload, int source = -1) = 0;
