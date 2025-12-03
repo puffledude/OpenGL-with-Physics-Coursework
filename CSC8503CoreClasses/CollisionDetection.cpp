@@ -239,6 +239,31 @@ bool CollisionDetection::AABBSphereIntersection(const AABBVolume& volumeA, const
 
 bool  CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
 	const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+
+	//Need to rotate the sphere's position by the inverse of the OBB's orientation
+	// Then standard AABB - Sphere test!
+
+	Vector3 boxSize = volumeA.GetHalfDimensions();
+	Quaternion inverseOBBOrientation = worldTransformA.GetOrientation().Conjugate();
+
+	Vector3 relativePos = worldTransformB.GetPosition() - worldTransformA.GetPosition();
+	Vector3 rotatedPos = inverseOBBOrientation * relativePos;
+
+	/*Transform rotatedSphereTransform = worldTransformB;
+	rotatedSphereTransform.SetOrientation(sphereOrientation);*/
+	Vector3 closestPoint = Vector::Clamp(rotatedPos, -boxSize, boxSize);
+
+	Vector3 localPoint = rotatedPos - closestPoint;
+	float distance = Vector::Length(localPoint);
+	if (distance < volumeB.GetRadius()) {
+		float penetration = volumeB.GetRadius() - distance;
+		localPoint = worldTransformA.GetOrientation() * localPoint;
+		Vector3 normal = Vector::Normalise(localPoint);
+		Vector3 localA = Vector3();
+		Vector3 localB = -normal * volumeB.GetRadius();
+		collisionInfo.AddContactPoint(localA, localB, normal, penetration);
+		return true;
+	}
 	return false;
 }
 
