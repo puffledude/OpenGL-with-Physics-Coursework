@@ -179,9 +179,42 @@ void TutorialGame::UpdateGame(float dt) {
 
 }
 
+void TutorialGame::LoadLevel() {
+	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 10.0f, Vector3(14.47, 5.32, 9.42) * 5.0f, 0);
+	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 10.0f, Vector3(14.47, 5.32, 9.42) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(-13.89, -2.53, -0.19) * 10.0f, Vector3(29.45, 0.27, 8.20) * 5.0f, Quaternion(0.00000, 0.70711, 0.00000, -0.70711), 0);
+	AddCubeToWorld(Vector3(-6.38, -2.54, -18.84) * 10.0f, Vector3(23.35, 0.28, 7.81) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(-13.98, 2.16, 22.93) * 10.0f, Vector3(14.45, 1.70, 20.18) * 5.0f, Quaternion(0.30071, 0.00000, 0.00000, -0.95372), 0);
+	AddCubeToWorld(Vector3(21.86, -2.90, -20.90) * 10.0f, Vector3(33.17, 0.76, 3.69) * 5.0f, 0);
+	AddCubeToWorld(Vector3(46.90, 0.11, -20.76) * 10.0f, Vector3(2.14, 0.37, 2.57) * 5.0f, 0);
+	AddCubeToWorld(Vector3(49.74, 1.01, -20.74) * 10.0f, Vector3(2.14, 0.37, 2.57) * 5.0f, 0);
+	AddCubeToWorld(Vector3(44.47, -0.77, -20.76) * 10.0f, Vector3(2.14, 0.37, 2.57) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(105.94, 1.21, -15.05) * 10.0f, Vector3(7.35, 5.91, 0.45) * 5.0f, Quaternion(0.00000, 0.00000, -0.70711, -0.70711), 0);
+	AddCubeToWorld(Vector3(100.68, -0.58, -25.72) * 10.0f, Vector3(4.24, 3.12, 4.26) * 5.0f, 0);
+	AddCubeToWorld(Vector3(92.02, -0.71, -19.68) * 10.0f, Vector3(4.77, 2.86, 3.36) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(82.63, 1.08, -26.53) * 10.0f, Vector3(7.65, 6.18, 1.03) * 5.0f, Quaternion(0.50000, 0.50000, -0.50000, -0.50000), 0);
+	AddOBBCubeToWorld(Vector3(82.36, 0.91, -15.20) * 10.0f, Vector3(7.45, 5.87, 1.34) * 5.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
+	AddCubeToWorld(Vector3(105.72, -0.88, -18.22) * 10.0f, Vector3(4.76, 2.51, 4.35) * 5.0f, 0);
+	AddCubeToWorld(Vector3(92.24, -1.09, -26.78) * 10.0f, Vector3(4.14, 2.10, 2.09) * 5.0f, 0);
+	AddCubeToWorld(Vector3(98.51, -0.46, -14.20) * 10.0f, Vector3(2.67, 3.36, 2.68) * 5.0f, 0);
+	AddCubeToWorld(Vector3(78.67, 0.85, -20.76) * 10.0f, Vector3(8.89, 0.37, 2.57) * 5.0f, 0);
+	AddCubeToWorld(Vector3(97.33, -2.40, -20.87) * 10.0f, Vector3(28.45, 0.52, 17.50) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(121.58, 0.78, -20.68) * 10.0f, Vector3(8.89, 0.37, 2.57) * 5.0f, Quaternion(0.00000, 1.00000, 0.00000, 0.00000), 0);
+	AddCubeToWorld(Vector3(97.35, -0.61, -12.36) * 10.0f, Vector3(28.52, 3.03, 0.49) * 5.0f, 0);
+	AddCubeToWorld(Vector3(97.35, -0.61, -29.38) * 10.0f, Vector3(28.52, 3.03, 0.49) * 5.0f, 0);
+	AddCubeToWorld(Vector3(114.61, -0.75, -20.90) * 10.0f, Vector3(5.87, 3.50, 2.95) * 5.0f, 0);
+	AddCubeToWorld(Vector3(83.95, 1.15, -18.35) * 10.0f, Vector3(4.54, 7.00, 0.44) * 5.0f, 0);
+	AddCubeToWorld(Vector3(83.61, 1.40, -23.43) * 10.0f, Vector3(4.54, 7.00, 0.44) * 5.0f, 0);
+	AddOBBCubeToWorld(Vector3(108.68, 1.40, -21.97) * 10.0f, Vector3(13.65, 7.00, 0.44) * 5.0f, Quaternion(0.00000, 0.70711, 0.00000, -0.70711), 0);
+	AddCubeToWorld(Vector3(143.60, 1.59, -32.51) * 10.0f, Vector3(5.31, 3.19, 5.06) * 5.0f, 0);
+	AddCubeToWorld(Vector3(41.50, -1.94, -20.88) * 10.0f, Vector3(2.90, 0.26, 3.65) * 5.0f, 0);
+
+}
+
+
 void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetNearPlane(0.1f);
-	world.GetMainCamera().SetFarPlane(500.0f);
+	world.GetMainCamera().SetFarPlane(2000.0f);
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
@@ -192,13 +225,14 @@ void TutorialGame::InitWorld() {
 	world.ClearAndErase();
 	physics.Clear();
 
-	CreatedMixedGrid(15, 15, 3.5f, 3.5f);
+	//CreatedMixedGrid(15, 15, 3.5f, 3.5f);
 
 	InitGameExamples();
 
-	AddFloorToWorld(Vector3(0, -20, 0));
+	//AddFloorToWorld(Vector3(0, -20, 0));
 
-	BridgeConstraintTest();
+	//BridgeConstraintTest();
+	LoadLevel();
 
 	testStateGameObject = AddStateObjectToWorld(Vector3(0, 10, 0));
 }
@@ -286,6 +320,26 @@ GameObject* TutorialGame::AddCubeToWorld(const Vector3& position, Vector3 dimens
 	return cube;
 }
 
+GameObject* TutorialGame::AddOBBCubeToWorld(const Vector3& position, Vector3 dimensions, Quaternion rotation, float inverseMass) {
+	GameObject* cube = new GameObject();
+
+	OBBVolume* volume = new OBBVolume(dimensions);
+	cube->SetBoundingVolume(volume);
+
+	cube->GetTransform().SetPosition(position)
+		.SetScale(dimensions * 2.0f)
+		.SetOrientation(rotation);
+	
+	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, checkerMaterial));
+	cube->SetPhysicsObject(new PhysicsObject(cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(inverseMass);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	world.AddGameObject(cube);
+
+	return cube;
+}
 
 GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	float meshSize		= 1.0f;
