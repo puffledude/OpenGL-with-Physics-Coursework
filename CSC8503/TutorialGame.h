@@ -38,6 +38,8 @@ namespace NCL {
 			void CreatedMixedGrid(int numRows, int numCols, float rowSpacing, float colSpacing);
 			void CreateAABBGrid(int numRows, int numCols, float rowSpacing, float colSpacing, const NCL::Maths::Vector3& cubeDims);
 
+
+			void LoadLevel();
 			void BridgeConstraintTest();
 
 			bool SelectObject();
@@ -48,6 +50,7 @@ namespace NCL {
 			GameObject* AddFloorToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddSphereToWorld(const NCL::Maths::Vector3& position, float radius, float inverseMass = 10.0f, bool hollow=false);
 			GameObject* AddCubeToWorld(const NCL::Maths::Vector3& position, NCL::Maths::Vector3 dimensions, float inverseMass = 10.0f, bool heavy=false);
+			GameObject* AddOBBCubeToWorld(const Vector3& position, Vector3 dimensions, Quaternion rotation, float inverseMass);
 
 			GameObject* AddPlayerToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddEnemyToWorld(const NCL::Maths::Vector3& position);
