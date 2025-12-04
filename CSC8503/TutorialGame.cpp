@@ -81,8 +81,9 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!inSelectionMode) {
 		world.GetMainCamera().UpdateCamera(dt);
 	}
-	if (lockedObject != nullptr) {
-		Vector3 objPos = lockedObject->GetTransform().GetPosition();
+	GameObject* player = world.GetPlayer();
+	if (player != nullptr) {
+		Vector3 objPos = player->GetTransform().GetPosition();
 		Vector3 camPos = objPos + lockedOffset;
 
 		Matrix4 temp = Matrix::View(camPos, objPos, Vector3(0,1,0));
@@ -132,7 +133,7 @@ void TutorialGame::UpdateGame(float dt) {
 		world.ShuffleObjects(false);
 	}
 
-	if (lockedObject) {
+	if (player) {
 		LockedObjectMovement();
 	}
 	else {
@@ -224,7 +225,7 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-	lockedObject = nullptr;
+	//lockedObject = world.GetPlayer();
 }
 
 void TutorialGame::InitWorld() {
