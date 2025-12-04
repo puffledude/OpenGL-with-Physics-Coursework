@@ -185,7 +185,7 @@ void GameTechRenderer::BuildObjectLists() {
 	Vector3 camPos = gameWorld.GetMainCamera().GetPosition();
 
 	gameWorld.OperateOnContents(
-		[&](GameObject* o) {
+		[&](GameObject* o) {  //This is where to Grab the textures out of the game objects
 			if (o->IsActive()) {
 				const RenderObject* g = o->GetRenderObject();
 				if (g) {
