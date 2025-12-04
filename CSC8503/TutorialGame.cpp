@@ -4,6 +4,7 @@
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 #include "TextureLoader.h"
+#include "PlayerObject.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -81,7 +82,7 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!inSelectionMode) {
 		world.GetMainCamera().UpdateCamera(dt);
 	}
-	GameObject* player = world.GetPlayer();
+	PlayerObject* player = world.GetPlayer();
 	if (player != nullptr) {
 		Vector3 objPos = player->GetTransform().GetPosition();
 		Vector3 camPos = objPos + lockedOffset;
@@ -134,7 +135,8 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 
 	if (player) {
-		LockedObjectMovement();
+		//lockedObject = player;
+		PlayerMovement();
 	}
 	else {
 		DebugObjectMovement();
@@ -225,7 +227,7 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-	//lockedObject = world.GetPlayer();
+	lockedObject = nullptr;
 }
 
 void TutorialGame::InitWorld() {
@@ -245,7 +247,6 @@ void TutorialGame::InitWorld() {
 
 	testStateGameObject = AddStateObjectToWorld(Vector3(0, 10, 0));
 }
-
 /*
 
 A single function to add a large immoveable cube to the bottom of our world
@@ -354,7 +355,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	float meshSize		= 5.0f;
 	float inverseMass	= 0.5f;
 
-	GameObject* character = new GameObject();
+	PlayerObject* character = new PlayerObject();
 	SphereVolume* volume  = new SphereVolume(1.0f);
 
 	character->SetBoundingVolume(volume);
@@ -580,6 +581,43 @@ void TutorialGame::LockedObjectMovement() {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
 		selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
+	}
+}
+
+void TutorialGame::PlayerMovement() {
+	Matrix4 view = world.GetMainCamera().BuildViewMatrix();
+	Matrix4 camWorld = Matrix::Inverse(view);
+	PlayerObject* player = world.GetPlayer();
+	Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
+
+	//forward is more tricky -  camera forward is 'into' the screen...
+	//so we can take a guess, and use the cross of straight up, and
+	//the right axis, to hopefully get a vector that's good enough!
+
+	Vector3 fwdAxis = Vector::Cross(Vector3(0, 1, 0), rightAxis);
+	fwdAxis.y = 0.0f;
+	fwdAxis = Vector::Normalise(fwdAxis);
+	fwdAxis *= 10.0f;
+	rightAxis *= 10.0f;
+
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+		player->GetPhysicsObject()->AddForce(fwdAxis);
+	}
+
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+		player->GetPhysicsObject()->AddForce(-fwdAxis);
+	}
+
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+		player->GetPhysicsObject()->AddForce(-rightAxis);
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+		player->GetPhysicsObject()->AddForce(rightAxis);
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && player->CanJump()) {
+		float inverseMass = player->GetPhysicsObject()->GetInverseMass();
+		player->GetPhysicsObject()->AddForce(Vector3(0, 5000, 0));
+		player->SetJumpCooldown(0.5f);
 	}
 }
 

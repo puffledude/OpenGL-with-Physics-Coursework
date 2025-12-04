@@ -1,5 +1,6 @@
 #pragma once
 #include "./Camera.h"
+#include "../CSC8503/PlayerObject.h"
 
 namespace NCL {
 		namespace Maths {
@@ -85,12 +86,12 @@ namespace NCL {
 				return sunColour;
 			}
 
-			GameObject* GetPlayer() const 
+			PlayerObject* GetPlayer() const 
 				{
 					return playerObject;
 				}
 
-			void SetPlayer(GameObject* p) 
+			void SetPlayer(PlayerObject* p) 
 				{
 					playerObject = p;
 			}
@@ -100,7 +101,7 @@ namespace NCL {
 			std::vector<Constraint*> constraints;
 
 			PerspectiveCamera mainCamera;
-			GameObject* playerObject;
+			PlayerObject* playerObject;
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
