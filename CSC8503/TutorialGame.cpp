@@ -224,7 +224,7 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-	lockedObject = world.GetPlayer();
+	lockedObject = nullptr;
 }
 
 void TutorialGame::InitWorld() {
