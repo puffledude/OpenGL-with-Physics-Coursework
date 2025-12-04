@@ -85,11 +85,22 @@ namespace NCL {
 				return sunColour;
 			}
 
+			GameObject* GetPlayer() const 
+				{
+					return playerObject;
+				}
+
+			void SetPlayer(GameObject* p) 
+				{
+					playerObject = p;
+			}
+
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
 
 			PerspectiveCamera mainCamera;
+			GameObject* playerObject;
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;

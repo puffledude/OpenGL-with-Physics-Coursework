@@ -69,8 +69,9 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 	glassMaterial.type			= MaterialType::Transparent;
 	glassMaterial.diffuseTex	= glassTex;
 
-	InitCamera();
 	InitWorld();
+	InitCamera();
+	
 }
 
 TutorialGame::~TutorialGame()	{
@@ -109,6 +110,10 @@ void TutorialGame::UpdateGame(float dt) {
 		useGravity = !useGravity; //Toggle gravity!
 		physics.UseGravity(useGravity);
 	}
+	if (Window::GetKeyboard()->KeyPressed(KeyCodes::P)) {
+		world.GetMainCamera().outputPosition();
+	}
+
 	//Running certain physics updates in a consistent order might cause some
 	//bias in the calculations - the same objects might keep 'winning' the constraint
 	//allowing the other one to stretch too much etc. Shuffling the order so that it
@@ -176,9 +181,10 @@ void TutorialGame::UpdateGame(float dt) {
 
 	if(testStateGameObject)
 		testStateGameObject->Update(dt);
-
 }
 
+//Probabbly redesign to be more puzzly.
+//E.G 3 items for three different locations. 
 void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 10.0f, Vector3(14.47, 5.32, 9.42) * 5.0f, 0);
 	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 10.0f, Vector3(14.47, 5.32, 9.42) * 5.0f, 0);
@@ -218,20 +224,22 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-	lockedObject = nullptr;
+	lockedObject = world.GetPlayer();
 }
 
 void TutorialGame::InitWorld() {
 	world.ClearAndErase();
 	physics.Clear();
+	//Need to spawn player at -135.822, 121.127, 340.848
 
 	//CreatedMixedGrid(15, 15, 3.5f, 3.5f);
 
-	InitGameExamples();
+	//InitGameExamples();
 
 	//AddFloorToWorld(Vector3(0, -20, 0));
 
 	//BridgeConstraintTest();
+	AddPlayerToWorld(Vector3(-135.822f, 121.127f, 340.848f));
 	LoadLevel();
 
 	testStateGameObject = AddStateObjectToWorld(Vector3(0, 10, 0));
@@ -342,7 +350,7 @@ GameObject* TutorialGame::AddOBBCubeToWorld(const Vector3& position, Vector3 dim
 }
 
 GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
-	float meshSize		= 1.0f;
+	float meshSize		= 5.0f;
 	float inverseMass	= 0.5f;
 
 	GameObject* character = new GameObject();
@@ -361,6 +369,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	character->GetPhysicsObject()->InitSphereInertia();
 
 	world.AddGameObject(character);
+	world.SetPlayer(character);
 
 	return character;
 }

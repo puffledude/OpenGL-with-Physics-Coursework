@@ -311,7 +311,7 @@ int main() {
 
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
 	TestBehaviourTree();
-	TestPathfinding();
+	//TestPathfinding();
 	//TestPushDownAutomata(w);
 	TestNetworking();
 	w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
