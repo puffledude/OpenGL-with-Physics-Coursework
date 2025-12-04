@@ -1,6 +1,7 @@
 #pragma once
 #include "./Camera.h"
 #include "../CSC8503/PlayerObject.h"
+#include "../CSC8503/PlayerCamera.h"
 
 namespace NCL {
 		namespace Maths {
@@ -32,7 +33,7 @@ namespace NCL {
 			void AddConstraint(Constraint* c);
 			void RemoveConstraint(Constraint* c, bool andDelete = false);
 
-			PerspectiveCamera& GetMainCamera()  
+			PlayerCamera& GetMainCamera()  
 			{
 				return mainCamera;
 			}
@@ -100,7 +101,7 @@ namespace NCL {
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
 
-			PerspectiveCamera mainCamera;
+			PlayerCamera mainCamera;
 			PlayerObject* playerObject;
 
 			bool	shuffleConstraints;

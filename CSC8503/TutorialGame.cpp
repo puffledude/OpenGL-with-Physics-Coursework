@@ -83,21 +83,21 @@ void TutorialGame::UpdateGame(float dt) {
 		world.GetMainCamera().UpdateCamera(dt);
 	}
 	PlayerObject* player = world.GetPlayer();
-	if (player != nullptr) {
-		Vector3 objPos = player->GetTransform().GetPosition();
-		Vector3 camPos = objPos + lockedOffset;
+	//if (player != nullptr) {
+	//	Vector3 objPos = player->GetTransform().GetPosition();
+	//	Vector3 camPos = objPos + lockedOffset;
 
-		Matrix4 temp = Matrix::View(camPos, objPos, Vector3(0,1,0));
+	//	Matrix4 temp = Matrix::View(camPos, objPos, Vector3(0,1,0));
 
-		Matrix4 modelMat = Matrix::Inverse(temp);
+	//	Matrix4 modelMat = Matrix::Inverse(temp);
 
-		Quaternion q(modelMat);
-		Vector3 angles = q.ToEuler(); //nearly there now!
+	//	Quaternion q(modelMat);
+	//	Vector3 angles = q.ToEuler(); //nearly there now!
 
-		world.GetMainCamera().SetPosition(camPos);
-		world.GetMainCamera().SetPitch(angles.x);
-		world.GetMainCamera().SetYaw(angles.y);
-	}
+	//	world.GetMainCamera().SetPosition(camPos);
+	//	world.GetMainCamera().SetPitch(angles.x);
+	//	world.GetMainCamera().SetYaw(angles.y);
+	//}
 
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::F1)) {
 		InitWorld(); //We can reset the simulation at any time with F1
@@ -227,6 +227,7 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
+	world.GetMainCamera().SetPlayer(world.GetPlayer());
 	lockedObject = nullptr;
 }
 

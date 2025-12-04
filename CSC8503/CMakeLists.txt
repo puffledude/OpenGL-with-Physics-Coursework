@@ -9,6 +9,7 @@ set(PROJECT_NAME CSC8503)
 #    "NetworkPlayer.h"
 #    "StateGameObject.h"
 #    "TutorialGame.h"
+#    "PlayerCamera.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
@@ -22,6 +23,7 @@ source_group("Header Files" FILES ${Header_Files})
 #    "NetworkPlayer.cpp"
 #    "StateGameObject.cpp"
 #    "TutorialGame.cpp"
+#    "PlayerCamera.cpp"
 #)
 file(GLOB Source_Files *.cpp)
 
