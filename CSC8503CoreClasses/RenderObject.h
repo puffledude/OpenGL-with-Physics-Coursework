@@ -56,6 +56,16 @@ namespace NCL {
 				return material;
 			}
 
+			void SetTexture(Texture* tex, bool diffuse = true) 
+			{
+				if (diffuse) {
+					material.diffuseTex = tex;
+				}
+				else {
+					material.bumpTex = tex;
+				}
+			}
+
 		protected:
 			Transform&	transform;
 			GameTechMaterial material;
