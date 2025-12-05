@@ -185,26 +185,30 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(46.90, 0.11, -20.76) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
 	AddCubeToWorld(Vector3(49.74, 1.01, -20.74) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
 	AddCubeToWorld(Vector3(44.47, -0.77, -20.76) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
-	AddOBBCubeToWorld(Vector3(105.94, 1.21, -15.05) * 8.0f, Vector3(7.35, 5.91, 0.45) * 4.0f, Quaternion(0.00000, 0.00000, -0.70711, -0.70711), 0);
-	AddCubeToWorld(Vector3(100.68, -0.58, -25.72) * 8.0f, Vector3(4.24, 3.12, 4.26) * 4.0f, 0);
-	AddCubeToWorld(Vector3(92.02, -0.71, -19.68) * 8.0f, Vector3(4.77, 2.86, 3.36) * 4.0f, 0);
-	AddOBBCubeToWorld(Vector3(82.63, 1.08, -26.53) * 8.0f, Vector3(7.65, 6.18, 1.03) * 4.0f, Quaternion(0.50000, 0.50000, -0.50000, -0.50000), 0);
-	AddOBBCubeToWorld(Vector3(82.36, 0.91, -15.20) * 8.0f, Vector3(7.45, 5.87, 1.34) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
-	AddCubeToWorld(Vector3(105.72, -0.88, -18.22) * 8.0f, Vector3(4.76, 2.51, 4.35) * 4.0f, 0);
-	AddCubeToWorld(Vector3(92.24, -1.09, -26.78) * 8.0f, Vector3(4.14, 2.10, 2.09) * 4.0f, 0);
-	AddCubeToWorld(Vector3(98.51, -0.46, -14.20) * 8.0f, Vector3(2.67, 3.36, 2.68) * 4.0f, 0);
+	AddCubeToWorld(Vector3(100.68, -1.32, -25.72) * 8.0f, Vector3(4.24, 3.12, 4.26) * 4.0f, 0);
+	AddCubeToWorld(Vector3(125.03, -0.86, 39.41) * 8.0f, Vector3(4.77, 4.10, 3.36) * 4.0f, 0);
+	AddOBBCubeToWorld(Vector3(82.36, 0.93, 7.54) * 8.0f, Vector3(7.45, 51.33, 1.34) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
+	AddCubeToWorld(Vector3(105.72, -1.63, -18.22) * 8.0f, Vector3(4.76, 2.51, 4.35) * 4.0f, 0);
+	AddCubeToWorld(Vector3(92.24, -0.60, -5.38) * 8.0f, Vector3(4.14, 3.81, 2.09) * 4.0f, 0);
+	AddCubeToWorld(Vector3(98.51, -1.11, -14.20) * 8.0f, Vector3(2.67, 3.36, 2.68) * 4.0f, 0);
 	AddCubeToWorld(Vector3(78.67, 0.85, -20.76) * 8.0f, Vector3(8.89, 0.37, 2.57) * 4.0f, 0);
-	AddCubeToWorld(Vector3(97.33, -2.40, -20.87) * 8.0f, Vector3(28.45, 0.52, 17.50) * 4.0f, 0);
-	AddOBBCubeToWorld(Vector3(121.58, 0.78, -20.68) * 8.0f, Vector3(8.89, 0.37, 2.57) * 4.0f, Quaternion(0.00000, 1.00000, 0.00000, 0.00000), 0);
-	AddCubeToWorld(Vector3(97.35, -0.61, -12.36) * 8.0f, Vector3(28.52, 3.03, 0.49) * 4.0f, 0);
-	AddCubeToWorld(Vector3(97.35, -0.61, -29.38) * 8.0f, Vector3(28.52, 3.03, 0.49) * 4.0f, 0);
-	AddCubeToWorld(Vector3(114.61, -0.75, -20.90) * 8.0f, Vector3(5.87, 3.50, 2.95) * 4.0f, 0);
-	AddCubeToWorld(Vector3(83.95, 1.15, -18.35) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
-	AddCubeToWorld(Vector3(83.61, 1.40, -23.43) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
-	AddOBBCubeToWorld(Vector3(108.68, 1.40, -21.97) * 8.0f, Vector3(13.65, 7.00, 0.44) * 4.0f, Quaternion(0.00000, 0.70711, 0.00000, -0.70711), 0);
-	AddCubeToWorld(Vector3(143.60, 1.59, -32.51) * 8.0f, Vector3(5.31, 3.19, 5.06) * 4.0f, 0);
+	AddCubeToWorld(Vector3(109.08, -0.96, -31.40) * 8.0f, Vector3(53.87, 3.61, 0.49) * 4.0f, 0);
+	AddCubeToWorld(Vector3(83.95, 0.74, -18.35) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
+	AddCubeToWorld(Vector3(83.61, 0.70, -23.43) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
+	AddCubeToWorld(Vector3(65.78, 1.59, 38.72) * 8.0f, Vector3(5.31, 3.19, 5.06) * 4.0f, 0);
 	AddCubeToWorld(Vector3(41.50, -1.94, -20.88) * 8.0f, Vector3(2.90, 0.26, 3.65) * 4.0f, 0);
-
+	AddOBBCubeToWorld(Vector3(109.07, -3.74, 7.99) * 8.0f, Vector3(1.95, 53.96, 79.31) * 4.0f, Quaternion(0.00000, 0.00000, 0.70711, -0.70711), 0);
+	AddOBBCubeToWorld(Vector3(82.55, -0.99, -27.42) * 8.0f, Vector3(3.52, 7.47, 1.12) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
+	AddCubeToWorld(Vector3(136.57, -1.10, 8.58) * 8.0f, Vector3(0.79, 4.08, 80.56) * 4.0f, 0);
+	AddCubeToWorld(Vector3(109.68, -0.16, 3.97) * 8.0f, Vector3(32.26, 5.22, 4.86) * 4.0f, 0);
+	AddCubeToWorld(Vector3(108.75, -1.19, 48.11) * 8.0f, Vector3(54.99, 4.19, 0.69) * 4.0f, 0);
+	AddCubeToWorld(Vector3(96.14, -1.41, 32.21) * 8.0f, Vector3(8.22, 2.72, 5.04) * 4.0f, 0);
+	AddCubeToWorld(Vector3(106.80, -1.20, 19.48) * 8.0f, Vector3(5.49, 3.13, 6.39) * 4.0f, 0);
+	AddCubeToWorld(Vector3(104.97, -0.15, 42.44) * 8.0f, Vector3(7.33, 5.23, 6.04) * 4.0f, 0);
+	AddOBBCubeToWorld(Vector3(88.84, 0.27, 16.89) * 8.0f, Vector3(5.82, 11.63, 11.03) * 4.0f, Quaternion(0.00000, 0.00000, 0.70711, -0.70711), 0);
+	AddCubeToWorld(Vector3(132.34, -0.99, -15.16) * 8.0f, Vector3(7.27, 3.55, 18.68) * 4.0f, 0);
+	AddCubeToWorld(Vector3(115.53, -0.43, -9.81) * 8.0f, Vector3(8.70, 4.67, 4.85) * 4.0f, 0);
+	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
 }
 
 
