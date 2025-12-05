@@ -598,10 +598,16 @@ void TutorialGame::PlayerMovement() {
 	Vector3 fwdAxis = Vector::Cross(Vector3(0, 1, 0), rightAxis);
 	fwdAxis.y = 0.0f;
 	fwdAxis = Vector::Normalise(fwdAxis);
+	Vector3 lookDir = fwdAxis;
 	fwdAxis *= 10.0f;
 	rightAxis *= 10.0f;
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+		Vector3 playerPos = player->GetTransform().GetPosition();
+		Matrix4 temp = Matrix::View(playerPos + lookDir, playerPos, Vector3(0, 1, 0));  //Make a view matrix looking in the move direction
+		Matrix4 modelMat = Matrix::Inverse(temp);  //Make the model matrix in model space
+		Quaternion q(modelMat);   //Extract the rotation
+		player->GetTransform().SetOrientation(q.Normalised());
 		player->GetPhysicsObject()->AddForce(fwdAxis);
 	}
 
