@@ -18,9 +18,17 @@ public:
 
 	NCL::Vector3 DirectionToPlayer();
 
+	bool GetFreeCamMode() {
+		return freeCam;
+	}
+
+	void SetFreeCam() {
+		freeCam = !freeCam;
+	}
+
 protected:
 	PlayerObject* playerObject;
-	
+	bool freeCam = false;
 	float orbitPitch = 0.0f;
 	float orbitYaw = 0.0f;
 

@@ -27,6 +27,10 @@ void PlayerCamera::UpdateCamera(float dt) {
 	if (!activeController) {
 		return;
 	}
+	if (freeCam) {
+		PerspectiveCamera::UpdateCamera(dt);
+		return;
+	}
 	/*Vector3 direction = DirectionToPlayer();
 	direction = Vector::Normalise(direction);*/
 	//Set the camera position a fixed distance behind the player
