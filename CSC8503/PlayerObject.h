@@ -35,4 +35,5 @@ public:
 protected:
 	float jumpCooldown = 0.0f;
 	bool canJump = true;
+	GameObject* heldItem = nullptr;
 };
