@@ -13,7 +13,6 @@ void Camera::UpdateCamera(float dt) {
 		return;
 	}
 
-	if (freeCam) {
 	//Update the mouse by how much
 	pitch -= activeController->GetNamedAxis("YLook");
 	yaw -= activeController->GetNamedAxis("XLook");
@@ -37,7 +36,6 @@ void Camera::UpdateCamera(float dt) {
 	position += yawRotation * Vector3(activeController->GetNamedAxis("Sidestep"), 0, 0) * frameSpeed;
 
 	position.y += activeController->GetNamedAxis("UpDown") * frameSpeed;
-}
 }
 
 /*

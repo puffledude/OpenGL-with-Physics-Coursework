@@ -91,9 +91,7 @@ namespace NCL {
 		float	pitch;
 		Vector3 position;
 		float	speed;
-		const Controller* activeController = nullptr;
-		bool freeCam = true;
-		
+		const Controller* activeController = nullptr;		
 	};
 
 	class OrhographicCamera : public Camera {
