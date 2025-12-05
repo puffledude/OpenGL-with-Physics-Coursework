@@ -30,7 +30,7 @@ void PlayerCamera::UpdateCamera(float dt) {
 	/*Vector3 direction = DirectionToPlayer();
 	direction = Vector::Normalise(direction);*/
 	//Set the camera position a fixed distance behind the player
-	const float distanceFromPlayer = 10.0f;
+	const float distanceFromPlayer = 15.0f;
 	Vector3 currentPos = this->GetPosition();
 	
 
