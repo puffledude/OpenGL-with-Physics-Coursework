@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "CollisionVolume.h"
 #include "Texture.h"
+#include"RenderObject.h"
 
 //using std::vector;
 
@@ -90,6 +91,30 @@ namespace NCL::CSC8503 {
 		int		GetWorldID() const 
 		{
 			return worldID;
+		}
+
+		NCL::Rendering::Texture* GetTexture(bool diffuse) {
+			if (!renderObject) {
+				return nullptr;
+			}
+			if (diffuse) {
+				return renderObject->GetMaterial().diffuseTex;
+			}
+			else {
+				return renderObject->GetMaterial().bumpTex;
+			}
+		}
+
+		void SetTexture(NCL::Rendering::Texture* tex, bool diffuse = true) {
+			if (!renderObject) {
+				return;
+			}
+			if (diffuse) {
+				renderObject->SetTexture(tex, true);
+			}
+			else {
+				renderObject->SetTexture(tex, false);
+			}
 		}
 
 	protected:
