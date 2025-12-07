@@ -214,7 +214,8 @@ void TutorialGame::LoadLevel() {
 
 void TutorialGame::LoadDynamic() {
 	Vector3 swingBallPositions[] = {
-		Vector3(-124.329, 10.0f,-61.6124)
+		Vector3(-124.329, 35.5,-61.6124),
+		Vector3(-112.006, 35.5, 45.8838)
 	};
 	//Vector3 leftside = Vector3(-137.364, -17.9602, 21.0267);
 	//Vector3 rightside = Vector3(-79.292, -12.1535, 14.8348);
@@ -222,10 +223,10 @@ void TutorialGame::LoadDynamic() {
 	//std::cout << "Direction for first bit: " << direction << std::endl;
 	for(Vector3 pos : swingBallPositions)
 	{
-		AddSwingBallToWorld(pos,23.0f, 5.0f, 0.01, Vector3(0.989485f, 0.09894f, -0.105503f), 5000.0f);
+		AddSwingBallToWorld(pos,40.0f, 15.0f, 0.01, Vector3(0.989485f, 0.09894f, -0.105503f), 5000.0f);
 	}
 
-	AddPlayerToWorld(Vector3(-135.822f, 121.127f, 340.848f));
+	AddPlayerToWorld(Vector3(-118.747, 74.8767, 286.553));
 	
 }
 
