@@ -38,8 +38,15 @@ namespace NCL {
 			void CreatedMixedGrid(int numRows, int numCols, float rowSpacing, float colSpacing);
 			void CreateAABBGrid(int numRows, int numCols, float rowSpacing, float colSpacing, const NCL::Maths::Vector3& cubeDims);
 
-
+			/// <summary>
+			/// Loads static Level elements (the floor)
+			/// </summary>
 			void LoadLevel();
+
+			/// <summary>
+			/// Loads dynamic Level elements (enemies, bonuses, swinging balls)
+			/// </summary>
+			void LoadDynamic();
 			void BridgeConstraintTest();
 
 			bool SelectObject();
@@ -57,6 +64,10 @@ namespace NCL {
 			GameObject* AddPlayerToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddEnemyToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddBonusToWorld(const NCL::Maths::Vector3& position);
+
+			//Added
+			GameObject* AddSwingBallToWorld(const NCL::Maths::Vector3& position, float distance, float radius, float inverseMass, NCL::Maths::Vector3 direction, float pushForce);
+
 
 			GameWorld& world;
 			GameTechRendererInterface& renderer;
