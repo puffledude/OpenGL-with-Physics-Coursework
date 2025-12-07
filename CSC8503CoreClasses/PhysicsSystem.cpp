@@ -218,7 +218,7 @@ void PhysicsSystem::BasicCollisionDetection()
 			CollisionDetection::CollisionInfo collisionInfo;
 			if(CollisionDetection::ObjectIntersection(*i, *j, collisionInfo)) {
 
-				std::cout << "Collision betweeen " << (*i)->GetName() << " and " << (*j)->GetName() << std::endl;
+				//std::cout << "Collision betweeen " << (*i)->GetName() << " and " << (*j)->GetName() << std::endl;
 				ImpulseResolveCollision(*collisionInfo.a, *collisionInfo.b, collisionInfo.point);
 				collisionInfo.framesLeft = numCollisionFrames;
 				allCollisions.insert(collisionInfo);
@@ -437,6 +437,9 @@ void PhysicsSystem::ClearForces()
 {
 	gameWorld.OperateOnContents(
 		[](GameObject* o) {
+			if (o->GetPhysicsObject() == nullptr) {
+				return;
+			}
 			o->GetPhysicsObject()->ClearForces();
 		}
 	);
