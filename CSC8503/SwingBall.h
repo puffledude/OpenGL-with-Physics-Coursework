@@ -38,4 +38,5 @@ protected:
 	NCL::CSC8503::PositionConstraint* constraint;
 	NCL::Vector3 direction;
 	float pushForce;
+	bool flipped = false;
 };
