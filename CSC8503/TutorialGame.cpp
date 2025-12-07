@@ -5,6 +5,7 @@
 #include "RenderObject.h"
 #include "TextureLoader.h"
 #include "PlayerObject.h"
+#include "SwingBall.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -211,6 +212,20 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
 }
 
+void TutorialGame::LoadDynamic() {
+	Vector3 swingBallPositions[] = {
+		Vector3(-124.329, 10.0f,-61.6124)
+	};
+
+	for(Vector3 pos : swingBallPositions)
+	{
+		AddSwingBallToWorld(pos,8.0f, 3.0f, 0.25f, Vector3(1,0,0), 100.0f);
+	}
+
+	AddPlayerToWorld(Vector3(-135.822f, 121.127f, 340.848f));
+	
+}
+
 
 void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetNearPlane(0.1f);
@@ -234,8 +249,9 @@ void TutorialGame::InitWorld() {
 	//AddFloorToWorld(Vector3(0, -20, 0));
 
 	//BridgeConstraintTest();
-	AddPlayerToWorld(Vector3(-135.822f, 121.127f, 340.848f));
+	
 	LoadLevel();
+	LoadDynamic();
 
 	testStateGameObject = AddStateObjectToWorld(Vector3(0, 10, 0));
 }
@@ -673,6 +689,7 @@ void TutorialGame::BridgeConstraintTest() {
 
 	GameObject* previous = start;
 
+
 	for (int i = 0; i < numLinks; ++i) {
 		GameObject* block = AddCubeToWorld(startPos + Vector3((i + 1) * cubeDistance, 0, 0), cubeSize, invCubeMass);
 
@@ -706,4 +723,26 @@ StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
 	world.AddGameObject(apple);
 
 	return apple;
+}
+
+/// <summary>
+/// Adds a swinging ball to the world at a given position, distance from pivot, radius, inverse mass, direction and push force
+/// </summary>
+/// <param name="position">The position the anchor will be spawned</param>
+/// <param name="distance">The distance between the ball and the anchor</param>
+/// <param name="radius">Radius of the ball</param>
+/// <param name="inverseMass">Mass of the ball</param>
+/// <param name="direction">Direction the ball will be pushed</param>
+/// <param name="pushForce">The strength of the push force given to ball</param>
+/// <returns></returns>
+GameObject* TutorialGame::AddSwingBallToWorld(const Vector3& position, float distance, float radius, float inverseMass, Vector3 direction, float pushForce) 
+{
+	GameObject* anchor = AddCubeToWorld(position, Vector3(2, 2, 2), 0.0f); //Anchor cube
+
+	GameObject* ball = AddSphereToWorld(Vector3(position.x, position.y - distance, position.z), radius, inverseMass);
+
+	SwingBall* construct = new SwingBall(ball, anchor, distance, direction, pushForce);
+	world.AddGameObject(construct);
+	world.AddConstraint(construct->GetConstraint());
+	return construct;
 }

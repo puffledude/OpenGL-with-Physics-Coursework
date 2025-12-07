@@ -11,7 +11,7 @@ namespace NCL {
 			~PositionConstraint() = default;
 
 			void UpdateConstraint(float dt) override;
-
+			float GetDistance() const { return distance; }
 		protected:
 			GameObject* objectA;
 			GameObject* objectB;
