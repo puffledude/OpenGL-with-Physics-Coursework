@@ -67,7 +67,7 @@ namespace NCL {
 
 			//Added
 			GameObject* AddSwingBallToWorld(const NCL::Maths::Vector3& position, float distance, float radius, float inverseMass, NCL::Maths::Vector3 direction, float pushForce);
-
+			GameObject* AddFloatingBoxToWorld(const NCL::Maths::Vector3& position, NCL::Maths::Vector3 dimensions);
 
 			GameWorld& world;
 			GameTechRendererInterface& renderer;
