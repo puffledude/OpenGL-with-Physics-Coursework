@@ -6,6 +6,7 @@
 #include "TextureLoader.h"
 #include "PlayerObject.h"
 #include "SwingBall.h"
+#include "FloatingBox.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -224,6 +225,15 @@ void TutorialGame::LoadDynamic() {
 	for(Vector3 pos : swingBallPositions)
 	{
 		AddSwingBallToWorld(pos,40.0f, 15.0f, 0.01, Vector3(0.989485f, 0.09894f, -0.105503f), 5000.0f);
+	}
+
+	Vector3 floatingBoxPositions[] = {
+	Vector3(426.586, 6.6364, -153.317),
+	Vector3(468.895, 6.6364, -207.777),
+	Vector3(530.329, 6.6364, -185.664)
+	};
+	for (Vector3 pos : floatingBoxPositions) {
+		AddFloatingBoxToWorld(pos, Vector3(2.0f, 2.0f, 2.0f));
 	}
 
 	AddPlayerToWorld(Vector3(-118.747, 74.8767, 286.553));
@@ -748,5 +758,14 @@ GameObject* TutorialGame::AddSwingBallToWorld(const Vector3& position, float dis
 	SwingBall* construct = new SwingBall(ball, anchor, distance, direction, pushForce);
 	world.AddGameObject(construct);
 	world.AddConstraint(construct->GetConstraint());
+	return construct;
+}
+
+GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3 dimensions) 
+{
+	GameObject* box = AddCubeToWorld(position, dimensions, 0.0f);
+	FloatingBox* construct = new FloatingBox(box);
+
+	world.AddGameObject(construct);
 	return construct;
 }
