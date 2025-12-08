@@ -105,7 +105,7 @@ namespace NCL::CSC8503 {
 			}
 		}
 
-		void SetTexture(NCL::Rendering::Texture* tex, bool diffuse = true) {
+		/*void SetTexture(NCL::Rendering::Texture* tex, bool diffuse = true) {
 			if (!renderObject) {
 				return;
 			}
@@ -114,8 +114,8 @@ namespace NCL::CSC8503 {
 			}
 			else {
 				renderObject->SetTexture(tex, false);
-			}
-		}
+			}*/
+		//}
 
 	protected:
 		Transform			transform;
