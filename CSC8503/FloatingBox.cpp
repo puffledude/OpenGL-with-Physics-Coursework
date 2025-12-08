@@ -12,7 +12,8 @@ FloatingBox::~FloatingBox() {
 
 void FloatingBox::Update(float dt) {
 	if (collided) {
-		this->GetPhysicsObject()->SetInverseMass(1.0f);
+		//this->GetPhysicsObject()->SetInverseMass(1.0f);
+		this->GetPhysicsObject()->SetIgnoreGravity(false);
 		//NCL::Vector3 boxPos = box->GetTransform().GetPosition();
 		//boxPos.y -= dt*0.5; // Fall down when collided
 		//box->GetTransform().SetPosition(boxPos);
