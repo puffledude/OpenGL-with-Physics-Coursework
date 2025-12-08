@@ -215,16 +215,19 @@ void TutorialGame::LoadLevel() {
 
 void TutorialGame::LoadDynamic() {
 	Vector3 swingBallPositions[] = {
-		Vector3(-124.329, 35.5,-61.6124),
+		Vector3(-110.593, 35.5, -60.8067),
+		Vector3(-109.784, 35.5, -4.3544),
 		Vector3(-112.006, 35.5, 45.8838)
 	};
 	//Vector3 leftside = Vector3(-137.364, -17.9602, 21.0267);
 	//Vector3 rightside = Vector3(-79.292, -12.1535, 14.8348);
 	//Vector3 direction = Vector::Normalise(rightside - leftside);
 	//std::cout << "Direction for first bit: " << direction << std::endl;
+	Vector3 direction = Vector3(0.989485f, 0.09894f, -0.105503f);
 	for(Vector3 pos : swingBallPositions)
 	{
-		AddSwingBallToWorld(pos,40.0f, 15.0f, 0.01, Vector3(0.989485f, 0.09894f, -0.105503f), 5000.0f);
+		AddSwingBallToWorld(pos,40.0f, 15.0f, 0.01, direction, 4000.0f);
+		direction = -direction;
 	}
 
 	Vector3 floatingBoxPositions[] = {
@@ -236,7 +239,7 @@ void TutorialGame::LoadDynamic() {
 		AddFloatingBoxToWorld(pos, Vector3(2.0f, 2.0f, 2.0f));
 	}
 
-	AddPlayerToWorld(Vector3(-118.747, 74.8767, 286.553));
+	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
 	
 }
 
@@ -378,7 +381,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	float inverseMass	= 0.5f;
 
 	PlayerObject* character = new PlayerObject();
-	SphereVolume* volume  = new SphereVolume(1.0f);
+	SphereVolume* volume  = new SphereVolume(0.8f);
 
 	character->SetBoundingVolume(volume);
 
@@ -644,7 +647,7 @@ void TutorialGame::PlayerMovement() {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && player->CanJump()) {
 		float inverseMass = player->GetPhysicsObject()->GetInverseMass();
-		player->GetPhysicsObject()->AddForce(Vector3(0, 5000, 0));
+		player->GetPhysicsObject()->AddForce(Vector3(0, 1000, 0));
 		player->SetJumpCooldown(0.5f);
 	}
 }
