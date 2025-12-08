@@ -39,6 +39,8 @@ public:
 		intialPosition = position;
 	}
 
+	void OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) override;
+
 	float GetPunchForce() const {
 		return punchForce;
 	}
@@ -58,4 +60,5 @@ protected:
 	NCL::Vector3 intialPosition;
 	float punchForce;
 	float punchDistance;
+	bool flipped = false;
 };
