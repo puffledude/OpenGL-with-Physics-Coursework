@@ -65,12 +65,16 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 	defaultTex	= renderer.LoadTexture("Default.png");
 	checkerTex	= renderer.LoadTexture("checkerboard.png");
 	glassTex	= renderer.LoadTexture("stainedglass.tga");
+	warningTex = renderer.LoadTexture("WarningRed.png");
 
 	checkerMaterial.type		= MaterialType::Opaque;
 	checkerMaterial.diffuseTex	= checkerTex;
 
 	glassMaterial.type			= MaterialType::Transparent;
 	glassMaterial.diffuseTex	= glassTex;
+
+	warningMaterial.type = MaterialType::Opaque;
+	warningMaterial.diffuseTex = warningTex;
 
 	InitWorld();
 	InitCamera();
@@ -760,6 +764,7 @@ GameObject* TutorialGame::AddSwingBallToWorld(const Vector3& position, float dis
 	GameObject* anchor = AddCubeToWorld(position, Vector3(2, 2, 2), 0.0f); //Anchor cube
 
 	GameObject* ball = AddSphereToWorld(Vector3(position.x, position.y - distance, position.z), radius, inverseMass);
+	ball->GetRenderObject()->SetMaterial(warningMaterial);
 
 	SwingBall* construct = new SwingBall(ball, anchor, distance, direction, pushForce);
 	world.AddGameObject(construct);
@@ -778,7 +783,7 @@ GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3
 		.SetPosition(position)
 		.SetScale(dimensions * 2.0f);
 
-	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, checkerMaterial));
+	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, warningMaterial));
 	cube->SetPhysicsObject(new PhysicsObject(cube->GetTransform(), cube->GetBoundingVolume()));
 
 	cube->GetPhysicsObject()->SetInverseMass(0);
