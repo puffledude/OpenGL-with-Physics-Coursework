@@ -15,9 +15,12 @@ public:
 		punchDirection = Vector::Normalise(direction);
 		punchForce = force;
 		punchDistance = distance;
+		intialPosition = this->GetTransform().GetPosition();
 
 		//Need to figure out how to avoid falling due to gravity
 	}
+	PunchBox();
+
 	~PunchBox() = default;
 
 	void Update(float dt) override;
@@ -27,6 +30,13 @@ public:
 	}
 	void SetPunchDirection(const NCL::Vector3& direction) {
 		punchDirection = direction;
+	}
+
+	NCL::Vector3 GetIntialPosition() const {
+		return intialPosition;
+	}
+	void SetIntialPosition(const NCL::Vector3& position) {
+		intialPosition = position;
 	}
 
 	float GetPunchForce() const {
@@ -39,6 +49,7 @@ public:
 	
 protected:
 	NCL::Vector3 punchDirection;
+	NCL::Vector3 intialPosition;
 	float punchForce;
 	float punchDistance;
 };
