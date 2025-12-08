@@ -75,6 +75,13 @@ namespace NCL {
 				return inverseInteriaTensor;
 			}
 
+			bool IsGravityIgnored() const {
+				return ignoreGravity;
+			}
+			void SetIgnoreGravity(bool ignore) {
+				ignoreGravity = ignore;
+			}
+
 		protected:
 			const CollisionVolume* volume;
 			Transform&		transform;
@@ -92,6 +99,8 @@ namespace NCL {
 			Vector3 torque;
 			Vector3 inverseInertia;
 			Matrix3 inverseInteriaTensor;
+
+			bool ignoreGravity = false;
 		};
 	}
 }
