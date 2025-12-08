@@ -249,11 +249,23 @@ void TutorialGame::LoadDynamic() {
 	direction = Vector3(0.0384597, 0, -0.99926);
 	//std::cout << "Punch box direction vector is: " << Vector::Normalise(direction) << std::endl;
 
+	float height = -13.5f;
 	Vector3 punchBoxPositions[] = {
-		Vector3(108.405, -13.1855, -152.167)
+		Vector3(48.8316, height, -146.498),
+		Vector3(71.0516, height, -188.074),
+		Vector3(97.0434, height, -148.143),
+		Vector3(131.839, height, -189.254),
+		Vector3(164.412, height, -147.86)
+
+		////Vector3(76.1146, -8.60941, -154.465),
+		//Vector3(94.8136, -8.60941, -186.273),
+		//Vector3(148.895, -8.60941, -187.037),
+		//Vector3(175.541, -8.60941, -147.666)
+
 	};
 	for (Vector3 pos : punchBoxPositions) {
-		AddPunchBoxToWorld(pos, direction, Vector3(5.0f, 5.0f, 5.0f), 8000.0f, 30.0f, 0.5f);
+		AddPunchBoxToWorld(pos, direction, Vector3(3.0f, 6.0f, 3.0f), 500.0f, 34.0f, 0.5f);
+		direction = -direction;
 	}
 
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
@@ -816,21 +828,23 @@ GameObject* TutorialGame::AddPunchBoxToWorld(const NCL::Maths::Vector3& position
 	NCL::Maths::Vector3 dimensions, float punchForce, 
 	float punchDistance, float inverseMass) {
 	PunchBox* box = new PunchBox();
-	
+
 	AABBVolume* volume = new AABBVolume(dimensions);
 	box->SetBoundingVolume(volume);
 	box->GetTransform()
 		.SetPosition(position)
-		.SetScale(dimensions * 2.0f);
+		.SetScale(dimensions);
 
 	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, warningMaterial));
 	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
 	box->GetPhysicsObject()->SetIgnoreGravity(true);
 	box->GetPhysicsObject()->SetInverseMass(inverseMass);
+	box->GetPhysicsObject()->InitCubeInertia();
 
 	box->SetPunchDirection(direction);
 	box->SetPunchForce(punchForce);
 	box->SetPunchDistance(punchDistance);
+	box->SetIntialPosition(position);
 
 	world.AddGameObject(box);
 	return box;
