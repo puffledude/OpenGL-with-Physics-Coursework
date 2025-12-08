@@ -12,6 +12,7 @@ set(PROJECT_NAME CSC8503)
 #    "PlayerCamera.h"
 #    "SwingBall.h"
 #    "FloatingBox.h"
+#    "PunchBox.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
@@ -28,6 +29,7 @@ source_group("Header Files" FILES ${Header_Files})
 #    "PlayerCamera.cpp"
 #	 "SwingBall.cpp"
 #    "FloatingBox.cpp"
+#	 "PunchBox.cpp"
 #)
 file(GLOB Source_Files *.cpp)
 
