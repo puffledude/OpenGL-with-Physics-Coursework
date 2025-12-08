@@ -88,6 +88,8 @@ namespace NCL {
 			Rendering::Texture* defaultTex  = nullptr;
 			Rendering::Texture* checkerTex	= nullptr;
 			Rendering::Texture* glassTex	= nullptr;
+			//Added
+			Rendering::Texture* warningTex = nullptr;
 
 			//Coursework Meshes
 			Rendering::Mesh* catMesh	= nullptr;
@@ -98,6 +100,8 @@ namespace NCL {
 			GameTechMaterial checkerMaterial;
 			GameTechMaterial glassMaterial;
 			GameTechMaterial notexMaterial;
+			//Added
+			GameTechMaterial warningMaterial;
 
 			//Coursework Additional functionality	
 			GameObject* lockedObject = nullptr;
