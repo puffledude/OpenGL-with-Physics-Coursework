@@ -7,6 +7,7 @@
 #include "PlayerObject.h"
 #include "SwingBall.h"
 #include "FloatingBox.h"
+#include "PunchBox.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -800,4 +801,24 @@ GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3
 
 	world.AddGameObject(construct);
 	return construct;*/
+}
+
+GameObject* TutorialGame::AddPunchBoxToWorld(const NCL::Maths::Vector3& position, NCL::Maths::Vector3 direction,
+	NCL::Maths::Vector3 dimensions, float punchForce, 
+	float punchDistance, float inverseMass) {
+	PunchBox* box = new PunchBox();
+	
+	AABBVolume* volume = new AABBVolume(dimensions);
+	box->SetBoundingVolume(volume);
+	box->GetTransform()
+		.SetPosition(position)
+		.SetScale(dimensions * 2.0f);
+	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, warningMaterial));
+	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
+	box->GetPhysicsObject()->SetIgnoreGravity(true);
+	box->SetPunchDirection(direction);
+	box->SetPunchForce(punchForce);
+	//box->SetPunchDistance(punchDistance);
+
+	return box;
 }
