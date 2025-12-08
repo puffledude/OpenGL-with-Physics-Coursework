@@ -231,12 +231,15 @@ void TutorialGame::LoadDynamic() {
 	}
 
 	Vector3 floatingBoxPositions[] = {
-	Vector3(426.586, 6.6364, -153.317),
-	Vector3(468.895, 6.6364, -207.777),
-	Vector3(530.329, 6.6364, -185.664)
+	Vector3(431.402, 8.19425, -166.86),
+	Vector3(470.568, 7.19425, -150.193),
+	Vector3(488.506, 7.69425, -186.568),
+	Vector3(505.196, 8.3, -148.537),
+	Vector3(530.865, 8.19425, -172.795),
+	Vector3(560.242, 9.19425, -167.378)
 	};
 	for (Vector3 pos : floatingBoxPositions) {
-		AddFloatingBoxToWorld(pos, Vector3(2.0f, 2.0f, 2.0f));
+		AddFloatingBoxToWorld(pos, Vector3(5.0f, 2.0f, 5.0f));
 	}
 
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
