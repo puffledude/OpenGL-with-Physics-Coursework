@@ -4,7 +4,8 @@
 class FloatingBox : public NCL::CSC8503::GameObject 
 {
 public:
-	FloatingBox(GameObject* object);
+	FloatingBox() {};
+	//FloatingBox(GameObject* object);
 
 	~FloatingBox();
 
@@ -12,6 +13,6 @@ public:
 
 	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override;
 protected:
-	GameObject* box;
+	//GameObject* box;
 	bool collided = false;
 };

@@ -647,7 +647,7 @@ void TutorialGame::PlayerMovement() {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && player->CanJump()) {
 		float inverseMass = player->GetPhysicsObject()->GetInverseMass();
-		player->GetPhysicsObject()->AddForce(Vector3(0, 1000, 0));
+		player->GetPhysicsObject()->AddForce(Vector3(0, 1750, 0));
 		player->SetJumpCooldown(0.5f);
 	}
 }
@@ -766,9 +766,29 @@ GameObject* TutorialGame::AddSwingBallToWorld(const Vector3& position, float dis
 
 GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3 dimensions) 
 {
-	GameObject* box = AddCubeToWorld(position, dimensions, 0.0f);
+	FloatingBox* cube = new FloatingBox();
+
+	AABBVolume* volume = new AABBVolume(dimensions);
+	cube->SetBoundingVolume(volume);
+
+	cube->GetTransform()
+		.SetPosition(position)
+		.SetScale(dimensions * 2.0f);
+
+	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, checkerMaterial));
+	cube->SetPhysicsObject(new PhysicsObject(cube->GetTransform(), cube->GetBoundingVolume()));
+
+	cube->GetPhysicsObject()->SetInverseMass(0);
+	cube->GetPhysicsObject()->InitCubeInertia();
+
+	world.AddGameObject(cube);
+
+	return cube;
+
+	//Could just steal the code from the add cube.
+	/*GameObject* box = AddCubeToWorld(position, dimensions, 0.0f);
 	FloatingBox* construct = new FloatingBox(box);
 
 	world.AddGameObject(construct);
-	return construct;
+	return construct;*/
 }
