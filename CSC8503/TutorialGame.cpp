@@ -125,7 +125,7 @@ void TutorialGame::UpdateGame(float dt) {
 
 	if (player) {
 		//lockedObject = player;
-		PlayerMovement();
+		if(!world.GetMainCamera().GetFreeCamMode())PlayerMovement();
 	}
 	else {
 		DebugObjectMovement();
@@ -626,7 +626,7 @@ void TutorialGame::PlayerMovement() {
 	fwdAxis *= 10.0f;
 	rightAxis *= 10.0f;
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		Vector3 playerPos = player->GetTransform().GetPosition();
 		Matrix4 temp = Matrix::View(playerPos + lookDir, playerPos, Vector3(0, 1, 0));  //Make a view matrix looking in the move direction
 		Matrix4 modelMat = Matrix::Inverse(temp);  //Make the model matrix in model space
@@ -635,14 +635,14 @@ void TutorialGame::PlayerMovement() {
 		player->GetPhysicsObject()->AddForce(fwdAxis);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		player->GetPhysicsObject()->AddForce(-fwdAxis);
 	}
 
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::LEFT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		player->GetPhysicsObject()->AddForce(-rightAxis);
 	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::RIGHT)) {
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		player->GetPhysicsObject()->AddForce(rightAxis);
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && player->CanJump()) {
