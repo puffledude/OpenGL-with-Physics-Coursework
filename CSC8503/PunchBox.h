@@ -19,7 +19,7 @@ public:
 
 		//Need to figure out how to avoid falling due to gravity
 	}
-	PunchBox();
+	PunchBox() {};
 
 	~PunchBox() = default;
 
@@ -29,7 +29,7 @@ public:
 		return punchDirection;
 	}
 	void SetPunchDirection(const NCL::Vector3& direction) {
-		punchDirection = direction;
+		punchDirection = Vector::Normalise(direction);
 	}
 
 	NCL::Vector3 GetIntialPosition() const {
@@ -44,6 +44,12 @@ public:
 	}
 	void SetPunchForce(float force) {
 		punchForce = force;
+	}
+	float GetPunchDistance() const {
+		return punchDistance;
+	}
+	void SetPunchDistance(float distance) {
+		punchDistance = distance;
 	}
 
 	

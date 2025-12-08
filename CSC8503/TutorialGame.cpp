@@ -246,6 +246,15 @@ void TutorialGame::LoadDynamic() {
 	for (Vector3 pos : floatingBoxPositions) {
 		AddFloatingBoxToWorld(pos, Vector3(5.0f, 2.0f, 5.0f));
 	}
+	direction = Vector3(0.0384597, 0, -0.99926);
+	//std::cout << "Punch box direction vector is: " << Vector::Normalise(direction) << std::endl;
+
+	Vector3 punchBoxPositions[] = {
+		Vector3(108.405, -13.1855, -152.167)
+	};
+	for (Vector3 pos : punchBoxPositions) {
+		AddPunchBoxToWorld(pos, direction, Vector3(10.0f, 10.0f, 10.0f), 8000.0f, 30.0f, 0.5f);
+	}
 
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
 	
@@ -813,12 +822,16 @@ GameObject* TutorialGame::AddPunchBoxToWorld(const NCL::Maths::Vector3& position
 	box->GetTransform()
 		.SetPosition(position)
 		.SetScale(dimensions * 2.0f);
+
 	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, warningMaterial));
 	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
 	box->GetPhysicsObject()->SetIgnoreGravity(true);
+	box->GetPhysicsObject()->SetInverseMass(inverseMass);
+
 	box->SetPunchDirection(direction);
 	box->SetPunchForce(punchForce);
-	//box->SetPunchDistance(punchDistance);
+	box->SetPunchDistance(punchDistance);
 
+	world.AddGameObject(box);
 	return box;
 }
