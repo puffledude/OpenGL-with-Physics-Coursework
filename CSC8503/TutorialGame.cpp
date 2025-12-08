@@ -786,7 +786,8 @@ GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3
 	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, warningMaterial));
 	cube->SetPhysicsObject(new PhysicsObject(cube->GetTransform(), cube->GetBoundingVolume()));
 
-	cube->GetPhysicsObject()->SetInverseMass(0);
+	cube->GetPhysicsObject()->SetInverseMass(1);
+	cube->GetPhysicsObject()->SetIgnoreGravity(true);
 	cube->GetPhysicsObject()->InitCubeInertia();
 
 	world.AddGameObject(cube);
