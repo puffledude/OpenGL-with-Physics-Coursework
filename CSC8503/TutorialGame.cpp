@@ -131,13 +131,12 @@ void TutorialGame::UpdateGame(float dt) {
 		world.ShuffleObjects(false);
 	}
 
-	if (player) {
-		//lockedObject = player;
-		if(!world.GetMainCamera().GetFreeCamMode())PlayerMovement();
-	}
-	else {
-		DebugObjectMovement();
-	}
+	//if (player) {
+	//	//lockedObject = player;
+	//	if(!world.GetMainCamera().GetFreeCamMode())PlayerMovement();
+	//}
+	DebugObjectMovement();
+	
 
 	RayCollision closestCollision;
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
@@ -420,7 +419,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	float meshSize		= 5.0f;
 	float inverseMass	= 0.5f;
 
-	PlayerObject* character = new PlayerObject();
+	PlayerObject* character = new PlayerObject(&world);
 	SphereVolume* volume  = new SphereVolume(0.8f);
 
 	character->SetBoundingVolume(volume);

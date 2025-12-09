@@ -1,13 +1,21 @@
 #pragma once
 #include "GameObject.h"
 #include "Camera.h"
+#include "./PositionConstraint.h"
 
 using namespace NCL::Maths;
+
+namespace NCL {
+	namespace CSC8503 {
+		class GameWorld; // forward declaration to avoid circular include
+	}
+}
 
 class PlayerObject : public NCL::CSC8503::GameObject
 {
 public:
-	PlayerObject() : GameObject("PlayerObject")
+	PlayerObject(NCL::CSC8503::GameWorld* world) : GameObject("PlayerObject"),
+		world(world)
 	{
 	}
 
@@ -35,4 +43,6 @@ protected:
 	float jumpCooldown = 0.0f;
 	bool canJump = true;
 	GameObject* heldItem = nullptr;
+	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
+	NCL::CSC8503::GameWorld* world = nullptr;
 };
