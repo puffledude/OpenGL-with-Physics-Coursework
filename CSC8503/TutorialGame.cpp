@@ -11,6 +11,7 @@
 #include "SwingBall.h"
 #include "FloatingBox.h"
 #include "PunchBox.h"
+#include "DeathBox.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -177,6 +178,10 @@ void TutorialGame::UpdateGame(float dt) {
 			o->Update(dt);
 		}
 	);
+	//Assume out of bounds if not touched floor for too long
+	if (world.GetPlayer()->IsOutOfBounds()) {
+		InitWorld();
+	}
 
 	//Glass broken, reset the level.
 	if (world.GetGlassObject()->GetSmashed()) {
@@ -456,6 +461,7 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 
 	character->GetPhysicsObject()->SetInverseMass(inverseMass);
 	character->GetPhysicsObject()->InitSphereInertia();
+	character->SetCheckPoint(position);
 
 	world.AddGameObject(character);
 	world.SetPlayer(character);

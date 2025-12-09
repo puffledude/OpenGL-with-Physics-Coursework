@@ -56,7 +56,13 @@ void PlayerObject::Update(float dt) {
 		this->GetPhysicsObject()->AddForce(Vector3(0, 1750, 0));
 		this->SetJumpCooldown(0.5f);
 	}
-
+	//Player wil probably be launched if groundCheckTime runs out
+	if (inAir) {
+		groundCheckTime -= dt;
+		if (groundCheckTime < 0.0f) {
+			outOfBounds = true;
+		}
+	}
 
 	if (jumpCooldown > 0.0f) {
 		jumpCooldown -= dt;
@@ -73,10 +79,16 @@ void PlayerObject::Update(float dt) {
 void PlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) {
 	//Allow jumping again when we hit the ground
 	canJump = true;
+	inAir = false;
 	//If we hit an item, pick it up
 	if ((otherObject->GetName() == "Item" || otherObject->GetName() == "Glass") && heldItem == nullptr) {
 		heldItem = otherObject;
 		itemConstraint = new PositionConstraint(this, heldItem, 5.0f);
 		world->AddConstraint(itemConstraint);
 	}
+}
+
+void PlayerObject::OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) {
+	inAir = true;
+	groundCheckTime = 6.0f;
 }

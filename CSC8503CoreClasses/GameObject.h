@@ -105,6 +105,13 @@ namespace NCL::CSC8503 {
 			}
 		}
 
+		bool IsTrigger() const {
+			return isTrigger;
+		}
+		void SetTrigger(bool state) {
+			isTrigger = state;
+		}
+
 		/*void SetTexture(NCL::Rendering::Texture* tex, bool diffuse = true) {
 			if (!renderObject) {
 				return;
@@ -126,6 +133,7 @@ namespace NCL::CSC8503 {
 		NetworkObject*		networkObject;
 
 		bool				isActive;
+		bool				isTrigger;
 		int					worldID;
 		std::string			name;
 
