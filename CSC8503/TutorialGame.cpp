@@ -648,48 +648,6 @@ void TutorialGame::LockedObjectMovement() {
 	}
 }
 
-void TutorialGame::PlayerMovement() {
-	Matrix4 view = world.GetMainCamera().BuildViewMatrix();
-	Matrix4 camWorld = Matrix::Inverse(view);
-	PlayerObject* player = world.GetPlayer();
-	Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
-
-	//forward is more tricky -  camera forward is 'into' the screen...
-	//so we can take a guess, and use the cross of straight up, and
-	//the right axis, to hopefully get a vector that's good enough!
-
-	Vector3 fwdAxis = Vector::Cross(Vector3(0, 1, 0), rightAxis);
-	fwdAxis.y = 0.0f;
-	fwdAxis = Vector::Normalise(fwdAxis);
-	Vector3 lookDir = fwdAxis;
-	fwdAxis *= 10.0f;
-	rightAxis *= 10.0f;
-
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-		Vector3 playerPos = player->GetTransform().GetPosition();
-		Matrix4 temp = Matrix::View(playerPos + lookDir, playerPos, Vector3(0, 1, 0));  //Make a view matrix looking in the move direction
-		Matrix4 modelMat = Matrix::Inverse(temp);  //Make the model matrix in model space
-		Quaternion q(modelMat);   //Extract the rotation
-		player->GetTransform().SetOrientation(q.Normalised());
-		player->GetPhysicsObject()->AddForce(fwdAxis);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
-		player->GetPhysicsObject()->AddForce(-fwdAxis);
-	}
-
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-		player->GetPhysicsObject()->AddForce(-rightAxis);
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-		player->GetPhysicsObject()->AddForce(rightAxis);
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && player->CanJump()) {
-		float inverseMass = player->GetPhysicsObject()->GetInverseMass();
-		player->GetPhysicsObject()->AddForce(Vector3(0, 1750, 0));
-		player->SetJumpCooldown(0.5f);
-	}
-}
 
 void TutorialGame::DebugObjectMovement() {
 	//If we've selected an object, we can manipulate it with some key presses
