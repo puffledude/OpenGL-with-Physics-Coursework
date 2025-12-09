@@ -226,6 +226,29 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(132.34, -0.99, -15.16) * 8.0f, Vector3(7.27, 3.55, 18.68) * 4.0f, 0);
 	AddCubeToWorld(Vector3(115.53, -0.43, -9.81) * 8.0f, Vector3(8.70, 4.67, 4.85) * 4.0f, 0);
 	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
+	LoadFallbox();
+}
+
+void TutorialGame::LoadFallbox() {
+	Vector3 fallBoxPos = Vector3(0.0f, -50.0f, 0.0f);
+	Vector3 fallBoxSize = Vector3(2000.0f, 1.0f, 2000.0f);
+	DeathBox* fallfloor = new DeathBox();
+	AABBVolume* volume = new AABBVolume(fallBoxSize);
+	fallfloor->SetBoundingVolume(volume);
+
+	fallfloor->GetTransform()
+		.SetPosition(fallBoxPos)
+		.SetScale(fallBoxSize);
+
+	//fallfloor->SetRenderObject(new RenderObject(fallfloor->GetTransform(), cubeMesh, nullptr));
+	fallfloor->SetPhysicsObject(new PhysicsObject(fallfloor->GetTransform(), fallfloor->GetBoundingVolume()));
+	fallfloor->SetTrigger(true);
+
+	fallfloor->GetPhysicsObject()->SetInverseMass(0);
+	fallfloor->GetPhysicsObject()->InitCubeInertia();
+
+	world.AddGameObject(fallfloor);
+
 }
 
 void TutorialGame::LoadDynamic() {
