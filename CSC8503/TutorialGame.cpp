@@ -4,7 +4,10 @@
 #include "PhysicsObject.h"
 #include "RenderObject.h"
 #include "TextureLoader.h"
+
 #include "PlayerObject.h"
+#include "GlassObject.h"
+
 #include "SwingBall.h"
 #include "FloatingBox.h"
 #include "PunchBox.h"
@@ -176,6 +179,11 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	);
 
+	//Glass broken, reset the level.
+	if (world.GetGlassObject() == nullptr) {
+		InitWorld();
+	}
+
 	if(testStateGameObject)
 		testStateGameObject->Update(dt);
 }
@@ -269,7 +277,7 @@ void TutorialGame::LoadDynamic() {
 	}
 
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
-	
+	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 100, 0.75);
 }
 
 
@@ -848,4 +856,20 @@ GameObject* TutorialGame::AddPunchBoxToWorld(const NCL::Maths::Vector3& position
 
 	world.AddGameObject(box);
 	return box;
+}
+
+GameObject* TutorialGame::AddGlassToWorld(const Vector3& position, float resistance, float radius, float inverseMass) {
+	GlassObject* glass = new GlassObject(resistance);
+	SphereVolume* volume = new SphereVolume(radius);
+	Vector3 sphereSize = Vector3(radius, radius, radius);
+	glass->SetBoundingVolume(volume);
+	glass->GetTransform()
+		.SetScale(sphereSize)
+		.SetPosition(position);
+
+	glass->SetRenderObject(new RenderObject(glass->GetTransform(), sphereMesh, glassMaterial));
+	glass->SetPhysicsObject(new PhysicsObject(glass->GetTransform(), glass->GetBoundingVolume()));
+	world.AddGameObject(glass);
+	world.SetGlassObject(glass);
+	return glass;
 }

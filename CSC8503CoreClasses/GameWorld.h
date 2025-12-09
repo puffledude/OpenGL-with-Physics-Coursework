@@ -2,6 +2,7 @@
 #include "./Camera.h"
 #include "../CSC8503/PlayerObject.h"
 #include "../CSC8503/PlayerCamera.h"
+#include "../CSC8503/GlassObject.h"
 
 namespace NCL {
 		namespace Maths {
@@ -97,12 +98,22 @@ namespace NCL {
 					playerObject = p;
 			}
 
+			GlassObject* GetGlassObject() const 
+			{
+				return glassObject;
+			}
+			void SetGlassObject(GlassObject* g) 
+			{
+				glassObject = g;
+			}
+
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
 
 			PlayerCamera mainCamera;
 			PlayerObject* playerObject;
+			GlassObject* glassObject;
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
