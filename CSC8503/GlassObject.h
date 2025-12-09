@@ -23,8 +23,16 @@ public:
 		return forceResistance;
 	}
 
+	bool GetSmashed() const {
+		return smashed;
+	}
+
+	void SetSmashed(bool state) {
+		smashed = state;
+	}
+
 protected:
 	float forceResistance;
-
+	bool smashed = false;
 
 };

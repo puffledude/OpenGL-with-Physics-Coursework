@@ -274,19 +274,19 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 	float j = (-(1.0f + cRestitution) * impulseForce) / (totalMass + angularEffect);
 
 	Vector3 fullImpulse = p.normal * j;
-	if (a.GetName() == "GlassObject") {
+	if (a.GetName() == "Glass") {
 		GlassObject* glass = static_cast<GlassObject*>(&a);
 		float force = Vector::Length(fullImpulse);
 		if (force> glass->GetForceResistance()) {
-			gameWorld.RemoveGameObject(&a);
+			glass->SetSmashed(true);
 			return;
 		}
 	}
-	else if (b.GetName() == "GlassObject") {
+	else if (b.GetName() == "Glass") {
 		GlassObject* glass = static_cast<GlassObject*>(&b);
 		float force = Vector::Length(fullImpulse);
 		if (force > glass->GetForceResistance()) {
-			gameWorld.RemoveGameObject(&b);
+			glass->SetSmashed(true);
 			return;
 		}
 	}
