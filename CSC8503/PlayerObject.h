@@ -17,9 +17,8 @@ public:
 
 	void Update(float dt) override;
 
-	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override {
-		canJump = true;
-	}
+	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override;
+
 
 	float GetJumpCooldown() const {
 		return jumpCooldown;

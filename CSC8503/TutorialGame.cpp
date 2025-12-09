@@ -277,7 +277,7 @@ void TutorialGame::LoadDynamic() {
 	}
 
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
-	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 100, 0.75);
+	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 1, 0.75);
 }
 
 
