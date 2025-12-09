@@ -42,7 +42,7 @@ namespace NCL {
 			/// Loads static Level elements (the floor)
 			/// </summary>
 			void LoadLevel();
-
+			void LoadFallbox();
 			/// <summary>
 			/// Loads dynamic Level elements (enemies, bonuses, swinging balls)
 			/// </summary>

@@ -27,6 +27,17 @@ public:
 
 	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override;
 
+	void OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) override;
+
+	Vector3 GetCheckPoint() const {
+		return checkPointPos;
+	}
+	void SetCheckPoint(const Vector3& pos) {
+		checkPointPos = pos;
+	}
+	void ResetPos() {
+		this->GetTransform().SetPosition(checkPointPos);
+	}
 
 	float GetJumpCooldown() const {
 		return jumpCooldown;
@@ -39,8 +50,15 @@ public:
 		return canJump&&(jumpCooldown<=0.0f);
 	}
 
+	bool IsOutOfBounds() const {
+		return outOfBounds;
+	}
 protected:
+	Vector3 checkPointPos = Vector3(0,0,0);
+	float groundCheckTime = 6.0f;
 	float jumpCooldown = 0.0f;
+	bool inAir = false;
+	bool outOfBounds = false;
 	bool canJump = true;
 	GameObject* heldItem = nullptr;
 	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
