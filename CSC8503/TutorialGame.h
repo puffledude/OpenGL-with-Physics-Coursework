@@ -64,6 +64,8 @@ namespace NCL {
 			GameObject* AddPlayerToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddEnemyToWorld(const NCL::Maths::Vector3& position);
 			GameObject* AddBonusToWorld(const NCL::Maths::Vector3& position);
+			GameObject* AddGlassToWorld(const NCL::Maths::Vector3& position, float resistance,float radius=0.5, float inverseMass = 1.0f);
+
 
 			//Added
 			GameObject* AddSwingBallToWorld(const NCL::Maths::Vector3& position, float distance, float radius, float inverseMass, NCL::Maths::Vector3 direction, float pushForce);
