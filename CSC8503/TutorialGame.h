@@ -53,7 +53,6 @@ namespace NCL {
 			void MoveSelectedObject();
 			void DebugObjectMovement();
 			void LockedObjectMovement();
-			void PlayerMovement();
 			float jumpCooldown = 0.0f;
 
 			GameObject* AddFloorToWorld(const NCL::Maths::Vector3& position);
