@@ -246,6 +246,9 @@ void PhysicsSystem::ImpulseResolveCollision(GameObject& a, GameObject& b, Collis
 	if(totalMass == 0.0f) {
 		return;
 	}
+	if (a.IsTrigger() || b.IsTrigger()) {
+		return; //No need to apply forces
+	}
 
 	transformA.SetPosition(transformA.GetPosition() - (p.normal * p.penetration* (physA->GetInverseMass()/ totalMass)));
 	transformB.SetPosition(transformB.GetPosition() + (p.normal * p.penetration * (physB->GetInverseMass() / totalMass)));
