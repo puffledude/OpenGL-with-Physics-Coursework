@@ -324,6 +324,11 @@ void TutorialGame::InitCamera() {
 void TutorialGame::InitWorld() {
 	world.ClearAndErase();
 	physics.Clear();
+	//Reset selection and locked objects to avoid referencing deleted objects
+	selectionObject = nullptr;
+	lockedObject = nullptr;
+	objClosest = nullptr;
+
 	//Need to spawn player at -135.822, 121.127, 340.848
 
 	//CreatedMixedGrid(15, 15, 3.5f, 3.5f);
@@ -338,6 +343,9 @@ void TutorialGame::InitWorld() {
 	LoadDynamic();
 
 	testStateGameObject = AddStateObjectToWorld(Vector3(0, 10, 0));
+
+	// Re-initialize camera player reference and camera defaults after creating new player
+	InitCamera();
 }
 /*
 
