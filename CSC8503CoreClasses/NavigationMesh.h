@@ -20,6 +20,11 @@ namespace NCL {
 				float	area;
 				NavTri* neighbours[3];
 
+				int f = INT16_MAX;
+				int g = INT16_MAX;
+				int h = INT16_MAX;
+				NavTri* parent = nullptr;
+
 				int indices[3];
 
 				NavTri() {
@@ -32,9 +37,20 @@ namespace NCL {
 					indices[1] = -1;
 					indices[2] = -1;
 				}
+				float setF(int updated) {
+					f = updated;
+				}
+				float setG(int updated) {
+					g = updated;
+				}
+				NavTri* setParent(NavTri* updated) {
+					parent = updated;
+				}
+
 			};
 
 			const NavTri* GetTriForPosition(const Vector3& pos) const;
+			NavTri* GetTriForPosition(const Vector3& pos);
 
 			std::vector<NavTri>		allTris;
 			std::vector<Vector3>	allVerts;
