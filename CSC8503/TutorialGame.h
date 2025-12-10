@@ -1,6 +1,8 @@
 #pragma once
 #include "RenderObject.h"
 #include "StateGameObject.h"
+#include "NavigationGrid.h"
+
 namespace NCL {
 	class Controller;
 
@@ -117,6 +119,8 @@ namespace NCL {
 
 			StateGameObject* AddStateObjectToWorld(const NCL::Maths::Vector3& position);
 			StateGameObject* testStateGameObject;
+
+			NavigationGrid* navGrid()
 		};
 	}
 }
