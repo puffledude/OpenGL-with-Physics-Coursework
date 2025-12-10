@@ -28,6 +28,11 @@ NavigationMesh::NavigationMesh(const std::string&filename)
 
 		allVerts.emplace_back(vert);
 	}
+	float navScale = 8.0f; // Scale mesh to the dimensions of this project
+
+	for (Vector3& v : allVerts) {
+		v *= navScale;
+	}
 
 	allTris.resize(numIndices / 3);
 
@@ -66,11 +71,33 @@ NavigationMesh::~NavigationMesh()
 }
 
 bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
-	const NavTri* start	= GetTriForPosition(from);
-	const NavTri* end	= GetTriForPosition(to);
+	NavTri* start	= GetTriForPosition(from);
+	NavTri* end	= GetTriForPosition(to);
 
-	//Need to implement A* here.
+	start->f = 0;
+	start->g = 0;
 
+
+	std::vector<NavTri*> openList;
+	std::vector <NavTri*> closedList;
+	openList.emplace_back(start);
+	while (!openList.empty()) {
+		NavTri* currentTri = openList.back();
+		openList.pop_back();
+		closedList.emplace_back(currentTri);
+		if (currentTri == end) {
+		}
+		else {
+			for (int i = 0; i < 3; i++) {
+				NavTri* neighbour = currentTri->neighbours[i];
+				if (!neighbour) {
+					continue;
+				}
+
+
+			}
+		}
+	}
 	return false;
 }
 
@@ -81,6 +108,24 @@ as it is currently ignoring height. You might find tri/plane raycasting is handy
 
 const NavigationMesh::NavTri* NavigationMesh::GetTriForPosition(const Vector3& pos) const {
 	for (const NavTri& t : allTris) {
+		Vector3 planePoint = t.triPlane.ProjectPointOntoPlane(pos);
+
+		float ta = Maths::AreaofTri3D(allVerts[t.indices[0]], allVerts[t.indices[1]], planePoint);
+		float tb = Maths::AreaofTri3D(allVerts[t.indices[1]], allVerts[t.indices[2]], planePoint);
+		float tc = Maths::AreaofTri3D(allVerts[t.indices[2]], allVerts[t.indices[0]], planePoint);
+
+		float areaSum = ta + tb + tc;
+
+		if (abs(areaSum - t.area)  > 0.001f) { //floating points are annoying! Are we more or less inside the triangle?
+			continue;
+		}
+		return &t;
+	}
+	return nullptr;
+}
+
+NavigationMesh::NavTri* NavigationMesh::GetTriForPosition(const Vector3& pos) {
+	for (NavTri& t : allTris) {
 		Vector3 planePoint = t.triPlane.ProjectPointOntoPlane(pos);
 
 		float ta = Maths::AreaofTri3D(allVerts[t.indices[0]], allVerts[t.indices[1]], planePoint);

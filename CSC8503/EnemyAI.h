@@ -12,7 +12,7 @@ public:
 	//Could use pushdown Automata here?
 	//Patrol until player seen, then chase player.
 	//Once player is no longer visable, return to patrol.
-	EnemyAI(std::vector<NCL::Vector3>* waypoints, NCL::CSC8503::NavigationGrid* areaMesh);
+	EnemyAI(std::vector<NCL::Vector3>* waypoints, NCL::CSC8503::NavigationMesh* areaMesh);
 	void Update(float dt) override;
 
 

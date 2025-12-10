@@ -3,7 +3,7 @@
 #include "StateTransition.h"
 #include "NavigationPath.h"
 
-EnemyAI::EnemyAI(std::vector<NCL::Vector3>* waypoints, NCL::CSC8503::NavigationGrid* areaMesh):patrolWaypoints(waypoints),
+EnemyAI::EnemyAI(std::vector<NCL::Vector3>* waypoints, NCL::CSC8503::NavigationMesh* areaMesh):patrolWaypoints(waypoints),
 navMesh(areaMesh){
 	
 	NCL::CSC8503::State* patrolState = new NCL::CSC8503::State([&](float dt)-> void {
