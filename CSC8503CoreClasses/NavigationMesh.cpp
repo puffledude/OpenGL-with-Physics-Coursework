@@ -73,7 +73,7 @@ NavigationMesh::~NavigationMesh()
 bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
 	NavTri* start	= GetTriForPosition(from);
 	NavTri* end	= GetTriForPosition(to);
-
+	if (!start || !end) return false;
 	start->f = 0;
 	start->g = 0;
 
@@ -86,15 +86,36 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		openList.pop_back();
 		closedList.emplace_back(currentTri);
 		if (currentTri == end) {
+			NavTri* pathTri = end;
+			while (pathTri) {
+				outPath.PushWaypoint(pathTri->centroid); //Add the position of the centre of the tri as a waypoint
+				pathTri = pathTri->parent;  //While there is a parent, keep following it back to the start
+			}
 		}
 		else {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; i++) { //For each of the triangles neighbours
 				NavTri* neighbour = currentTri->neighbours[i];
 				if (!neighbour) {
 					continue;
 				}
 
+				if (std::find(closedList.begin(), closedList.end(), neighbour) != closedList.end()) {
+					continue; //Already processed
+				}
 
+				float tentativeG = neighbour->g + Herustic(currentTri->centroid, neighbour->centroid);
+
+				bool inOpen = (std::find(openList.begin(), openList.end(), neighbour) != openList.end());
+				if (tentativeG < neighbour->g || !inOpen) {
+					neighbour->parent =currentTri;
+					neighbour->g =(tentativeG);
+					neighbour->h = Herustic(neighbour->centroid, end->centroid);
+					neighbour->f = neighbour->g + neighbour->h;
+					if (!inOpen) {
+						openList.emplace_back(neighbour);
+					}
+
+				}
 			}
 		}
 	}
