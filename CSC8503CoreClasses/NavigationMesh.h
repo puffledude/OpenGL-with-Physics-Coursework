@@ -42,6 +42,18 @@ namespace NCL {
 
 			bool AStarAlgorithm(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris);
 
+			bool sharedEdge(const NavTri* a, const NavTri* b, int& outA, int& outB);
+
+
+			void ResetNavTris() {
+				for (NavTri& t : allTris) {
+					t.f = FLT_MAX;
+					t.g = FLT_MAX;
+					t.h = FLT_MAX;
+					t.parent = nullptr;
+				}
+			}
+
 			bool SmoothPath(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris, NavigationPath& path);
 
 			const NavTri* GetTriForPosition(const Vector3& pos) const;
@@ -51,7 +63,6 @@ namespace NCL {
 				Vector3 distance = b - a;
 				return Vector::Length(distance);
 			}
-
 			std::vector<NavTri>		allTris;
 			std::vector<Vector3>	allVerts;
 		};

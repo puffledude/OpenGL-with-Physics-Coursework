@@ -73,6 +73,7 @@ NavigationMesh::~NavigationMesh()
 bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
 	std::vector<NavTri*> outTris;
 	bool pathMade = AStarAlgorithm(from, to, outTris);
+	ResetNavTris();
 	if (pathMade) {
 		return SmoothPath(from, to, outTris, outPath);
 	}
@@ -144,6 +145,17 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 	//With smoothing, make things look more natural
 	//Use the funnel algorithm.
 
+	//Taken from https://jceipek.com/Olin-Coding-Tutorials/pathing.html
+	//The Simple Stupid Funnel Algorithm
+	/*This algorithm is all about smoothing paths by finding corners on the minimum distance path of a navigation mesh without leaving the walkable area.The result is the same as if the A* path were a string being pulled until it was taut.
+
+		The algorithm proceeds as follows :
+
+	Create a list of the portals along the A* path.Make sure that the points of each portal are stored the same way relative to the character.You will need to know if a point is to the left or right of the character.
+		Create a "funnel" with three points : the characters starting location(the apex), the right side of the portal, and the left side of the portal.
+		Alternate updating the left and right sides of the "funnel," making it narrower each time
+		When the sides of the funnel cross, make the point you didn't update the apex of the new funnel, and store it as part of the smoothed path.*/
+
 	if (outTris.size() == 0) {
 		return false;
 	}
@@ -152,10 +164,38 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 		Vector3 left;
 		Vector3 right;
 	};
-
+	//Portal is a pair of edges, if 
 
 
 	return true;
+}
+
+inline bool samePos(const Vector3& a, const Vector3& b)
+{
+	const float EPS = 0.0001f;
+	return fabs(a.x - b.x) < EPS &&
+		fabs(a.y - b.y) < EPS &&
+		fabs(a.z - b.z) < EPS;
+}
+
+
+bool NavigationMesh::sharedEdge(const NavTri* a, const NavTri* b,
+	int& outA, int& outB)
+{
+	outA = outB = -1;
+
+	for (int ai : a->indices)
+	{
+		for (int bi : b->indices)
+		{
+			if (samePos(allVerts[ai], allVerts[bi]))
+			{
+				if (outA == -1) outA = ai;
+				else { outB = ai; return true; }
+			}
+		}
+	}
+	return false; // no shared edge found
 }
 
 /*
