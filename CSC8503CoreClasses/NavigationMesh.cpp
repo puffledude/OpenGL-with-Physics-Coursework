@@ -71,8 +71,17 @@ NavigationMesh::~NavigationMesh()
 }
 
 bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) {
-	NavTri* start	= GetTriForPosition(from);
-	NavTri* end	= GetTriForPosition(to);
+	std::vector<NavTri*> outTris;
+	bool pathMade = AStarAlgorithm(from, to, outTris);
+	if (pathMade) {
+		return SmoothPath(from, to, outTris, outPath);
+	}
+	return false;
+}
+
+bool NavigationMesh::AStarAlgorithm(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris) {
+	NavTri* start = GetTriForPosition(from);
+	NavTri* end = GetTriForPosition(to);
 	if (!start || !end) return false;
 	start->f = 0;
 	start->g = 0;
@@ -82,15 +91,23 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 	std::vector <NavTri*> closedList;
 	openList.emplace_back(start);
 	while (!openList.empty()) {
-		NavTri* currentTri = openList.back();
-		openList.pop_back();
+	/*	NavTri* currentTri = openList.back();
+		openList.pop_back();*/
+		auto bestIt = std::min_element(openList.begin(), openList.end(),
+			[](NavTri* a, NavTri* b) { return a->f < b->f; });
+
+		NavTri* currentTri = *bestIt;
+		openList.erase(bestIt);
 		closedList.emplace_back(currentTri);
 		if (currentTri == end) {
 			NavTri* pathTri = end;
 			while (pathTri) {
-				outPath.PushWaypoint(pathTri->centroid); //Add the position of the centre of the tri as a waypoint
-				pathTri = pathTri->parent;  //While there is a parent, keep following it back to the start
+				outTris.emplace_back(pathTri);
+				pathTri = pathTri->parent;
 			}
+			std::reverse(outTris.begin(), outTris.end());
+			return true;
+
 		}
 		else {
 			for (int i = 0; i < 3; i++) { //For each of the triangles neighbours
@@ -107,8 +124,8 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 
 				bool inOpen = (std::find(openList.begin(), openList.end(), neighbour) != openList.end());
 				if (tentativeG < neighbour->g || !inOpen) {
-					neighbour->parent =currentTri;
-					neighbour->g =(tentativeG);
+					neighbour->parent = currentTri;
+					neighbour->g = (tentativeG);
 					neighbour->h = Herustic(neighbour->centroid, end->centroid);
 					neighbour->f = neighbour->g + neighbour->h;
 					if (!inOpen) {
@@ -120,6 +137,25 @@ bool NavigationMesh::FindPath(const Vector3& from, const Vector3& to, Navigation
 		}
 	}
 	return false;
+}
+
+bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris, NavigationPath& path) {
+	//Without smoothing, will go jagidly from one triangle centre to the next.
+	//With smoothing, make things look more natural
+	//Use the funnel algorithm.
+
+	if (outTris.size() == 0) {
+		return false;
+	}
+
+	struct Portal {
+		Vector3 left;
+		Vector3 right;
+	};
+
+
+
+	return true;
 }
 
 /*
