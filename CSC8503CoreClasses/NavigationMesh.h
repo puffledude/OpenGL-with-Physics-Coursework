@@ -20,9 +20,9 @@ namespace NCL {
 				float	area;
 				NavTri* neighbours[3];
 
-				int f = INT16_MAX;
-				int g = INT16_MAX;
-				int h = INT16_MAX;
+				float f = FLT_MAX;
+				float g = FLT_MAX;
+				float h = FLT_MAX;
 				NavTri* parent = nullptr;
 
 				int indices[3];
@@ -37,20 +37,16 @@ namespace NCL {
 					indices[1] = -1;
 					indices[2] = -1;
 				}
-				float setF(int updated) {
-					f = updated;
-				}
-				float setG(int updated) {
-					g = updated;
-				}
-				NavTri* setParent(NavTri* updated) {
-					parent = updated;
-				}
 
 			};
 
 			const NavTri* GetTriForPosition(const Vector3& pos) const;
 			NavTri* GetTriForPosition(const Vector3& pos);
+
+			float Herustic(const Vector3& a, const Vector3& b) {
+				Vector3 distance = b - a;
+				return Vector::Length(distance);
+			}
 
 			std::vector<NavTri>		allTris;
 			std::vector<Vector3>	allVerts;
