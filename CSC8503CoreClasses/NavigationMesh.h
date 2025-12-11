@@ -40,6 +40,10 @@ namespace NCL {
 
 			};
 
+			bool AStarAlgorithm(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris);
+
+			bool SmoothPath(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris, NavigationPath& path);
+
 			const NavTri* GetTriForPosition(const Vector3& pos) const;
 			NavTri* GetTriForPosition(const Vector3& pos);
 
