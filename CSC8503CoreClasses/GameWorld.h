@@ -3,6 +3,8 @@
 #include "../CSC8503/PlayerObject.h"
 #include "../CSC8503/PlayerCamera.h"
 #include "../CSC8503/GlassObject.h"
+#include "NavigationMesh.h"
+#include <string>
 
 namespace NCL {
 		namespace Maths {
@@ -107,6 +109,11 @@ namespace NCL {
 				glassObject = g;
 			}
 
+			NavigationMesh* GetNavigationMesh() const 
+			{
+				return navigationMesh;
+			}
+
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
@@ -114,6 +121,8 @@ namespace NCL {
 			PlayerCamera mainCamera;
 			PlayerObject* playerObject;
 			GlassObject* glassObject;
+			NavigationMesh* navigationMesh = new NavigationMesh("Level.navmesh");
+
 
 			bool	shuffleConstraints;
 			bool	shuffleObjects;
