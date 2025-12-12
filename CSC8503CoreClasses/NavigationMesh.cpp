@@ -206,61 +206,54 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 
 	Vector3 apex = from;
 	path.PushWaypoint(apex);
-	int leftIndex = 0;
-	int rightIndex = 0;
+	Vector3 left=apex;
+	Vector3 right=apex;
 
-	//Iterate through left portals, then right portals, then cross to find waypoint.
+	//How this bit actually works. Go through each vert on the left hand side until the angle between the apex->left and apex->centre starts increasing.
+	//Thee vert before the increase is now the new left vert.
+	//Then travel down the right hand side the same way.
 
-	//Iterate Left until angle widens
-		//Iterate right until angle widens
-		//Then cross.
-		//Take dot product of the calculated left direction and next tri. (Or maybe use area until it goes negative?)
-		// The dot product should get smaller until the angle widens?
+	for (int i = 0; i < portals.size(); i++) {
+		Portal currentPortal = portals[i];
+		Vector3 leftVert = currentPortal.left;
+		Vector3 rightVert = currentPortal.right;
 
-	for (int i = 0; i < outTris.size(); i++) {
-		NavTri* currentTri = outTris[i];
-		leftIndex = i;
-		rightIndex = i;
-		float leftAngle = 1;
-		float previousAngle = FLT_MAX;
-		while (leftAngle < previousAngle) {
-			Portal nextPortal = portals[leftIndex + 1];
-			NavTri* nextTri = outTris[leftIndex + 1];
-			Vector3 toLeft = nextPortal.left - apex;
-			Vector3 toCentre = nextTri->centroid - apex;
-			leftAngle = Vector::Dot(toLeft, toCentre);
-
-			if (leftAngle< previousAngle) {
-				previousAngle = leftAngle;
-				leftIndex++;
+		//Left side
+		if (isLeftOf(apex, left, leftVert)) {
+			if (!isLeftOf(apex, right, leftVert)) {
+				left = leftVert;
+			}
+			else {
+				apex = right;
+				path.PushWaypoint(apex);
+				left = apex;
+				right = apex;
+				continue;
 			}
 		}
-		float rightAngle = 1;
-		previousAngle = FLT_MAX;
-		while (rightAngle < previousAngle) {
-			Portal nextPortal = portals[rightIndex + 1];
-			NavTri* nextTri = outTris[rightIndex + 1];
-			Vector3 toRight = nextPortal.right - apex;
-			Vector3 toCentre = nextTri->centroid - apex;
-			rightAngle = Vector::Dot(toRight, toCentre);
-			if (rightAngle < previousAngle) {
-				previousAngle = rightAngle;
-				rightIndex++;
+		//Right side
+		if (!isLeftOf(apex, right, rightVert)) {
+			if (isLeftOf(apex, left, rightVert)) {
+				right = rightVert;
 			}
-
+			else {
+				apex = left;
+				path.PushWaypoint(apex);
+				left = apex;
+				right = apex;
+				continue;
+			}
 		}
-		//Should have now the indexs to the correct verts.
-		Vector3 leftVert = portals[leftIndex].left;
-		Vector3 rightVert = portals[rightIndex].right;
-		Vector3 waypoint = Vector::Cross(leftVert, rightVert);
-		apex = waypoint;
-		path.PushWaypoint(waypoint);
-		i=std::min(leftIndex, rightIndex);
-
 	}
 
-
 	return true;
+}
+
+bool NavigationMesh::isLeftOf(const Vector3& a, const Vector3& b, const Vector3& point) {
+	Vector3 ab = b - a;
+	Vector3 ap = point - a;
+	Vector3 cross = Vector::Cross(ab, ap);
+	return cross.y > 0;
 }
 
 /// <summary>

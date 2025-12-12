@@ -44,6 +44,15 @@ namespace NCL {
 
 			bool sharedEdge(const NavTri* a, const NavTri* b, int& outA, int& outB);
 
+			/// <summary>
+			/// Check if line AB is left of the point
+			/// </summary>
+			/// <param name="a"></param>
+			/// <param name="b"></param>
+			/// <param name="point">Point looked at from</param>
+			/// <returns></returns>
+			bool isLeftOf(const Vector3& a, const Vector3& b, const Vector3& point);
+
 
 			void ResetNavTris() {
 				for (NavTri& t : allTris) {
