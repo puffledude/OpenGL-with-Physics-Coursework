@@ -56,6 +56,8 @@ namespace NCL {
 
 			bool SmoothPath(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris, NavigationPath& path);
 
+			bool SharedEdge(const NavTri* a, const NavTri* b, int& outA, int& outB) const;
+
 			const NavTri* GetTriForPosition(const Vector3& pos) const;
 			NavTri* GetTriForPosition(const Vector3& pos);
 
