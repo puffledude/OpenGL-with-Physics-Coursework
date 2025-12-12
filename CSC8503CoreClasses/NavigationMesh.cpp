@@ -164,39 +164,137 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 		Vector3 left;
 		Vector3 right;
 	};
-	//Portal is a pair of edges, if 
+	//Portal is a pair of edges. To make portals, need to find the shared edge edge between each triangle.
+	std::vector<Portal> portals;
+	for (int i = 0; i < outTris.size(); i++) 
+	{
+		NavTri* currentTri = outTris[i];
+		if (i < outTris.size() - 1) {
+			NavTri* nextTri = outTris[i + 1];
+			int indexA=-1, indexB=-1;
+			SharedEdge(currentTri, nextTri, indexA, indexB);
+			if (!SharedEdge) {
+				continue;
+			}
+			//Need to now determine which way round the edge goes.
+			Portal p;
+			Vector3 p0 = allVerts[indexA];
+			Vector3 p1 = allVerts[indexB];
+
+			// Determine left/right
+			Vector3 dir = Vector::Normalise(nextTri->centroid - currentTri->centroid);
+			Vector3 edge = p1 - p0;
+
+			bool p1IsLeft = Vector::Cross(edge, dir).y > 0;
+
+			if (p1IsLeft)
+				portals.emplace_back(p1, p0);   // (left, right)
+			else
+				portals.emplace_back(p0, p1);
+
+
+		}
+		else {
+			portals.emplace_back(to, to);
+		}
+
+	}
+
+
+	//Now have the portals, with left and right vertices. 
+	//Now for main algorithm.
+
+	Vector3 apex = from;
+	path.PushWaypoint(apex);
+	int leftIndex = 0;
+	int rightIndex = 0;
+
+	//Iterate through left portals, then right portals, then cross to find waypoint.
+
+	//Iterate Left until angle widens
+		//Iterate right until angle widens
+		//Then cross.
+		//Take dot product of the calculated left direction and next tri. (Or maybe use area until it goes negative?)
+		// The dot product should get smaller until the angle widens?
+
+	for (int i = 0; i < outTris.size(); i++) {
+		NavTri* currentTri = outTris[i];
+		leftIndex = i;
+		rightIndex = i;
+		float leftAngle = 1;
+		float previousAngle = FLT_MAX;
+		while (leftAngle < previousAngle) {
+			Portal nextPortal = portals[leftIndex + 1];
+			NavTri* nextTri = outTris[leftIndex + 1];
+			Vector3 toLeft = nextPortal.left - apex;
+			Vector3 toCentre = nextTri->centroid - apex;
+			leftAngle = Vector::Dot(toLeft, toCentre);
+
+			if (leftAngle< previousAngle) {
+				previousAngle = leftAngle;
+				leftIndex++;
+			}
+		}
+		float rightAngle = 1;
+		previousAngle = FLT_MAX;
+		while (rightAngle < previousAngle) {
+			Portal nextPortal = portals[rightIndex + 1];
+			NavTri* nextTri = outTris[rightIndex + 1];
+			Vector3 toRight = nextPortal.right - apex;
+			Vector3 toCentre = nextTri->centroid - apex;
+			rightAngle = Vector::Dot(toRight, toCentre);
+			if (rightAngle < previousAngle) {
+				previousAngle = rightAngle;
+				rightIndex++;
+			}
+
+		}
+		//Should have now the indexs to the correct verts.
+		Vector3 leftVert = portals[leftIndex].left;
+		Vector3 rightVert = portals[rightIndex].right;
+		Vector3 waypoint = Vector::Cross(leftVert, rightVert);
+		apex = waypoint;
+		path.PushWaypoint(waypoint);
+		i=std::min(leftIndex, rightIndex);
+
+	}
 
 
 	return true;
 }
 
-inline bool samePos(const Vector3& a, const Vector3& b)
-{
-	const float EPS = 0.0001f;
-	return fabs(a.x - b.x) < EPS &&
-		fabs(a.y - b.y) < EPS &&
-		fabs(a.z - b.z) < EPS;
-}
-
-
-bool NavigationMesh::sharedEdge(const NavTri* a, const NavTri* b,
-	int& outA, int& outB)
-{
-	outA = outB = -1;
-
-	for (int ai : a->indices)
-	{
-		for (int bi : b->indices)
-		{
-			if (samePos(allVerts[ai], allVerts[bi]))
-			{
-				if (outA == -1) outA = ai;
-				else { outB = ai; return true; }
+/// <summary>
+/// Find a shared edge between two triangles
+/// </summary>
+/// <param name="a"></param>
+/// <param name="b"></param>
+/// <param name="outA"></param>
+/// <param name="outB"></param>
+/// <returns></returns>
+bool NavigationMesh::SharedEdge(const NavigationMesh::NavTri* a, const NavigationMesh::NavTri* b, int& outA, int& outB) const {
+	for (int i = 0; i < 3; i++) {
+		int aIndexA = a->indices[i];
+		int aIndexB = a->indices[(i + 1) % 3];
+		if (aIndexA == -1 || aIndexB == -1) {
+			continue;
+		}
+		for (int j = 0; j < 3; j++) {
+			int bIndexA = b->indices[j];
+			int bIndexB = b->indices[(j + 1) % 3];
+			if(bIndexA == -1 || bIndexB == -1) {
+				continue;
+			}
+			if ((aIndexA == bIndexB) && (aIndexB == bIndexA) || (aIndexA == bIndexA) && (aIndexB == bIndexB)) {
+				outA = aIndexA; // actual vertex index in allVerts
+				outB = aIndexB;
+				return true;
 			}
 		}
 	}
-	return false; // no shared edge found
+	return false;
 }
+
+
 
 /*
 If you have triangles on top of triangles in a full 3D environment, you'll need to change this slightly,
