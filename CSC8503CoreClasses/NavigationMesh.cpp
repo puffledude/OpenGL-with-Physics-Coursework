@@ -172,8 +172,7 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 		if (i < outTris.size() - 1) {
 			NavTri* nextTri = outTris[i + 1];
 			int indexA=-1, indexB=-1;
-			SharedEdge(currentTri, nextTri, indexA, indexB);
-			if (!SharedEdge) {
+			if (!SharedEdge(currentTri, nextTri, indexA, indexB)) {
 				continue;
 			}
 			//Need to now determine which way round the edge goes.
