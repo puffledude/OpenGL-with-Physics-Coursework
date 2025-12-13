@@ -16,6 +16,7 @@ set(PROJECT_NAME CSC8503)
 #    "GlassObject.h"
 #    "DeathBox.h"
 #    "EnemyAI.h"
+#    "Goose.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
@@ -36,6 +37,7 @@ source_group("Header Files" FILES ${Header_Files})
 #    "GlassObject.cpp"
 #	 "DeathBox.cpp"
 #	"EnemyAI.cpp"
+#	"Goose.cpp"
 #)
 file(GLOB Source_Files *.cpp)
 
