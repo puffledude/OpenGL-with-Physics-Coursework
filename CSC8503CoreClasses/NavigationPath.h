@@ -16,6 +16,7 @@ namespace NCL {
 				waypoints.emplace_back(wp);
 			}
 			bool	PopWaypoint(Vector3& waypoint) {
+				std::cout << "Is waypoints empty? " << waypoints.empty() << std::endl;
 				if (waypoints.empty()) {
 					return false;
 				}

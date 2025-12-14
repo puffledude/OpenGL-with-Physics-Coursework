@@ -47,7 +47,7 @@ void EnemyAI::Patrol(float dt) {
 	//Need ifs on if close to main waypoint. Another if on subwaypoint and another for building path.
 	Vector2 flatSubPos = Vector2(nextSubPos.x, nextSubPos.z);
 	Vector2 flatPos = Vector2(this->GetTransform().GetPosition().x, this->GetTransform().GetPosition().z);
-	if(Vector::Length(Vector2(patrolWaypoints[targetWaypointIndex].x , patrolWaypoints[targetWaypointIndex].z) - flatPos) < 1.0f){
+	if(Vector::Length(Vector2(patrolWaypoints[targetWaypointIndex].x , patrolWaypoints[targetWaypointIndex].z) - flatPos) < 4.0f){
 		//Reached main waypoint, go to next one.
 		targetWaypointIndex += 1;
 		if (targetWaypointIndex >= patrolWaypoints.size()) {
@@ -59,9 +59,19 @@ void EnemyAI::Patrol(float dt) {
 			currentPath = nullptr;
 		}
 	}
+
+	if (!currentPath) {
+		currentPath = new NCL::CSC8503::NavigationPath();
+		if (navMesh->FindPath(this->GetTransform().GetPosition(), patrolWaypoints[targetWaypointIndex], *currentPath))
+			currentPath->PopWaypoint(nextSubPos);
+	}
+
+
 	if (currentPath) {
 		//Have a path, check if close to next sub waypoint.
-		if (Vector::Length(flatPos - flatPos) < 0.5f) {
+		Vector2 flatSubPos = Vector2(nextSubPos.x, nextSubPos.z);
+
+		if (Vector::Length(flatPos - flatSubPos) < 1.5f) {
 			//Reached sub waypoint, get next one.
 			if (!currentPath->PopWaypoint(nextSubPos)) {
 				//No more waypoints, reached destination.
