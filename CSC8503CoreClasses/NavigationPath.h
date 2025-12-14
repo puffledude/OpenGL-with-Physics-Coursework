@@ -24,6 +24,10 @@ namespace NCL {
 				return true;
 			}
 
+			void Reverse() {
+				std::reverse(waypoints.begin(), waypoints.end());
+			}
+
 		protected:
 
 			std::vector <Vector3> waypoints;
