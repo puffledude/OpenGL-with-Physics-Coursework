@@ -45,8 +45,9 @@ void EnemyAI::Patrol(float dt) {
 		if (currentTargetIndex >= waypoints.size()) { currentTargetIndex = 0; }
 	}*/
 	//Need ifs on if close to main waypoint. Another if on subwaypoint and another for building path.
-
-	if(Vector::Length(patrolWaypoints[targetWaypointIndex] - this->GetTransform().GetPosition()) < 1.0f){
+	Vector2 flatSubPos = Vector2(nextSubPos.x, nextSubPos.z);
+	Vector2 flatPos = Vector2(this->GetTransform().GetPosition().x, this->GetTransform().GetPosition().z);
+	if(Vector::Length(Vector2(patrolWaypoints[targetWaypointIndex].x , patrolWaypoints[targetWaypointIndex].z) - flatPos) < 1.0f){
 		//Reached main waypoint, go to next one.
 		targetWaypointIndex += 1;
 		if (targetWaypointIndex >= patrolWaypoints.size()) {
@@ -60,7 +61,7 @@ void EnemyAI::Patrol(float dt) {
 	}
 	if (currentPath) {
 		//Have a path, check if close to next sub waypoint.
-		if (Vector::Length(nextSubPos - this->GetTransform().GetPosition()) < 0.5f) {
+		if (Vector::Length(flatPos - flatPos) < 0.5f) {
 			//Reached sub waypoint, get next one.
 			if (!currentPath->PopWaypoint(nextSubPos)) {
 				//No more waypoints, reached destination.
