@@ -74,16 +74,16 @@ void EnemyAI::Patrol(float dt) {
 		currentPath = new NCL::CSC8503::NavigationPath();
 		if (navMesh->FindPath(this->GetTransform().GetPosition(), patrolWaypoints[targetWaypointIndex], *currentPath)) currentPath->PopWaypoint(nextSubPos);
 	}
+	std::cout << "Testing: Next Sub Pos: " << nextSubPos.x << "," << nextSubPos.y << "," << nextSubPos.z << "\n";
+	std::cout << "Enemy Pos: " << this->GetTransform().GetPosition().x << "," << this->GetTransform().GetPosition().y << "," << this->GetTransform().GetPosition().z << "\n";
+	std::cout << "Distance between: " << Vector::Length(nextSubPos - this->GetTransform().GetPosition()) << "\n";
 	Vector3 dir = Vector::Normalise(nextSubPos - this->GetTransform().GetPosition());
-	this->GetPhysicsObject()->AddForce(dir * 10.0f);
+	this->GetPhysicsObject()->AddForce(dir * moveSpeed* dt);
+	
 
 
 
 	//Move towards the current target waypoint.
 	//Implement string pulling to move towards the waypoint using the navemesh
 
-}
-
-void EnemyAI::AttackPlayer(float dt) {
-	std::cout << "SHouldn't be seeing this";
 }
