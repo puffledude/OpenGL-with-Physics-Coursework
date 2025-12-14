@@ -15,6 +15,12 @@ public:
 	EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh);
 	void Update(float dt) override;
 
+	float getMoveSpeed() const {
+		return moveSpeed;
+	}
+	void setMoveSpeed(float speed) {
+		moveSpeed = speed;
+	}
 
 protected:
 	NCL::CSC8503::StateMachine stateMachine{};
