@@ -100,6 +100,7 @@ namespace NCL {
 			Rendering::Mesh* catMesh	= nullptr;
 			Rendering::Mesh* kittenMesh = nullptr;
 			Rendering::Mesh* enemyMesh	= nullptr;
+			Rendering::Mesh* gooseMesh  = nullptr;
 			Rendering::Mesh* bonusMesh	= nullptr;
 
 			GameTechMaterial checkerMaterial;
