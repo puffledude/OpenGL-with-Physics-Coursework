@@ -32,7 +32,6 @@ NavigationMesh::NavigationMesh(const std::string&filename)
 
 	for (Vector3& v : allVerts) {
 		v *= navScale;
-		v.y += 6.0f;
 	}
 
 	allTris.resize(numIndices / 3);
@@ -107,7 +106,7 @@ bool NavigationMesh::AStarAlgorithm(const Vector3& from, const Vector3& to, std:
 				outTris.emplace_back(pathTri);
 				pathTri = pathTri->parent;
 			}
-			//std::reverse(outTris.begin(), outTris.end());
+			std::reverse(outTris.begin(), outTris.end());
 			return true;
 
 		}
@@ -122,7 +121,8 @@ bool NavigationMesh::AStarAlgorithm(const Vector3& from, const Vector3& to, std:
 					continue; //Already processed
 				}
 
-				float tentativeG = neighbour->g + Herustic(currentTri->centroid, neighbour->centroid);
+				float tentativeG = currentTri->g +
+					Herustic(currentTri->centroid, neighbour->centroid);
 
 				bool inOpen = (std::find(openList.begin(), openList.end(), neighbour) != openList.end());
 				if (tentativeG < neighbour->g || !inOpen) {
@@ -142,129 +142,110 @@ bool NavigationMesh::AStarAlgorithm(const Vector3& from, const Vector3& to, std:
 }
 
 bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vector<NavTri*>& outTris, NavigationPath& path) {
-	//Without smoothing, will go jagidly from one triangle centre to the next.
-	//With smoothing, make things look more natural
-	//Use the funnel algorithm.
+	if (outTris.empty()) return false;
 
-	//Taken from https://jceipek.com/Olin-Coding-Tutorials/pathing.html
-	//The Simple Stupid Funnel Algorithm
-	/*This algorithm is all about smoothing paths by finding corners on the minimum distance path of a navigation mesh without leaving the walkable area.The result is the same as if the A* path were a string being pulled until it was taut.
-
-		The algorithm proceeds as follows :
-
-	Create a list of the portals along the A* path.Make sure that the points of each portal are stored the same way relative to the character.You will need to know if a point is to the left or right of the character.
-		Create a "funnel" with three points : the characters starting location(the apex), the right side of the portal, and the left side of the portal.
-		Alternate updating the left and right sides of the "funnel," making it narrower each time
-		When the sides of the funnel cross, make the point you didn't update the apex of the new funnel, and store it as part of the smoothed path.*/
-
-	if (outTris.size() == 0) {
-		return false;
-	}
-
-	struct Portal {
-		Vector3 left;
-		Vector3 right;
-	};
-	//Portal is a pair of edges. To make portals, need to find the shared edge edge between each triangle.
+	struct Portal { Vector3 left; Vector3 right; };
 	std::vector<Portal> portals;
-	for (int i = 0; i < outTris.size(); i++) 
-	{
-		NavTri* currentTri = outTris[i];
-		if (i < outTris.size() - 1) {
-			NavTri* nextTri = outTris[i + 1];
-			int indexA=-1, indexB=-1;
-			if (!SharedEdge(currentTri, nextTri, indexA, indexB)) {
-				continue;
-			}
-			//Need to now determine which way round the edge goes.
-			Portal p;
-			Vector3 p0 = allVerts[indexA];
-			Vector3 p1 = allVerts[indexB];
+	portals.reserve(outTris.size());
 
-			// Determine left/right
-			Vector3 dir = Vector::Normalise(nextTri->centroid - currentTri->centroid);
-			Vector3 edge = p1 - p0;
+	// Build portals between triangle i and i+1
+	for (size_t i = 0; i + 1 < outTris.size(); ++i) {
+		NavTri* a = outTris[i];
+		NavTri* b = outTris[i + 1];
 
-			bool p1IsLeft = Vector::Cross(edge, dir).y > 0;
+		int ia = -1, ib = -1;
+		if (!SharedEdge(a, b, ia, ib)) return false;
 
-			if (p1IsLeft)
-				portals.emplace_back(p1, p0);   // (left, right)
-			else
-				portals.emplace_back(p0, p1);
+		Vector3 p0 = allVerts[ia];
+		Vector3 p1 = allVerts[ib];
 
+		// Orient portal consistently using direction between triangle centroids
+		Vector3 dir = Vector::Normalise(b->centroid - a->centroid);
+		Vector3 edge = p1 - p0;
+		bool p1IsLeft = Vector::Cross(edge, dir).y > 0.0f;
 
-		}
-		else {
-			portals.emplace_back(to, to);
-		}
-
+		if (p1IsLeft) portals.push_back({ p1, p0 }); // left, right
+		else          portals.push_back({ p0, p1 });
 	}
+	// final portal is the goal (degenerate)
+	portals.push_back({ to, to });
 
-
-	//Now have the portals, with left and right vertices. 
-	//Now for main algorithm.
-
+	// Funnel initialization
+	const float EPS_PUSH = 0.0005f;
 	Vector3 apex = from;
 	int apexIndex = 0;
 	path.PushWaypoint(apex);
+
 	Vector3 left = portals[0].left;
 	int leftIndex = 0;
 	Vector3 right = portals[0].right;
 	int rightIndex = 0;
 
-	//How this bit actually works. Go through each vert on the left hand side until the angle between the apex->left and apex->centre starts increasing.
-	//Thee vert before the increase is now the new left vert.
-	//Then travel down the right hand side the same way.
-
-	for (int i = 1; i < portals.size(); i++) {
-		Vector3 leftVert = portals[i].left;
+	// Iterate with explicit control to avoid bouncing
+	size_t i = 1;
+	int iter = 0;
+	const int maxIter = (int)portals.size() * 10 + 100; // safety cap
+	while (i < portals.size() && iter++ < maxIter) {
+		Vector3 leftVert  = portals[i].left;
 		Vector3 rightVert = portals[i].right;
 
-		//Left side
+		// Left update
 		if (isLeftOf(apex, left, leftVert)) {
-			if (Vector::Length(apex-left)<0.000005 || !isLeftOf(apex, right, leftVert)) {
+			// left moved inward
+			if (Vector::Length(apex - left) < 1e-6f || !isLeftOf(apex, right, leftVert)) {
 				left = leftVert;
-				leftIndex = i;
-			}
-			else {
+				leftIndex = (int)i;
+			} else {
+				// right crosses left -> push right, make right the new apex
+				if (Vector::Length(right - apex) > EPS_PUSH) {
+					path.PushWaypoint(right);
+				}
 				apex = right;
-				path.PushWaypoint(apex);
-
 				apexIndex = rightIndex;
-				i = apexIndex;
-
+				// reset funnel
 				left = apex;
 				right = apex;
-
 				leftIndex = apexIndex;
 				rightIndex = apexIndex;
-
+				i = (size_t)apexIndex + 1;
 				continue;
 			}
 		}
-		//Right side
+
+		// Right update
 		if (!isLeftOf(apex, right, rightVert)) {
-			if (Vector::Length(apex-right)<0.000005 || isLeftOf(apex, left, rightVert)) {
+			// right moved inward
+			if (Vector::Length(apex - right) < 1e-6f || isLeftOf(apex, left, rightVert)) {
 				right = rightVert;
-				rightIndex = i;
-			}
-			else {
+				rightIndex = (int)i;
+			} else {
+				// left crosses right -> push left, make left the new apex
+				if (Vector::Length(left - apex) > EPS_PUSH) {
+					path.PushWaypoint(left);
+				}
 				apex = left;
-				path.PushWaypoint(apex);
-
 				apexIndex = leftIndex;
-				i = apexIndex;
-
+				// reset funnel
 				left = apex;
 				right = apex;
 				leftIndex = apexIndex;
 				rightIndex = apexIndex;
+				i = (size_t)apexIndex + 1;
 				continue;
 			}
 		}
-	}
-	path.PushWaypoint(to);
 
+		++i;
+	}
+
+	if (iter >= maxIter) {
+		// Safety: bail out to avoid an infinite loop
+		return false;
+	}
+
+	// Add goal and reverse for NavigationPath::PopWaypoint semantics
+	path.PushWaypoint(to);
+	path.Reverse();
 	return true;
 }
 
