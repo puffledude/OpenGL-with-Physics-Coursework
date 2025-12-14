@@ -63,6 +63,7 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 	kittenMesh	= renderer.LoadMesh("Kitten.msh");
 
 	enemyMesh	= renderer.LoadMesh("Keeper.msh");
+	gooseMesh = renderer.LoadMesh("Goose.msh");
 
 	bonusMesh	= renderer.LoadMesh("19463_Kitten_Head_v1.msh");
 	capsuleMesh = renderer.LoadMesh("capsule.msh");
@@ -315,7 +316,7 @@ void TutorialGame::LoadDynamic() {
 		Vector3(1001.47, -5.1497, -10.2707)
 	};
 
-	AddGooseToWorld(gooseWaypoints, Vector3(745.896, -12.9055, 303.09), 1000.0f);
+	AddGooseToWorld(gooseWaypoints, Vector3(822.841, -15.7686, -53.6827), 55.0f);
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
 	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 20, 0.75);
 }
@@ -883,13 +884,14 @@ GameObject* TutorialGame::AddGlassToWorld(const Vector3& position, float resista
 
 GameObject* TutorialGame::AddGooseToWorld(std::vector<Vector3>& patrolPath, Vector3 position, float speed) {
 	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh());
+	goose->setMoveSpeed(speed);
 	SphereVolume* volume = new SphereVolume(3.0f);
 	Vector3 sphereSize = Vector3(3.0f, 3.0f, 3.0f);
 	goose->SetBoundingVolume(volume);
 	goose->GetTransform()
 		.SetScale(sphereSize)
 		.SetPosition(position);
-	goose->SetRenderObject(new RenderObject(goose->GetTransform(), enemyMesh, notexMaterial));
+	goose->SetRenderObject(new RenderObject(goose->GetTransform(), gooseMesh, notexMaterial));
 	goose->SetPhysicsObject(new PhysicsObject(goose->GetTransform(), goose->GetBoundingVolume()));
 	goose->GetPhysicsObject()->SetInverseMass(5);
 	goose->GetPhysicsObject()->InitSphereInertia();
