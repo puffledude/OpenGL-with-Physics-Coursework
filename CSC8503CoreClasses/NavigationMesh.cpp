@@ -32,6 +32,7 @@ NavigationMesh::NavigationMesh(const std::string&filename)
 
 	for (Vector3& v : allVerts) {
 		v *= navScale;
+		v.y += 6.0f;
 	}
 
 	allTris.resize(numIndices / 3);
@@ -106,7 +107,7 @@ bool NavigationMesh::AStarAlgorithm(const Vector3& from, const Vector3& to, std:
 				outTris.emplace_back(pathTri);
 				pathTri = pathTri->parent;
 			}
-			std::reverse(outTris.begin(), outTris.end());
+			//std::reverse(outTris.begin(), outTris.end());
 			return true;
 
 		}
@@ -204,46 +205,65 @@ bool NavigationMesh::SmoothPath(const Vector3& from, const Vector3& to, std::vec
 	//Now for main algorithm.
 
 	Vector3 apex = from;
+	int apexIndex = 0;
 	path.PushWaypoint(apex);
-	Vector3 left=apex;
-	Vector3 right=apex;
+	Vector3 left = portals[0].left;
+	int leftIndex = 0;
+	Vector3 right = portals[0].right;
+	int rightIndex = 0;
 
 	//How this bit actually works. Go through each vert on the left hand side until the angle between the apex->left and apex->centre starts increasing.
 	//Thee vert before the increase is now the new left vert.
 	//Then travel down the right hand side the same way.
 
-	for (int i = 0; i < portals.size(); i++) {
-		Portal currentPortal = portals[i];
-		Vector3 leftVert = currentPortal.left;
-		Vector3 rightVert = currentPortal.right;
+	for (int i = 1; i < portals.size(); i++) {
+		Vector3 leftVert = portals[i].left;
+		Vector3 rightVert = portals[i].right;
 
 		//Left side
 		if (isLeftOf(apex, left, leftVert)) {
-			if (!isLeftOf(apex, right, leftVert)) {
+			if (Vector::Length(apex-left)<0.000005 || !isLeftOf(apex, right, leftVert)) {
 				left = leftVert;
+				leftIndex = i;
 			}
 			else {
 				apex = right;
 				path.PushWaypoint(apex);
+
+				apexIndex = rightIndex;
+				i = apexIndex;
+
 				left = apex;
 				right = apex;
+
+				leftIndex = apexIndex;
+				rightIndex = apexIndex;
+
 				continue;
 			}
 		}
 		//Right side
 		if (!isLeftOf(apex, right, rightVert)) {
-			if (isLeftOf(apex, left, rightVert)) {
+			if (Vector::Length(apex-right)<0.000005 || isLeftOf(apex, left, rightVert)) {
 				right = rightVert;
+				rightIndex = i;
 			}
 			else {
 				apex = left;
 				path.PushWaypoint(apex);
+
+				apexIndex = leftIndex;
+				i = apexIndex;
+
 				left = apex;
 				right = apex;
+				leftIndex = apexIndex;
+				rightIndex = apexIndex;
 				continue;
 			}
 		}
 	}
+	path.PushWaypoint(to);
 
 	return true;
 }
