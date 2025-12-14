@@ -112,6 +112,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::F)) {
 		world.GetMainCamera().SetFreeCam();
+		world.GetPlayer()->SetFreeCam();
 	}
 
 	//Running certain physics updates in a consistent order might cause some
@@ -306,6 +307,15 @@ void TutorialGame::LoadDynamic() {
 		direction = -direction;
 	}
 
+	std::vector<Vector3> gooseWaypoints = {
+		Vector3(694.708, -5.1497, 13.2115),
+		Vector3(707.829, -5.1497, -110.473),
+		Vector3(846.507, -5.1497, -99.0013),
+		Vector3(888.302, -5.1497, -212.551),
+		Vector3(1001.47, -5.1497, -10.2707)
+	};
+
+	AddGooseToWorld(gooseWaypoints, Vector3(745.896, -12.9055, 303.09), 1000.0f);
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
 	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 20, 0.75);
 }
@@ -869,4 +879,20 @@ GameObject* TutorialGame::AddGlassToWorld(const Vector3& position, float resista
 	world.AddGameObject(glass);
 	world.SetGlassObject(glass);
 	return glass;
+}
+
+GameObject* TutorialGame::AddGooseToWorld(std::vector<Vector3>& patrolPath, Vector3 position, float speed) {
+	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh());
+	SphereVolume* volume = new SphereVolume(3.0f);
+	Vector3 sphereSize = Vector3(3.0f, 3.0f, 3.0f);
+	goose->SetBoundingVolume(volume);
+	goose->GetTransform()
+		.SetScale(sphereSize)
+		.SetPosition(position);
+	goose->SetRenderObject(new RenderObject(goose->GetTransform(), enemyMesh, notexMaterial));
+	goose->SetPhysicsObject(new PhysicsObject(goose->GetTransform(), goose->GetBoundingVolume()));
+	goose->GetPhysicsObject()->SetInverseMass(5);
+	goose->GetPhysicsObject()->InitSphereInertia();
+	world.AddGameObject(goose);
+	return goose;
 }

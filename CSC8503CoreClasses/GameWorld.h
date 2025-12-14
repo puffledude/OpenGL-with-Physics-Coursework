@@ -3,6 +3,7 @@
 #include "../CSC8503/PlayerObject.h"
 #include "../CSC8503/PlayerCamera.h"
 #include "../CSC8503/GlassObject.h"
+#include "../CSC8503/Goose.h"
 #include "NavigationMesh.h"
 #include <string>
 
@@ -114,6 +115,15 @@ namespace NCL {
 				return navigationMesh;
 			}
 
+			Goose* GetGoose() const 
+			{
+				return gooseEnemy;
+			}
+			void SetGoose(Goose* g) 
+			{
+				gooseEnemy = g;
+			}
+
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<Constraint*> constraints;
@@ -121,6 +131,7 @@ namespace NCL {
 			PlayerCamera mainCamera;
 			PlayerObject* playerObject;
 			GlassObject* glassObject;
+			Goose* gooseEnemy;
 			NavigationMesh* navigationMesh = new NavigationMesh("Level.navmesh");
 
 
