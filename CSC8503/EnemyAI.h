@@ -17,13 +17,14 @@ public:
 
 
 protected:
-	NCL::CSC8503::StateMachine stateMachine;
+	NCL::CSC8503::StateMachine stateMachine{};
 	void Patrol(float dt);
-	virtual void AttackPlayer(float dt);
+	bool canSeePlayer();
 	std::vector<Vector3> patrolWaypoints;
 	int targetWaypointIndex = 0;
 	Vector3 targetWaypoint;
 	NCL::CSC8503::NavigationPath* currentPath = nullptr;
 	Vector3 nextSubPos;
 	NCL::CSC8503::NavigationMesh* navMesh = nullptr;
+	float moveSpeed = 10.0f;
 };
