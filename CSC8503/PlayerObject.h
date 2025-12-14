@@ -53,11 +53,19 @@ public:
 	bool IsOutOfBounds() const {
 		return outOfBounds;
 	}
+	bool InFreeCam() {
+		return freeCamMode;
+	}
+	void SetFreeCam() {
+		freeCamMode = !freeCamMode;
+	}
+
 protected:
 	Vector3 checkPointPos = Vector3(0,0,0);
 	float groundCheckTime = 6.0f;
 	float jumpCooldown = 0.0f;
 	bool inAir = false;
+	bool freeCamMode = false;
 	bool outOfBounds = false;
 	bool canJump = true;
 	GameObject* heldItem = nullptr;

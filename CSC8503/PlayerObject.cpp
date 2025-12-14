@@ -8,6 +8,10 @@ using namespace NCL;
 using namespace CSC8503;
 
 void PlayerObject::Update(float dt) {
+	if (freeCamMode)
+	{
+		return;
+	}
 
 	Matrix4 view = world->GetMainCamera().BuildViewMatrix();
 	Matrix4 camWorld = Matrix::Inverse(view);
