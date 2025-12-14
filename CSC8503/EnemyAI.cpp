@@ -45,7 +45,6 @@ void EnemyAI::Patrol(float dt) {
 		if (currentTargetIndex >= waypoints.size()) { currentTargetIndex = 0; }
 	}*/
 	//Need ifs on if close to main waypoint. Another if on subwaypoint and another for building path.
-	Vector2 flatSubPos = Vector2(nextSubPos.x, nextSubPos.z);
 	Vector2 flatPos = Vector2(this->GetTransform().GetPosition().x, this->GetTransform().GetPosition().z);
 	if(Vector::Length(Vector2(patrolWaypoints[targetWaypointIndex].x , patrolWaypoints[targetWaypointIndex].z) - flatPos) < 4.0f){
 		//Reached main waypoint, go to next one.
@@ -81,14 +80,21 @@ void EnemyAI::Patrol(float dt) {
 		}
 	}
 
-	if (!currentPath) {
-		currentPath = new NCL::CSC8503::NavigationPath();
-		if (navMesh->FindPath(this->GetTransform().GetPosition(), patrolWaypoints[targetWaypointIndex], *currentPath)) currentPath->PopWaypoint(nextSubPos);
-	}
-	std::cout << "Testing: Next Sub Pos: " << nextSubPos.x << "," << nextSubPos.y << "," << nextSubPos.z << "\n";
+	
+	/*std::cout << "Testing: Next Sub Pos: " << nextSubPos.x << "," << nextSubPos.y << "," << nextSubPos.z << "\n";
 	std::cout << "Enemy Pos: " << this->GetTransform().GetPosition().x << "," << this->GetTransform().GetPosition().y << "," << this->GetTransform().GetPosition().z << "\n";
-	std::cout << "Distance between: " << Vector::Length(nextSubPos - this->GetTransform().GetPosition()) << "\n";
+	std::cout << "Distance between: " << Vector::Length(nextSubPos - this->GetTransform().GetPosition()) << "\n";*/
 	Vector3 dir = Vector::Normalise(nextSubPos - this->GetTransform().GetPosition());
+
+	Vector3 forward = Vector3(-dir.x, 0, -dir.z);
+	Vector3 up = Vector3(0, 1, 0);
+	Vector3 right = Vector::Cross(up, forward);
+	
+	Matrix4 temp = Matrix::View(this->GetTransform().GetPosition() + forward, this->GetTransform().GetPosition(), up);  //Make a view matrix looking in the move direction
+	Matrix4 modelMat = Matrix::Inverse(temp);  //Make the model matrix in model space
+	Quaternion q(modelMat);   //Extract the rotation
+	this->GetTransform().SetOrientation(q.Normalised());
+
 	this->GetPhysicsObject()->AddForce(dir * moveSpeed* dt);
 	
 
