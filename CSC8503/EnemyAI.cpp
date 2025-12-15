@@ -3,34 +3,12 @@
 #include "StateTransition.h"
 #include "NavigationPath.h"
 #include "PhysicsObject.h"
+#include "Ray.h"
+#include "CollisionDetection.h"
 
 
-EnemyAI::EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh):patrolWaypoints(waypoints),
-navMesh(areaMesh){
-	
-	//NCL::CSC8503::State* patrolState = new NCL::CSC8503::State([&](float dt)-> void {
-	//	Patrol(dt);
-	//	});
-	//stateMachine.AddState(patrolState);
-	//NCL::CSC8503::State* attackState = new NCL::CSC8503::State([&](float dt)-> void {
-	//	AttackPlayer(dt);});
-	//stateMachine.AddState(attackState);
-	////Will need to raycast from enemy to player to see if they are in sight.
-	////If true in attack state, else patrol state.
-	//NCL::CSC8503::StateTransition* patrolToAttack = new NCL::CSC8503::StateTransition(patrolState, attackState, [&]()-> bool {
-	//	//Check if player is in sight
-	//	return false; //placeholder
-	//	});
-	//stateMachine.AddTransition(patrolToAttack);
-	//NCL::CSC8503::StateTransition* attackToPatrol = new NCL::CSC8503::StateTransition(attackState, patrolState, [&]()-> bool {
-	//	//Check if player is no longer in sight
-	//	return false; //placeholder
-	//	});
-	//stateMachine.AddTransition(attackToPatrol);
-	//Need two states, one for patrol and one for attack.
-	//The patrol state is active when the enemy is not aware of the player.
-	//In this, move from waypoint to waypoint. Using the navmesh to find the best route.
-}
+EnemyAI::EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh, GameObject* playerObject):patrolWaypoints(waypoints),
+navMesh(areaMesh), playerObject(playerObject){}
 void EnemyAI::Update(float dt) {
 	stateMachine.Update(dt);
 }
@@ -96,11 +74,29 @@ void EnemyAI::Patrol(float dt) {
 	this->GetTransform().SetOrientation(q.Normalised());
 
 	this->GetPhysicsObject()->AddForce(dir * moveSpeed* dt);
-	
 
+}
 
+bool EnemyAI::canSeePlayer() {
+	Vector3 vecDist = playerObject->GetTransform().GetPosition() - this->GetTransform().GetPosition();
+	float dist = Vector::Length(vecDist);
+	if (dist > sightDistance) {
+		return false; //Too far away to see.
+	}
+	Vector3 dirToPlayer = Vector::Normalise(vecDist);
+	Quaternion orientation = this->GetTransform().GetOrientation();
+	Vector3 eforward = orientation * Vector3(0, 0, -1); //Enemy forward vector
+	float cosT = Vector::Dot(eforward, dirToPlayer);
+	if (cosT < cosf(NCL::Maths::DegreesToRadians(fovAngle / 2.0f))) {
+		return false; //Player not within fov.
+	}
 
-	//Move towards the current target waypoint.
-	//Implement string pulling to move towards the waypoint using the navemesh
+	Ray rayToPlayer(this->GetTransform().GetPosition(), dirToPlayer);
+	RayCollision rayColl;
+	if (NCL::CollisionDetection::RayIntersection(rayToPlayer, *playerObject, rayColl)) {
+		return true;
+	}
 
+	//Raycast from enemy to player, if hits player return true, else false.
+	return false;
 }
