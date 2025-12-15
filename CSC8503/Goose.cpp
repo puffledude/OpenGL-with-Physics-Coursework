@@ -41,8 +41,8 @@ void Goose::attackPlayer(float dt) {
 
 void Goose::OnCollisionBegin(GameObject* otherObject) {
 	if (otherObject == playerObject) {
-		Vector3 direction = Vector::Normalise((this->GetTransform().GetOrientation() * Vector3(0, 0, -1) + Vector3(0,20,0)));
-		playerObject->GetPhysicsObject()->AddForce(direction * 500.0f);
+		Vector3 direction = Vector::Normalise((this->GetTransform().GetOrientation() * Vector3(0, 0, -1) + Vector3(0,50,0)));
+		playerObject->GetPhysicsObject()->AddForce(direction * 1000000.0f);
 	}
 }
 
