@@ -883,7 +883,7 @@ GameObject* TutorialGame::AddGlassToWorld(const Vector3& position, float resista
 }
 
 GameObject* TutorialGame::AddGooseToWorld(std::vector<Vector3>& patrolPath, Vector3 position, float speed) {
-	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh());
+	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh(), world.GetPlayer());
 	goose->setMoveSpeed(speed);
 	SphereVolume* volume = new SphereVolume(3.0f);
 	Vector3 sphereSize = Vector3(3.0f, 3.0f, 3.0f);
