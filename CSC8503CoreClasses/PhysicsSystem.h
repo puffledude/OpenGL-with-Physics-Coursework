@@ -18,6 +18,10 @@ namespace NCL {
 			{
 				applyGravity = state;
 			}
+			bool IsUsingGravity() const 
+			{
+				return applyGravity;
+			}
 
 			void SetGlobalDamping(float d) 
 			{

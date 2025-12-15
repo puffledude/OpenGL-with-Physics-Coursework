@@ -181,7 +181,7 @@ void TutorialGame::UpdateGame(float dt) {
 		}
 	);
 	//Assume out of bounds if not touched floor for too long
-	if (world.GetPlayer()->IsOutOfBounds()) {
+	if (world.GetPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
 		InitWorld();
 	}
 
