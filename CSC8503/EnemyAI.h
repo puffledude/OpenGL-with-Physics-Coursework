@@ -27,7 +27,7 @@ protected:
 	GameObject* playerObject = nullptr;
 	void Patrol(float dt);
 	bool canSeePlayer();
-	float fovAngle = 45.0f; //Degrees
+	float fovAngle = 150.0f; //Degrees
 	float sightDistance = 60.0f;
 	std::vector<Vector3> patrolWaypoints;
 	int targetWaypointIndex = 0;
