@@ -61,12 +61,12 @@ void PlayerObject::Update(float dt) {
 		this->SetJumpCooldown(0.5f);
 	}
 	//Player wil probably be launched if groundCheckTime runs out
-	if (inAir) {
+	/*if (inAir) {
 		groundCheckTime -= dt;
 		if (groundCheckTime < 0.0f) {
 			outOfBounds = true;
 		}
-	}
+	}*/
 
 	if (jumpCooldown > 0.0f) {
 		jumpCooldown -= dt;
