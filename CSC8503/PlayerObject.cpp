@@ -58,7 +58,7 @@ void PlayerObject::Update(float dt) {
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && this->CanJump()) {
 		float inverseMass = this->GetPhysicsObject()->GetInverseMass();
 		this->GetPhysicsObject()->AddForce(Vector3(0, 1750, 0));
-		this->SetJumpCooldown(0.5f);
+		this->SetJumpCooldown(0.2f);
 	}
 	//Player wil probably be launched if groundCheckTime runs out
 	/*if (inAir) {
@@ -67,6 +67,22 @@ void PlayerObject::Update(float dt) {
 			outOfBounds = true;
 		}
 	}*/
+
+
+	Vector3 down = Vector3(0, -1, 0);
+	Ray rayDown = Ray(this->GetTransform().GetPosition(), down);
+	RayCollision rayCollision;
+	if (world->Raycast(rayDown, rayCollision, true, this)) {
+		if (rayCollision.rayDistance < this->GetTransform().GetScale().y) {
+			canJump=true;
+			
+			inAir = false;
+		}
+		if (rayCollision.rayDistance > 40.0f) {
+			//Just in case of weird physics glitches
+			outOfBounds = true;
+		}
+	}
 
 	if (jumpCooldown > 0.0f) {
 		jumpCooldown -= dt;
@@ -82,8 +98,8 @@ void PlayerObject::Update(float dt) {
 
 void PlayerObject::OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) {
 	//Allow jumping again when we hit the ground
-	canJump = true;
-	inAir = false;
+	//canJump = true;
+	//inAir = false;
 	//If we hit an item, pick it up
 	if ((otherObject->GetName() == "Item" || otherObject->GetName() == "Glass") && heldItem == nullptr) {
 		heldItem = otherObject;
