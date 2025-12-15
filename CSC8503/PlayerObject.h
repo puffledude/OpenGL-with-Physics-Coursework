@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "./PositionConstraint.h"
+#include "Ray.h"
 
 using namespace NCL::Maths;
 
@@ -67,7 +68,7 @@ protected:
 	bool inAir = false;
 	bool freeCamMode = false;
 	bool outOfBounds = false;
-	bool canJump = true;
+	bool canJump = false;
 	GameObject* heldItem = nullptr;
 	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
 	NCL::CSC8503::GameWorld* world = nullptr;
