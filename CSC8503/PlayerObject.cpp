@@ -80,7 +80,8 @@ void PlayerObject::Update(float dt) {
 		}
 		if (rayCollision.rayDistance > 40.0f) {
 			//Just in case of weird physics glitches
-			outOfBounds = true;
+			groundCheckTime -= dt;
+			//outOfBounds = true;
 		}
 	}
 
