@@ -12,6 +12,7 @@ Goose::Goose(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* 
 	stateMachine.AddState(patrolState);
 	attackState = new NCL::CSC8503::State([&](float dt)-> void {
 		attackPlayer(dt);
+		std::cout<< "Honk!Honk!I'm attacking the player!" << std::endl;
 		});
 	stateMachine.AddState(attackState);
 	patrolToAttack = new NCL::CSC8503::StateTransition(patrolState, attackState, [&]()-> bool {
@@ -23,7 +24,7 @@ Goose::Goose(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* 
 		//Check if player is no longer in sight
 		return !canSeePlayer();
 		});
-	//stateMachine.AddTransition(attackToPatrol);
+	stateMachine.AddTransition(attackToPatrol);
 }
 
 void Goose::Update(float dt) {
