@@ -12,7 +12,7 @@ public:
 	//Could use pushdown Automata here?
 	//Patrol until player seen, then chase player.
 	//Once player is no longer visable, return to patrol.
-	EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh);
+	EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh, GameObject* playerObject);
 	void Update(float dt) override;
 
 	float getMoveSpeed() const {
@@ -24,8 +24,11 @@ public:
 
 protected:
 	NCL::CSC8503::StateMachine stateMachine{};
+	GameObject* playerObject = nullptr;
 	void Patrol(float dt);
 	bool canSeePlayer();
+	float fovAngle = 45.0f; //Degrees
+	float sightDistance = 60.0f;
 	std::vector<Vector3> patrolWaypoints;
 	int targetWaypointIndex = 0;
 	Vector3 targetWaypoint;
