@@ -2,6 +2,7 @@
 #include "State.h"
 #include "PhysicsObject.h"
 
+
 Goose::Goose(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh, GameObject* playerObject)
 	: EnemyAI(waypoints, areaMesh, playerObject) {
 	
@@ -35,6 +36,13 @@ void Goose::attackPlayer(float dt) {
 	{
 		Vector3 direction = Vector::Normalise(playerObject->GetTransform().GetPosition() - this->GetTransform().GetPosition());
 		this->GetPhysicsObject()->AddForce(direction * moveSpeed * dt);
+	}
+}
+
+void Goose::OnCollisionBegin(GameObject* otherObject) {
+	if (otherObject == playerObject) {
+		Vector3 direction = Vector::Normalise((this->GetTransform().GetOrientation() * Vector3(0, 0, -1) + Vector3(0,20,0)));
+		playerObject->GetPhysicsObject()->AddForce(direction * 500.0f);
 	}
 }
 
