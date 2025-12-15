@@ -35,4 +35,5 @@ void Goose::attackPlayer(float dt) {
 		Vector3 direction = Vector::Normalise(playerObject->GetTransform().GetPosition() - this->GetTransform().GetPosition());
 		this->GetPhysicsObject()->AddForce(direction * moveSpeed * dt);
 	}
+}
 
