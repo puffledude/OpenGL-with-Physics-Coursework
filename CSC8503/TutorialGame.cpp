@@ -316,8 +316,9 @@ void TutorialGame::LoadDynamic() {
 		Vector3(1001.47, -5.1497, -10.2707)
 	};
 
-	AddGooseToWorld(gooseWaypoints, Vector3(822.841, -15.7686, -53.6827), 55.0f);
 	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
+	AddGooseToWorld(gooseWaypoints, Vector3(822.841, -15.7686, -53.6827), 55.0f);
+
 	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 20, 0.75);
 }
 
