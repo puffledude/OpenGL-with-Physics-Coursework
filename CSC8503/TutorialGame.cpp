@@ -170,6 +170,7 @@ void TutorialGame::UpdateGame(float dt) {
 	else {
 		Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
 	}
+	Debug::Print("Press P to pause", Vector2(5, 5));
 
 	SelectObject();
 	MoveSelectedObject();	
