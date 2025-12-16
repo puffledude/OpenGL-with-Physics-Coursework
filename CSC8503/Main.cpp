@@ -310,8 +310,8 @@ int main() {
 	GameTechRenderer* renderer = new GameTechRenderer(*world);
 #endif
 
-	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
-	PushdownMachine machine(new GameMainMenu(world, physics, renderer, g, initInfo.width, initInfo.height));
+	//TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
+	PushdownMachine machine(new GameMainMenu(world, physics, renderer, initInfo.width, initInfo.height));
 	TestBehaviourTree();
 	//TestPathfinding();
 	//TestPushDownAutomata(w);
