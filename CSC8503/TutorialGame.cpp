@@ -97,7 +97,6 @@ void TutorialGame::UpdateGame(float dt) {
 	if (!inSelectionMode) {
 		world.GetMainCamera().UpdateCamera(dt);
 	}
-	PlayerObject* player = world.GetPlayer();
 	if (Window::GetKeyboard()->KeyPressed(KeyCodes::F1)) {
 		InitWorld(); //We can reset the simulation at any time with F1
 		selectionObject = nullptr;
@@ -484,7 +483,8 @@ GameObject* TutorialGame::AddPlayerToWorld(const Vector3& position) {
 	character->SetCheckPoint(position);
 
 	world.AddGameObject(character);
-	world.SetPlayer(character);
+	world.AddPlayer(character);
+	character->createNetworkObject();
 
 	return character;
 }
@@ -801,9 +801,12 @@ StateGameObject* TutorialGame::AddStateObjectToWorld(const Vector3& position) {
 GameObject* TutorialGame::AddSwingBallToWorld(const Vector3& position, float distance, float radius, float inverseMass, Vector3 direction, float pushForce) 
 {
 	GameObject* anchor = AddCubeToWorld(position, Vector3(2, 2, 2), 0.0f); //Anchor cube
+	anchor->createNetworkObject();
+
 
 	GameObject* ball = AddSphereToWorld(Vector3(position.x, position.y - distance, position.z), radius, inverseMass);
 	ball->GetRenderObject()->SetMaterial(warningMaterial);
+	ball->createNetworkObject();
 
 	SwingBall* construct = new SwingBall(ball, anchor, distance, direction, pushForce);
 	world.AddGameObject(construct);
@@ -828,9 +831,8 @@ GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3
 	cube->GetPhysicsObject()->SetInverseMass(1);
 	cube->GetPhysicsObject()->SetIgnoreGravity(true);
 	cube->GetPhysicsObject()->InitCubeInertia();
-
 	world.AddGameObject(cube);
-
+	cube->createNetworkObject();
 	return cube;
 
 	//Could just steal the code from the add cube.
@@ -862,8 +864,8 @@ GameObject* TutorialGame::AddPunchBoxToWorld(const NCL::Maths::Vector3& position
 	box->SetPunchForce(punchForce);
 	box->SetPunchDistance(punchDistance);
 	box->SetIntialPosition(position);
-
 	world.AddGameObject(box);
+	box->createNetworkObject();
 	return box;
 }
 
@@ -879,12 +881,14 @@ GameObject* TutorialGame::AddGlassToWorld(const Vector3& position, float resista
 	glass->SetRenderObject(new RenderObject(glass->GetTransform(), sphereMesh, glassMaterial));
 	glass->SetPhysicsObject(new PhysicsObject(glass->GetTransform(), glass->GetBoundingVolume()));
 	world.AddGameObject(glass);
+	glass->createNetworkObject();
 	world.SetGlassObject(glass);
 	return glass;
 }
 
 GameObject* TutorialGame::AddGooseToWorld(std::vector<Vector3>& patrolPath, Vector3 position, float speed) {
-	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh(), world.GetPlayer());
+
+	Goose* goose = new Goose(patrolPath, world.GetNavigationMesh(), world.GetAllPlayers());
 	goose->setMoveSpeed(speed);
 	SphereVolume* volume = new SphereVolume(3.0f);
 	Vector3 sphereSize = Vector3(3.0f, 3.0f, 3.0f);
@@ -897,5 +901,7 @@ GameObject* TutorialGame::AddGooseToWorld(std::vector<Vector3>& patrolPath, Vect
 	goose->GetPhysicsObject()->SetInverseMass(5);
 	goose->GetPhysicsObject()->InitSphereInertia();
 	world.AddGameObject(goose);
+	goose->createNetworkObject();
+
 	return goose;
 }
