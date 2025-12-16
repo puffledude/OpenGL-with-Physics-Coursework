@@ -7,9 +7,10 @@
 //using std::vector;
 
 namespace NCL::CSC8503 {
-	class NetworkObject;
+	//class NetworkObject;
 	class RenderObject;
 	class PhysicsObject;
+	class NetworkObject;
 
 	class GameObject	{
 	public:
@@ -112,25 +113,15 @@ namespace NCL::CSC8503 {
 			isTrigger = state;
 		}
 
-		/*void SetTexture(NCL::Rendering::Texture* tex, bool diffuse = true) {
-			if (!renderObject) {
-				return;
-			}
-			if (diffuse) {
-				renderObject->SetTexture(tex, true);
-			}
-			else {
-				renderObject->SetTexture(tex, false);
-			}*/
-		//}
+		void createNetworkObject();
 
 	protected:
 		Transform			transform;
 
 		CollisionVolume*	boundingVolume;
-		PhysicsObject*		physicsObject;
-		RenderObject*		renderObject;
-		NetworkObject*		networkObject;
+		PhysicsObject* 		physicsObject;
+		RenderObject* 		renderObject;
+		NetworkObject* 		networkObject;
 
 		bool				isActive;
 		bool				isTrigger;
