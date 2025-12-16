@@ -22,8 +22,8 @@ void PlayerObject::Update(float dt) {
 	fwdAxis.y = 0.0f;
 	fwdAxis = Vector::Normalise(fwdAxis);
 	Vector3 lookDir = fwdAxis;
-	fwdAxis *= 10.0f;
-	rightAxis *= 10.0f;
+	fwdAxis *= 15.0f;
+	rightAxis *= 15.0f;
 	bool moved = false;
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		Vector3 playerPos = this->GetTransform().GetPosition();
@@ -31,6 +31,9 @@ void PlayerObject::Update(float dt) {
 		Matrix4 modelMat = Matrix::Inverse(temp);  //Make the model matrix in model space
 		Quaternion q(modelMat);   //Extract the rotation
 		this->GetTransform().SetOrientation(q.Normalised());
+		if (Vector::Length(this->GetPhysicsObject()->GetLinearVelocity()) == 0) {
+			this->GetPhysicsObject()->ApplyLinearImpulse(fwdAxis);
+		}
 		this->GetPhysicsObject()->AddForce(fwdAxis);
 		moved = true;
 	}
@@ -55,6 +58,7 @@ void PlayerObject::Update(float dt) {
 		vel.z *= 0.9f;
 		this->GetPhysicsObject()->SetLinearVelocity(vel);
 	}
+
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::E)) {
 				//Drop held item
 		if (heldItem) {
@@ -68,7 +72,8 @@ void PlayerObject::Update(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && this->CanJump()) {
 		float inverseMass = this->GetPhysicsObject()->GetInverseMass();
-		this->GetPhysicsObject()->AddForce(Vector3(0, 1750, 0));
+		this->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 20, 0));
+		//this->GetPhysicsObject()->AddForce(Vector3(0, 3000, 0));
 		this->SetJumpCooldown(0.2f);
 	}
 	//Player wil probably be launched if groundCheckTime runs out
@@ -84,7 +89,7 @@ void PlayerObject::Update(float dt) {
 	Ray rayDown = Ray(this->GetTransform().GetPosition(), down);
 	RayCollision rayCollision;
 	if (world->Raycast(rayDown, rayCollision, true, this)) {
-		if (rayCollision.rayDistance < this->GetTransform().GetScale().y) {
+		if (rayCollision.rayDistance < 1) {
 			canJump=true;
 			
 			inAir = false;
