@@ -48,7 +48,7 @@ public:
 		canJump = false;
 	}
 	bool CanJump() const {
-		return canJump&&(jumpCooldown<=0.0f);
+		return !inAir&&(jumpCooldown<=0.0f);
 	}
 
 	bool IsOutOfBounds() const {
