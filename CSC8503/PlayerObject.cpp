@@ -72,9 +72,9 @@ void PlayerObject::Update(float dt) {
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE) && this->CanJump()) {
 		float inverseMass = this->GetPhysicsObject()->GetInverseMass();
-		this->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 20, 0));
+		this->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 25, 0));
 		//this->GetPhysicsObject()->AddForce(Vector3(0, 3000, 0));
-		this->SetJumpCooldown(0.2f);
+		this->SetJumpCooldown(0.1f);
 	}
 	//Player wil probably be launched if groundCheckTime runs out
 	/*if (inAir) {
@@ -93,6 +93,9 @@ void PlayerObject::Update(float dt) {
 			canJump=true;
 			
 			inAir = false;
+		}
+		else {
+			inAir = true;
 		}
 		if (rayCollision.rayDistance > 40.0f) {
 			//Just in case of weird physics glitches
