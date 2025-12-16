@@ -17,6 +17,9 @@ set(PROJECT_NAME CSC8503)
 #    "DeathBox.h"
 #    "EnemyAI.h"
 #    "Goose.h"
+#    "GameMainMenu.h"
+#    "GamePause.h"
+#    "InGame.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
@@ -38,6 +41,7 @@ source_group("Header Files" FILES ${Header_Files})
 #	 "DeathBox.cpp"
 #	"EnemyAI.cpp"
 #	"Goose.cpp"
+#	"GameMainMenu.cpp"
 #)
 file(GLOB Source_Files *.cpp)
 
