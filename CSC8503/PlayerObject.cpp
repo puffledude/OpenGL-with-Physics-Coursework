@@ -24,7 +24,7 @@ void PlayerObject::Update(float dt) {
 	Vector3 lookDir = fwdAxis;
 	fwdAxis *= 10.0f;
 	rightAxis *= 10.0f;
-
+	bool moved = false;
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
 		Vector3 playerPos = this->GetTransform().GetPosition();
 		Matrix4 temp = Matrix::View(playerPos + lookDir, playerPos, Vector3(0, 1, 0));  //Make a view matrix looking in the move direction
@@ -32,17 +32,28 @@ void PlayerObject::Update(float dt) {
 		Quaternion q(modelMat);   //Extract the rotation
 		this->GetTransform().SetOrientation(q.Normalised());
 		this->GetPhysicsObject()->AddForce(fwdAxis);
+		moved = true;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
 		this->GetPhysicsObject()->AddForce(-fwdAxis);
+		moved = true;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
 		this->GetPhysicsObject()->AddForce(-rightAxis);
+		moved = true;
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
 		this->GetPhysicsObject()->AddForce(rightAxis);
+		moved = true;
+	}
+	if (!moved && !inAir) {
+				//Dampen player movement when no keys are pressed
+		Vector3 vel = this->GetPhysicsObject()->GetLinearVelocity();
+		vel.x *= 0.9f;
+		vel.z *= 0.9f;
+		this->GetPhysicsObject()->SetLinearVelocity(vel);
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::E)) {
 				//Drop held item
