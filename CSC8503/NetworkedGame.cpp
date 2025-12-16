@@ -158,7 +158,33 @@ void NetworkedGame::StartLevel() {
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
-	
+	if (type == Player_Connected) {
+		//this->AddPlayerToWorld();
+	}
+	if (type == Player_Disconnected) {
+		//remove player from world!
+	}
+	if (type == Received_State) {
+		ClientPacket* p = (ClientPacket*)payload;
+		stateIDs[source] = p->lastID;
+		UpdateMinimumState();
+	}
+	if (type == Delta_State) {
+
+	}
+	if (type == Full_State) {
+	}
+	if (type == Shutdown) {
+		if (thisClient) {
+			delete thisClient;
+			thisClient = nullptr;
+		}
+		if (thisServer) {
+			delete thisServer;
+			thisServer = nullptr;
+		}
+	}
+
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
