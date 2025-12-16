@@ -1,4 +1,5 @@
 #include "EnemyAI.h"
+#include "PlayerObject.h"
 #include "State.h"
 #include "StateTransition.h"
 #include "NavigationPath.h"
@@ -7,8 +8,8 @@
 #include "CollisionDetection.h"
 
 
-EnemyAI::EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh, GameObject* playerObject):patrolWaypoints(waypoints),
-navMesh(areaMesh), playerObject(playerObject){}
+EnemyAI::EnemyAI(std::vector<NCL::Vector3> waypoints, NCL::CSC8503::NavigationMesh* areaMesh, std::vector<PlayerObject*>& playerObjects):patrolWaypoints(waypoints),
+navMesh(areaMesh), players(playerObjects){}
 void EnemyAI::Update(float dt) {
 	stateMachine.Update(dt);
 }
@@ -77,26 +78,28 @@ void EnemyAI::Patrol(float dt) {
 
 }
 
-bool EnemyAI::canSeePlayer() {
-	Vector3 vecDist = playerObject->GetTransform().GetPosition() - this->GetTransform().GetPosition();
-	float dist = Vector::Length(vecDist);
-	if (dist > sightDistance) {
-		return false; //Too far away to see.
-	}
-	Vector3 dirToPlayer = Vector::Normalise(vecDist);
-	Quaternion orientation = this->GetTransform().GetOrientation();
-	Vector3 eforward = orientation * Vector3(0, 0, -1); //Enemy forward vector
-	float cosT = Vector::Dot(eforward, dirToPlayer);
-	if (cosT < cosf(NCL::Maths::DegreesToRadians(fovAngle / 2.0f))) {
-		return false; //Player not within fov.
-	}
+int EnemyAI::canSeePlayer() {
+	for (int i = 0; i < players.size(); i++) {
+		PlayerObject* playerObject = players[i];
+		Vector3 vecDist = playerObject->GetTransform().GetPosition() - this->GetTransform().GetPosition();
+		float dist = Vector::Length(vecDist);
+		if (dist > sightDistance) {
+			continue;
+		}
+		Vector3 dirToPlayer = Vector::Normalise(vecDist);
+		Quaternion orientation = this->GetTransform().GetOrientation();
+		NCL::Vector3 eforward = orientation * Vector3(0, 0, -1); //Enemy forward vector
+		float cosT = Vector::Dot(eforward, dirToPlayer);
+		if (cosT < cosf(NCL::Maths::DegreesToRadians(fovAngle / 2.0f))) {
+			continue; //Player not within fov.
+		}
 
-	Ray rayToPlayer(this->GetTransform().GetPosition(), dirToPlayer);
-	RayCollision rayColl;
-	if (NCL::CollisionDetection::RayIntersection(rayToPlayer, *playerObject, rayColl)) {
-		return true;
+		Ray rayToPlayer(this->GetTransform().GetPosition(), dirToPlayer);
+		RayCollision rayColl;
+		if (NCL::CollisionDetection::RayIntersection(rayToPlayer, *playerObject, rayColl)) {
+			return i;
+		}
 	}
-
-	//Raycast from enemy to player, if hits player return true, else false.
-	return false;
+	//Raycast from enemy to player, if hits player return index, else -1.
+	return -1;
 }
