@@ -20,6 +20,8 @@ set(PROJECT_NAME CSC8503)
 #    "GameMainMenu.h"
 #    "GamePause.h"
 #    "InGame.h"
+#    "InGameClient.h"
+#    "InGameServer.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
