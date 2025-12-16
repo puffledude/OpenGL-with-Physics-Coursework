@@ -12,6 +12,9 @@ public:
 		NCL::CSC8503::NetworkedGame* networkedgame, float width, float height) :
 		gameWorld(world), physics(physics), renderer(renderer), networkedGame(networkedgame), width(width), height(height) {
 	}
+	~InGameServer() {
+		//networkedGame->
+	}
 
 	PushdownResult OnUpdate(float dt, PushdownState** pushFunc) override {
 		if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::P)) {
