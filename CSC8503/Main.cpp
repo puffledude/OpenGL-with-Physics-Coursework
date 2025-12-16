@@ -19,6 +19,8 @@
 
 #include "PushdownMachine.h"
 #include "introScreen.h"
+#include "GameMainMenu.h"
+
 
 #include "PushdownState.h"
 
@@ -290,7 +292,6 @@ int main() {
 	initInfo.width		= 1280;
 	initInfo.height		= 720;
 	initInfo.windowTitle = "CSC8503 Game technology!";
-
 	Window*w = Window::CreateGameWindow(initInfo);
 
 	if (!w->HasInitialised()) {
@@ -310,6 +311,7 @@ int main() {
 #endif
 
 	TutorialGame* g = new TutorialGame(*world, *renderer, *physics);
+	PushdownMachine machine(new GameMainMenu(world, physics, renderer, g, initInfo.width, initInfo.height));
 	TestBehaviourTree();
 	//TestPathfinding();
 	//TestPushDownAutomata(w);
@@ -333,12 +335,14 @@ int main() {
 		}
 
 		w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
-
-		g->UpdateGame(dt);
+		machine.Update(dt);
+	/*	g->UpdateGame(dt);
 		DisplayPathfinding();
 		world->UpdateWorld(dt);
 		physics->Update(dt);
-		renderer->Update(dt);	
+		*/
+
+		renderer->Update(dt);
 		renderer->Render();
 		
 		
