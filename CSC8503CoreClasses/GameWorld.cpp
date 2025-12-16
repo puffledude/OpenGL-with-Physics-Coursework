@@ -31,7 +31,7 @@ void GameWorld::Clear() {
 	worldStateCounter	= 0;
 
 	// Ensure any external references to objects are nulled to avoid dangling pointers
-	playerObject = nullptr;
+	//playerObject = nullptr;
 	glassObject = nullptr;
 	// Also clear the camera's player reference
 	mainCamera.SetPlayer(nullptr);

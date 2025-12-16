@@ -91,14 +91,28 @@ namespace NCL {
 				return sunColour;
 			}
 
-			PlayerObject* GetPlayer() const 
+			PlayerObject* GetPlayer(int i=0) const 
 				{
-					return playerObject;
+					return playerObjects[i];
 				}
 
-			void SetPlayer(PlayerObject* p) 
+			void AddPlayer(PlayerObject* p) 
 				{
-					playerObject = p;
+					playerObjects.push_back(p);
+			}
+
+			// Return reference to internal player list so callers can avoid copies
+			std::vector<PlayerObject*>& GetAllPlayers() {
+				return playerObjects;
+			}
+
+			/*const std::vector<PlayerObject*>& GetAllPlayers() const {
+				return playerObjects;
+			}*/
+
+			void SetPlayer(PlayerObject* p, int i =0) 
+				{
+					playerObjects[i];
 			}
 
 			GlassObject* GetGlassObject() const 
@@ -126,10 +140,11 @@ namespace NCL {
 
 		protected:
 			std::vector<GameObject*> gameObjects;
+			std::vector<PlayerObject*>playerObjects;
 			std::vector<Constraint*> constraints;
 
 			PlayerCamera mainCamera;
-			PlayerObject* playerObject;
+			//PlayerObject* playerObject;
 			GlassObject* glassObject;
 			Goose* gooseEnemy;
 			NavigationMesh* navigationMesh = new NavigationMesh("Level.navmesh");
