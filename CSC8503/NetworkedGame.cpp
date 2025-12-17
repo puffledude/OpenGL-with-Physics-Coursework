@@ -55,6 +55,9 @@ void NetworkedGame::StartAsServer() {
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
+	thisServer->RegisterPacketHandler(Player_Connected, this);
+	thisServer->RegisterPacketHandler(Player_Disconnected, this);
+
 
 	StartLevel();
 }
