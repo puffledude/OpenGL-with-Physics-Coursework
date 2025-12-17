@@ -53,6 +53,9 @@ namespace NCL::CSC8503 {
 		int GetNetworkID() const {
 			return networkID;
 		}
+		int GetLatestStateID() const {
+			return lastFullState.stateID;
+		}
 	protected:
 
 		NetworkState& GetLatestNetworkState();
