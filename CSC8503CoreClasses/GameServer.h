@@ -17,7 +17,10 @@ namespace NCL {
 			bool SendGlobalPacket(int msgID);
 			bool SendGlobalPacket(GamePacket& packet);
 
+			bool SendTargetedPacket(GamePacket& packet, int targetID);
+
 			virtual void UpdateServer();
+			bool UpdateServer(GamePacket& receivedPacket, int& source);
 
 		protected:
 			int			port;

@@ -50,6 +50,23 @@ bool GameServer::SendGlobalPacket(GamePacket& packet) {
 
 }
 
+bool GameServer::SendTargetedPacket(GamePacket& packet, int targetID) {
+	ENetPacket* dataPacket = enet_packet_create(&packet, packet.GetTotalSize(), 0);
+	ENetPeer* targetPeer = nullptr;
+	for (int i = 0; i < netHandle->peerCount; ++i) {
+		ENetPeer* p = &netHandle->peers[i];
+		if (p->incomingPeerID == targetID) {
+			targetPeer = p;
+			break;
+		}
+	}
+	if (!targetPeer) {
+		return false;
+	}
+	enet_peer_send(targetPeer, 0, dataPacket);
+	return true;
+}
+
 void GameServer::UpdateServer() {
 	if (!netHandle) {
 		return;
@@ -78,6 +95,39 @@ void GameServer::UpdateServer() {
 			ProcessPacket(packet, peer);
 		}
 	}
+}
+
+bool GameServer::UpdateServer(GamePacket& receivedPacket, int& source) {
+	if (!netHandle) {
+		return false;
+	}
+	ENetEvent event;
+	while (enet_host_service(netHandle, &event, 0) > 0)
+	{
+		int type = event.type;
+		ENetPeer* p = event.peer;
+		int peer = p->incomingPeerID;
+
+		if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
+			std::cout << "Server: New client connected from "
+				<< (p->address.host & 0xFF) << "."
+				<< ((p->address.host >> 8) & 0xFF) << "."
+				<< ((p->address.host >> 16) & 0xFF) << "."
+				<< ((p->address.host >> 24) & 0xFF)
+				<< ":" << p->address.port << std::endl;
+		}
+
+		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
+			std::cout << "Server: Client disconnected." << std::endl;
+		}
+		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
+			GamePacket* packet = (GamePacket*)event.packet->data;
+			receivedPacket	= *packet;
+			source = peer;
+			return true;
+		}
+	}
+	return false;
 }
 
 void GameServer::SetGameWorld(GameWorld &g) {
