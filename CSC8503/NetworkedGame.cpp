@@ -29,6 +29,18 @@ NetworkedGame::NetworkedGame(GameWorld& gameWorld, GameTechRendererInterface& re
 	NetworkBase::Initialise();
 	timeToNextPacket  = 0.0f;
 	packetsToSnapshot = 0;
+	std::vector<GameObject*>::const_iterator first;
+	std::vector<GameObject*>::const_iterator last;
+
+	world.GetObjectIterators(first, last);
+
+	for (auto i = first; i != last; ++i) {
+		NetworkObject* o = (*i)->GetNetworkObject();
+		if (!o) {
+			continue;
+		}
+		networkObjects.push_back(o);
+	}
 }
 
 NetworkedGame::~NetworkedGame()	{
@@ -37,6 +49,9 @@ NetworkedGame::~NetworkedGame()	{
 }
 
 void NetworkedGame::StartAsServer() {
+	//From my understanding, the server shoudln't render the game out.
+	//The player should connect as a client even if they are hosting the server.
+	//Extra clients should connect as normal.
 	thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
 
 	thisServer->RegisterPacketHandler(Received_State, this);
@@ -92,11 +107,9 @@ void NetworkedGame::UpdateAsServer(float dt) {
 void NetworkedGame::UpdateAsClient(float dt) {
 	ClientPacket newPacket;
 
-	if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-		//fire button pressed!
-		newPacket.buttonstates[0] = 1;
-		newPacket.lastID = 0; //You'll need to work this out somehow...
-	}
+	//Send client buttons and state to server
+	//This is a todo
+
 	thisClient->SendPacket(newPacket);
 }
 
@@ -150,31 +163,45 @@ void NetworkedGame::UpdateMinimumState() {
 }
 
 void NetworkedGame::SpawnPlayer() {
-
+	this->AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
 }
 
 void NetworkedGame::StartLevel() {
-
+	useGravity = false;
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 	if (type == Player_Connected) {
-		//this->AddPlayerToWorld();
+		this->SpawnPlayer();
 	}
 	if (type == Player_Disconnected) {
 		//remove player from world!
 	}
-	if (type == Received_State) {
+	if (type == Received_State) {  //From client to server
 		ClientPacket* p = (ClientPacket*)payload;
 		stateIDs[source] = p->lastID;
 		UpdateMinimumState();
 	}
-	if (type == Delta_State) {
+	if (type == Delta_State) { //Need to update as a delta
+		DeltaPacket* p = (DeltaPacket*)payload;
+		for (NetworkObject* o : networkObjects) {
+			if (o->GetNetworkID() == p->objectID) {
+				o->ReadPacket(*p);
+				break;
+			}
+		}
+	}
 
-	}
 	if (type == Full_State) {
+		FullPacket* p = (FullPacket*)payload;
+		for (NetworkObject* o : networkObjects) {
+			if (o->GetNetworkID() == p->objectID) {
+				o->ReadPacket(*p);
+				break;
+			}
+		}
 	}
-	if (type == Shutdown) {
+	/*if (type == Shutdown) {
 		if (thisClient) {
 			delete thisClient;
 			thisClient = nullptr;
@@ -183,7 +210,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 			delete thisServer;
 			thisServer = nullptr;
 		}
-	}
+	}*/
 
 }
 
