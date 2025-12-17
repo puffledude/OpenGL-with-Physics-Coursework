@@ -179,6 +179,12 @@ void TutorialGame::UpdateGame(float dt) {
 			o->Update(dt);
 		}
 	);
+
+	char buttonStates[8];
+	world.GetPlayer()->CreateButtonStates(buttonStates);
+	world.GetPlayer()->SyncCamera(world.GetMainCamera());
+	world.GetPlayer()->ApplyButtonStates(buttonStates, dt);
+
 	//Assume out of bounds if not touched floor for too long
 	if (world.GetPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
 		InitWorld();
@@ -296,11 +302,6 @@ void TutorialGame::LoadDynamic() {
 		Vector3(131.839, height, -189.254),
 		Vector3(164.412, height, -147.86)
 
-		////Vector3(76.1146, -8.60941, -154.465),
-		//Vector3(94.8136, -8.60941, -186.273),
-		//Vector3(148.895, -8.60941, -187.037),
-		//Vector3(175.541, -8.60941, -147.666)
-
 	};
 	for (Vector3 pos : punchBoxPositions) {
 		AddPunchBoxToWorld(pos, direction, Vector3(3.0f, 6.0f, 3.0f), 500.0f, 34.0f, 0.5f);
@@ -315,7 +316,8 @@ void TutorialGame::LoadDynamic() {
 		Vector3(1001.47, -5.1497, -10.2707)
 	};
 
-	AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
+	PlayerObject* player = static_cast<PlayerObject*>(AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553)));
+	this->world.SetMainPlayer(player);
 	AddGooseToWorld(gooseWaypoints, Vector3(822.841, -15.7686, -53.6827), 55.0f);
 
 	AddGlassToWorld(Vector3(-116.0, 70.8, 285.0), 20, 0.75);
