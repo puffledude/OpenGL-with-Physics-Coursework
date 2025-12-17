@@ -110,6 +110,10 @@ namespace NCL {
 				{
 					playerObject = p;
 			}
+			PlayerObject* GetPlayerFromArray(int i =0) const 
+				{
+					return playerObjects[i];
+			}
 
 			void SetPlayer(PlayerObject* p, int i =0) 
 				{
