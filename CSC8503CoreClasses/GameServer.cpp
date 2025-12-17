@@ -85,6 +85,23 @@ void GameServer::UpdateServer() {
 				<< ((p->address.host >> 16) & 0xFF) << "."
 				<< ((p->address.host >> 24) & 0xFF)
 				<< ":" << p->address.port << std::endl;
+
+			// Assign a new client id (use incomingPeerID as unique handle)
+			++clientCount;
+			PlayerPacket pkt;
+			pkt.playerID = peer; // inform client of their peer id
+
+			// send targeted packet to this peer
+			ENetPacket* dataPacket = enet_packet_create(&pkt, pkt.GetTotalSize(), 0);
+			enet_peer_send(p, 0, dataPacket);
+
+			// notify any registered handlers for Player_Connected
+			PacketHandlerIterator first, last;
+			if (GetPacketHandlers(Player_Connected, first, last)) {
+				for (auto it = first; it != last; ++it) {
+					it->second->ReceivePacket(Player_Connected, &pkt, peer);
+		}
+			}
 		}
 
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
@@ -115,6 +132,22 @@ bool GameServer::UpdateServer(GamePacket& receivedPacket, int& source) {
 				<< ((p->address.host >> 16) & 0xFF) << "."
 				<< ((p->address.host >> 24) & 0xFF)
 				<< ":" << p->address.port << std::endl;
+
+			++clientCount;
+			PlayerPacket pkt;
+			pkt.playerID = peer;
+
+			// send targeted packet to this peer
+			ENetPacket* dataPacket = enet_packet_create(&pkt, pkt.GetTotalSize(), 0);
+			enet_peer_send(p, 0, dataPacket);
+
+			// notify handlers
+			PacketHandlerIterator first, last;
+			if (GetPacketHandlers(Player_Connected, first, last)) {
+				for (auto it = first; it != last; ++it) {
+					it->second->ReceivePacket(Player_Connected, &pkt, peer);
+				}
+			}
 		}
 
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
