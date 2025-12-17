@@ -26,6 +26,11 @@ public:
 
 	void Update(float dt) override;
 
+	void CreateButtonStates(char (&buttonStates)[8]);
+	void SyncCamera(NCL::PerspectiveCamera cam);
+	void ApplyButtonStates(const char(&buttonStates)[8], float dt);
+
+
 	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override;
 
 	void OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) override;
@@ -69,6 +74,7 @@ protected:
 	bool freeCamMode = false;
 	bool outOfBounds = false;
 	bool canJump = false;
+	bool moved = false;
 	GameObject* heldItem = nullptr;
 	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
 	NCL::CSC8503::GameWorld* world = nullptr;
