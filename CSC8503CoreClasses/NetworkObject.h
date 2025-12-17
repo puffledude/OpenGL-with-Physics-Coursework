@@ -31,6 +31,7 @@ namespace NCL::CSC8503 {
 	struct ClientPacket : public GamePacket {
 		int		lastID;
 		char	buttonstates[8];
+		Quaternion	orientation;
 
 		ClientPacket() {
 			size = sizeof(ClientPacket);

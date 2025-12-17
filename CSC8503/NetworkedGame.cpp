@@ -107,34 +107,18 @@ void NetworkedGame::UpdateAsServer(float dt) {
 }
 
 void NetworkedGame::UpdateAsClient(float dt) {
-	//Maybe receive packetss and then send.
 	
-	//Maybe get the packet out of here?
-	//Get update client to return a bool and packet
 	GamePacket recievedPacket;
 	int source = -1;
 	while (thisClient->UpdateClient(recievedPacket, source)) {
 		this->ReceivePacket(recievedPacket.type,&recievedPacket, source);
 	}
 	ClientPacket newPacket;
+	newPacket.type = Received_State;
+	world.GetPlayer()->CreateButtonStates(newPacket.buttonstates);
+	Quaternion orientation = world.GetPlayer()->GetTransform().GetOrientation();
+	newPacket.orientation = orientation;
 
-	//Send client buttons and state to server
-	//This is a todo
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
-		newPacket.buttonstates[0] = 1;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-		newPacket.buttonstates[1] = 1;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
-		newPacket.buttonstates[2] = 1;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-		newPacket.buttonstates[3] = 1;
-	}
-	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
-		newPacket.buttonstates[4] = 1;
-	}
 	newPacket.lastID = thisClient->GetLastStateID();
 
 	thisClient->SendPacket(newPacket);
@@ -200,18 +184,22 @@ void NetworkedGame::StartLevel() {
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
-	if (type == Player_Connected) {
+	switch (type) {
+	case Player_Connected: {
 		this->SpawnPlayer();
+		break;
 	}
-	if (type == Player_Disconnected) {
-		//remove player from world!
-	}
-	if (type == Received_State) {  //From client to server
+
+	case Player_Disconnected:
+		//handle player disconnection
+		break;
+	case Received_State: {
 		ClientPacket* p = (ClientPacket*)payload;
 		stateIDs[source] = p->lastID;  // Updates the last received state ID from this client
 		UpdateMinimumState();
+		break;
 	}
-	if (type == Delta_State) { //Need to update as a delta
+	case Delta_State: {
 		DeltaPacket* p = (DeltaPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
@@ -219,10 +207,9 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 				break;
 			}
 		}
-		
+		break;
 	}
-
-	if (type == Full_State) {
+	case Full_State: {
 		FullPacket* p = (FullPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
@@ -231,6 +218,8 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 			}
 		}
 		thisClient->SetLastStateID(p->fullState.stateID);
+		break;
+	}
 	}
 	/*if (type == Shutdown) {
 		if (thisClient) {
