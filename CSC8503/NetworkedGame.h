@@ -2,6 +2,9 @@
 #include "TutorialGame.h"
 #include "NetworkBase.h"
 
+// PlayerObject is declared in the global namespace, forward-declare it here
+class PlayerObject;
+
 namespace NCL::CSC8503 {
 	class GameServer;
 	class GameClient;
@@ -19,11 +22,16 @@ namespace NCL::CSC8503 {
 
 		void UpdateGame(float dt) override;
 
-		void SpawnPlayer();
+		::PlayerObject* SpawnPlayer();
 
 		void StartLevel();
 
+		// PacketReceiver override
 		void ReceivePacket(int type, GamePacket* payload, int source) override;
+
+		void ServerProcessReceived(float dt);
+		void ReceivePacketWithDT(int type, GamePacket* payload, int source, float dt);
+		void ServerSendObjects();
 
 		void OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b);
 
@@ -35,6 +43,8 @@ namespace NCL::CSC8503 {
 		void UpdateMinimumState();
 		std::map<int, int> stateIDs;
 
+		std::unordered_map<int, std::unordered_map<int, int>> clientObjectAcks;
+
 		GameServer* thisServer;
 		GameClient* thisClient;
 		float timeToNextPacket;
@@ -43,6 +53,7 @@ namespace NCL::CSC8503 {
 		std::vector<NetworkObject*> networkObjects;
 
 		std::map<int, GameObject*> serverPlayers;
+		std::map <int, int> confirmedStates;
 		GameObject* localPlayer;
 	};
 }

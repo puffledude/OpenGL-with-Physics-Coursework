@@ -5,6 +5,7 @@
 #include "GameClient.h"
 #include "GameWorld.h"
 #include "Window.h"
+#include "PlayerObject.h"
 
 #define COLLISION_MSG 30
 
@@ -96,16 +97,48 @@ void NetworkedGame::UpdateGame(float dt) {
 	TutorialGame::UpdateGame(dt);
 }
 
+void NetworkedGame::ServerProcessReceived(float dt) {
+	GamePacket recievedPacket;
+	int source = -1;
+	while (thisServer->UpdateServer(recievedPacket, source)) {
+		this->ReceivePacketWithDT(recievedPacket.type,&recievedPacket, source, dt);
+	}
+}
+
+void NetworkedGame::ServerSendObjects() {
+	int slidingWindow = 5;
+	for (auto const& [clientID, ackMap] : clientObjectAcks) {
+		for (NetworkObject* o : networkObjects) {
+			int objectID = o->GetNetworkID();
+			int clientAck = 0;
+			auto it = clientObjectAcks[clientID].find(objectID);
+			if (it != clientObjectAcks[clientID].end()) clientAck = it->second;
+
+			int objLatest = o->GetLatestStateID();
+			bool canDelta = clientAck > 0 && (objLatest - clientAck) <= slidingWindow;
+
+			GamePacket* packet = nullptr;
+			if (o->WritePacket(&packet, canDelta, clientAck)) {
+				thisServer->SendTargetedPacket(*packet, clientID);
+				delete packet;
+			}
+		}
+	}
+}
+
 void NetworkedGame::UpdateAsServer(float dt) {
-	this->thisServer->UpdateServer();
-	packetsToSnapshot--;
+	ServerProcessReceived(dt);
+	ServerSendObjects();
+	
+
+	/*packetsToSnapshot--;
 	if (packetsToSnapshot < 0) {
 		BroadcastSnapshot(false);
 		packetsToSnapshot = 5;
 	}
 	else {
 		BroadcastSnapshot(true);
-	}
+	}*/
 	//Need to recive packets from clients here too!
 }
 
@@ -114,6 +147,7 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	GamePacket recievedPacket;
 	int source = -1;
 	while (thisClient->UpdateClient(recievedPacket, source)) {
+		// use non-dt path for client processed packets
 		this->ReceivePacket(recievedPacket.type,&recievedPacket, source);
 	}
 	ClientPacket newPacket;
@@ -178,8 +212,14 @@ void NetworkedGame::UpdateMinimumState() {
 	}
 }
 
-void NetworkedGame::SpawnPlayer() {
-	this->AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553));
+PlayerObject* NetworkedGame::SpawnPlayer() {
+	PlayerObject* newPlayer = static_cast<PlayerObject*>(this->AddPlayerToWorld(Vector3(-118.747, 70.8767, 286.553)));
+	NetworkObject* netObj = newPlayer->GetNetworkObject();
+	if (netObj) {
+		networkObjects.push_back(netObj);
+	}
+	return newPlayer;
+
 }
 
 void NetworkedGame::StartLevel() {
@@ -187,18 +227,65 @@ void NetworkedGame::StartLevel() {
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
+	// forward to DT version with dt = 0
+	ReceivePacketWithDT(type, payload, source, 0.0f);
+}
+
+void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int source, float dt) {
 	switch (type) {
 	case Player_Connected: {
-		this->SpawnPlayer();
+		// Server-side: create a player for this client, store mapping, init ack map, and send initial full snapshots
+		if (thisServer) {
+			PlayerObject* newPlayer = SpawnPlayer();
+			// store the server-side mapping from client source to player object
+			serverPlayers[source] = newPlayer;
+			// initialize ack map for this client
+			clientObjectAcks.emplace(source, std::unordered_map<int,int>());
+
+			// send full snapshot of all network objects to the new client
+			for (NetworkObject* o : networkObjects) {
+				GamePacket* packet = nullptr;
+				if (o->WritePacket(&packet, false, 0)) { // force full
+					thisServer->SendTargetedPacket(*packet, source);
+					delete packet;
+				}
+			}
+			// initialize the client's last acknowledged state to 0
+			stateIDs[source] = 0;
+		}
+		else if (thisClient) {
+			// client-side behaviour: create a local player object to represent self
+			this->SpawnPlayer();
+		}
 		break;
 	}
 
 	case Player_Disconnected:
-		//handle player disconnection
+		if (thisServer) {
+			// Server-side: cleanup player and maps
+			auto it = serverPlayers.find(source);
+			if (it != serverPlayers.end()) {
+				GameObject* playerObj = it->second;
+				// TODO: more cleanup if needed (remove from world etc.)
+				serverPlayers.erase(it);
+			}
+			clientObjectAcks.erase(source);
+			stateIDs.erase(source);
+		}
+		else if (thisClient) {
+			// client disconnected from server - teardown local client
+			delete thisClient;
+			thisClient = nullptr;
+		}
 		break;
 	case Received_State: {
 		ClientPacket* p = (ClientPacket*)payload;
 		stateIDs[source] = p->lastID;  // Updates the last received state ID from this client
+		if (p->buttonstates != nullptr) {
+			PlayerObject* player = world.GetPlayerFromArray(source);
+			player->ApplyButtonStates(p->buttonstates, dt);
+			player->GetTransform().SetOrientation(p->orientation);
+		}
 		UpdateMinimumState();
 		break;
 	}
@@ -210,6 +297,10 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 				break;
 			}
 		}
+		ClientPacket ackPacket;
+		ackPacket.type = Received_State;
+		ackPacket.lastID = thisClient->GetLastStateID();
+		thisClient->SendPacket(ackPacket);
 		break;
 	}
 	case Full_State: {
@@ -224,17 +315,6 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 		break;
 	}
 	}
-	/*if (type == Shutdown) {
-		if (thisClient) {
-			delete thisClient;
-			thisClient = nullptr;
-		}
-		if (thisServer) {
-			delete thisServer;
-			thisServer = nullptr;
-		}
-	}*/
-
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
@@ -243,9 +323,9 @@ void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
 		newPacket.messageID = COLLISION_MSG;
 		newPacket.playerID  = a->GetPlayerNum();
 
-		thisClient->SendPacket(newPacket);
+		thisServer->SendGlobalPacket(newPacket);
 
 		newPacket.playerID = b->GetPlayerNum();
-		thisClient->SendPacket(newPacket);
+		thisServer->SendGlobalPacket(newPacket);
 	}
 }
