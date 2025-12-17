@@ -137,7 +137,7 @@ namespace NCL {
 			{
 				gooseEnemy = g;
 			}
-
+			
 		protected:
 			std::vector<GameObject*> gameObjects;
 			std::vector<PlayerObject*>playerObjects;
