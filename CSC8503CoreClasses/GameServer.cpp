@@ -106,6 +106,14 @@ void GameServer::UpdateServer() {
 
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
 			std::cout << "Server: Client disconnected." << std::endl;
+
+			// notify handlers for Player_Disconnected
+			PacketHandlerIterator first, last;
+			if (GetPacketHandlers(Player_Disconnected, first, last)) {
+				for (auto it = first; it != last; ++it) {
+					it->second->ReceivePacket(Player_Disconnected, nullptr, peer);
+				}
+		}
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
@@ -152,6 +160,12 @@ bool GameServer::UpdateServer(GamePacket& receivedPacket, int& source) {
 
 		else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
 			std::cout << "Server: Client disconnected." << std::endl;
+			PacketHandlerIterator first, last;
+			if (GetPacketHandlers(Player_Disconnected, first, last)) {
+				for (auto it = first; it != last; ++it) {
+					it->second->ReceivePacket(Player_Disconnected, nullptr, peer);
+				}
+			}
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
