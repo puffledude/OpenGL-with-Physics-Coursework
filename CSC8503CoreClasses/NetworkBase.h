@@ -53,6 +53,17 @@ struct StringPacket : public GamePacket {
 
 };
 
+// Packet sent by server to notify a client of their assigned player id
+struct PlayerPacket : public GamePacket {
+	int playerID;
+
+	PlayerPacket() {
+		type = Player_Connected;
+		size = sizeof(int);
+		playerID = -1;
+	}
+};
+
 
 class PacketReceiver {
 public:
