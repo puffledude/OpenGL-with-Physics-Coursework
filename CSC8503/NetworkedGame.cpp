@@ -94,6 +94,7 @@ void NetworkedGame::UpdateGame(float dt) {
 }
 
 void NetworkedGame::UpdateAsServer(float dt) {
+	this->thisServer->UpdateServer();
 	packetsToSnapshot--;
 	if (packetsToSnapshot < 0) {
 		BroadcastSnapshot(false);
@@ -102,15 +103,43 @@ void NetworkedGame::UpdateAsServer(float dt) {
 	else {
 		BroadcastSnapshot(true);
 	}
+	//Need to recive packets from clients here too!
 }
 
 void NetworkedGame::UpdateAsClient(float dt) {
+	//Maybe receive packetss and then send.
+	
+	//Maybe get the packet out of here?
+	//Get update client to return a bool and packet
+	GamePacket recievedPacket;
+	int source = -1;
+	while (thisClient->UpdateClient(recievedPacket, source)) {
+		this->ReceivePacket(recievedPacket.type,&recievedPacket, source);
+	}
 	ClientPacket newPacket;
 
 	//Send client buttons and state to server
 	//This is a todo
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
+		newPacket.buttonstates[0] = 1;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
+		newPacket.buttonstates[1] = 1;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
+		newPacket.buttonstates[2] = 1;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
+		newPacket.buttonstates[3] = 1;
+	}
+	if (Window::GetKeyboard()->KeyDown(KeyCodes::SPACE)) {
+		newPacket.buttonstates[4] = 1;
+	}
+	newPacket.lastID = thisClient->GetLastStateID();
 
 	thisClient->SendPacket(newPacket);
+	
+
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -167,7 +196,7 @@ void NetworkedGame::SpawnPlayer() {
 }
 
 void NetworkedGame::StartLevel() {
-	useGravity = false;
+	useGravity = true;
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
@@ -179,7 +208,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 	}
 	if (type == Received_State) {  //From client to server
 		ClientPacket* p = (ClientPacket*)payload;
-		stateIDs[source] = p->lastID;
+		stateIDs[source] = p->lastID;  // Updates the last received state ID from this client
 		UpdateMinimumState();
 	}
 	if (type == Delta_State) { //Need to update as a delta
@@ -190,6 +219,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 				break;
 			}
 		}
+		
 	}
 
 	if (type == Full_State) {
@@ -200,6 +230,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 				break;
 			}
 		}
+		thisClient->SetLastStateID(p->fullState.stateID);
 	}
 	/*if (type == Shutdown) {
 		if (thisClient) {

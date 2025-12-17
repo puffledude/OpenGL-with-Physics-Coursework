@@ -17,8 +17,17 @@ namespace NCL {
 			void SendPacket(GamePacket&  payload);
 
 			void UpdateClient();
+
+			bool UpdateClient(GamePacket& recivedPacket, int& source);
+			int GetLastStateID() const {
+				return lastStateID;
+			}
+			void SetLastStateID(int id) {
+				lastStateID = id;
+			}
 		protected:	
 			_ENetPeer*	netPeer;
+			int lastStateID;
 		};
 	}
 }

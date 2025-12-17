@@ -45,6 +45,33 @@ void GameClient::UpdateClient() {
 
 }
 
+bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
+	if (netHandle == nullptr) {
+		return false;
+	}
+	ENetEvent event;
+	while (enet_host_service(netHandle, &event, 0) > 0) {
+		if (event.type == ENET_EVENT_TYPE_CONNECT) {
+			std::cout << "Client connected to server!" << std::endl;
+		}
+
+		else if (event.type == ENET_EVENT_TYPE_RECEIVE) {
+			std::cout << "Packet Recieved from server." << std::endl;
+			GamePacket* packet = (GamePacket*)event.packet->data;
+			recivedPacket = *packet;
+			source = event.peer->connectID;
+			return true;
+			//ProcessPacket(packet);
+		}
+		else if (event.type == ENET_EVENT_TYPE_DISCONNECT) {
+			std::cout << "Client Disconnected from server." << std::endl;
+		}
+		enet_packet_destroy(event.packet);
+
+	}
+	return false;
+}
+
 void GameClient::SendPacket(GamePacket&  payload) {
 
 	ENetPacket* packet = enet_packet_create(&payload, payload.GetTotalSize(), 0);
