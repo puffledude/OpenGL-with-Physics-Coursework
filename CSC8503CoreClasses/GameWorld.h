@@ -91,9 +91,9 @@ namespace NCL {
 				return sunColour;
 			}
 
-			PlayerObject* GetPlayer(int i=0) const 
+			PlayerObject* GetPlayer() const 
 				{
-					return playerObjects[i];
+					return playerObject;
 				}
 
 			void AddPlayer(PlayerObject* p) 
@@ -106,9 +106,10 @@ namespace NCL {
 				return playerObjects;
 			}
 
-			/*const std::vector<PlayerObject*>& GetAllPlayers() const {
-				return playerObjects;
-			}*/
+			void SetMainPlayer(PlayerObject* p) 
+				{
+					playerObject = p;
+			}
 
 			void SetPlayer(PlayerObject* p, int i =0) 
 				{
@@ -144,7 +145,7 @@ namespace NCL {
 			std::vector<Constraint*> constraints;
 
 			PlayerCamera mainCamera;
-			//PlayerObject* playerObject;
+			PlayerObject* playerObject;
 			GlassObject* glassObject;
 			Goose* gooseEnemy;
 			NavigationMesh* navigationMesh = new NavigationMesh("Level.navmesh");
