@@ -59,7 +59,9 @@ bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
 			std::cout << "Packet Recieved from server." << std::endl;
 			GamePacket* packet = (GamePacket*)event.packet->data;
 			recivedPacket = *packet;
-			source = event.peer->connectID;
+			// use incomingPeerID to match server's peer numbering
+			source = event.peer->incomingPeerID;
+			std::cout << "Client: packet from server with peer incomingPeerID=" << source << std::endl;
 			return true;
 			//ProcessPacket(packet);
 		}
