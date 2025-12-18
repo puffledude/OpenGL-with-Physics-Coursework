@@ -18,7 +18,7 @@ namespace NCL {
 
 			void UpdateClient();
 
-			bool UpdateClient(GamePacket& recivedPacket, int& source);
+			 bool UpdateClient(GamePacket*& recivedPacket, int& source);
 			int GetLastStateID() const {
 				return lastStateID;
 			}

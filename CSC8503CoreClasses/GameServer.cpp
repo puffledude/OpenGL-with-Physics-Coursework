@@ -117,12 +117,13 @@ void GameServer::UpdateServer() {
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
+			// no processing here when using void UpdateServer; caller can use other overload
 			ProcessPacket(packet, peer);
 		}
 	}
 }
 
-bool GameServer::UpdateServer(GamePacket& receivedPacket, int& source) {
+bool GameServer::UpdateServer(GamePacket*& receivedPacket, int& source) {
 	if (!netHandle) {
 		return false;
 	}
@@ -169,7 +170,10 @@ bool GameServer::UpdateServer(GamePacket& receivedPacket, int& source) {
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
-			receivedPacket	= *packet;
+			// allocate a heap copy so caller can process without slicing
+			int totalSize = packet->GetTotalSize();
+			receivedPacket = (GamePacket*)malloc(totalSize);
+			memcpy(receivedPacket, packet, totalSize);
 			source = peer;
 			return true;
 		}

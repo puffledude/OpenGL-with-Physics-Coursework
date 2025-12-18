@@ -100,10 +100,12 @@ void NetworkedGame::UpdateGame(float dt) {
 }
 
 void NetworkedGame::ServerProcessReceived(float dt) {
-	GamePacket recievedPacket;
+	GamePacket* recievedPacket = nullptr;
 	int source = -1;
 	while (thisServer->UpdateServer(recievedPacket, source)) {
-		this->ReceivePacketWithDT(recievedPacket.type,&recievedPacket, source, dt);
+		this->ReceivePacketWithDT(recievedPacket->type, recievedPacket, source, dt);
+		free(recievedPacket);
+		recievedPacket = nullptr;
 	}
 }
 
@@ -146,17 +148,19 @@ void NetworkedGame::UpdateAsServer(float dt) {
 
 void NetworkedGame::UpdateAsClient(float dt) {
 	
-	GamePacket recievedPacket;
+	GamePacket* recievedPacket = nullptr;
 	int source = -1;
 	while (thisClient->UpdateClient(recievedPacket, source)) {
 		// use non-dt path for client processed packets
-		this->ReceivePacket(recievedPacket.type,&recievedPacket, source);
+		this->ReceivePacket(recievedPacket->type, recievedPacket, source);
+		free(recievedPacket);
+		recievedPacket = nullptr;
 
 	}
 	ClientPacket newPacket;
 	newPacket.type = Received_State;
-	world.GetPlayer()->CreateButtonStates(newPacket.buttonstates);
-	Quaternion orientation = world.GetPlayer()->GetTransform().GetOrientation();
+	world.GetMainPlayer()->CreateButtonStates(newPacket.buttonstates);
+	Quaternion orientation = world.GetMainPlayer()->GetTransform().GetOrientation();
 	newPacket.orientation = orientation;
 
 	newPacket.lastID = thisClient->GetLastStateID();
@@ -274,6 +278,8 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 				PlayerPacket* pp = (PlayerPacket*)payload;
 				if (localClientID == -1) {
 					localClientID = pp->playerID;
+					this->world.SetMainPlayer( this->SpawnPlayer());
+					this->world.GetMainCamera().SetPlayer(this->world.GetMainPlayer());
 				}
 				else {
 					this->SpawnPlayer();
@@ -319,7 +325,7 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 				if (localClientID >= 0) {
 					// try to find our local player by index 0 or stored mapping
 					// fallback to main player
-					player = world.GetPlayer();
+					player = world.GetMainPlayer();
 				}
 			}
 

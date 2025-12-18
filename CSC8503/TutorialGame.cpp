@@ -115,7 +115,7 @@ void TutorialGame::UpdateGame(float dt) {
 	}
 	if (Window::GetKeyboard()->KeyDown(KeyCodes::F)) {
 		world.GetMainCamera().SetFreeCam();
-		world.GetPlayer()->SetFreeCam();
+		world.GetMainPlayer()->SetFreeCam();
 	}
 
 	//Running certain physics updates in a consistent order might cause some
@@ -181,12 +181,12 @@ void TutorialGame::UpdateGame(float dt) {
 	);
 
 	char buttonStates[8];
-	world.GetPlayer()->CreateButtonStates(buttonStates);
-	world.GetPlayer()->SyncCamera(world.GetMainCamera());
-	world.GetPlayer()->ApplyButtonStates(buttonStates, dt);
+	world.GetMainPlayer()->CreateButtonStates(buttonStates);
+	world.GetMainPlayer()->SyncCamera(world.GetMainCamera());
+	world.GetMainPlayer()->ApplyButtonStates(buttonStates, dt);
 
 	//Assume out of bounds if not touched floor for too long
-	if (world.GetPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
+	if (world.GetMainPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
 		InitWorld();
 	}
 
@@ -330,7 +330,7 @@ void TutorialGame::InitCamera() {
 	world.GetMainCamera().SetPitch(-15.0f);
 	world.GetMainCamera().SetYaw(315.0f);
 	world.GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-	world.GetMainCamera().SetPlayer(world.GetPlayer());
+	world.GetMainCamera().SetPlayer(world.GetMainPlayer());
 	lockedObject = nullptr;
 }
 
