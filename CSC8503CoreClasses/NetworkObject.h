@@ -31,11 +31,20 @@ namespace NCL::CSC8503 {
 
 	struct ClientPacket : public GamePacket {
 		int		lastID;
-		char	buttonstates[8];
+		// keep a small fixed buffer of inputs to send
+		struct InputEntry {
+			char buttonstates[8];
+			float dt;
+			int seq;
+		};
+		int inputCount = 0;
+		InputEntry inputs[32];
 		Quaternion	orientation;
 
 		ClientPacket() {
-			size = sizeof(ClientPacket);
+			type = Received_State;
+			size = sizeof(ClientPacket) - sizeof(GamePacket);
+			inputCount = 0;
 		}
 	};
 
