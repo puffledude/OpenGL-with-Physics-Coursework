@@ -55,5 +55,6 @@ namespace NCL::CSC8503 {
 		std::map<int, GameObject*> serverPlayers;
 		std::map <int, int> confirmedStates;
 		GameObject* localPlayer;
+		int localClientID = -1;
 	};
 }
