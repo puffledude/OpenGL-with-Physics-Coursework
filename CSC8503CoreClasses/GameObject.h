@@ -112,11 +112,15 @@ namespace NCL::CSC8503 {
 		void SetTrigger(bool state) {
 			isTrigger = state;
 		}
-
+		void SetTransform(const Transform& newTransform)
+		{
+			transform = newTransform;
+		}
 		void createNetworkObject();
 		void createNetworkObject(int id); // create with explicit network id
 
 	protected:
+		
 		Transform			transform;
 
 		CollisionVolume*	boundingVolume;
