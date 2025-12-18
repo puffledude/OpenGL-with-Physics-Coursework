@@ -72,9 +72,9 @@ bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
 	return false;
 }
 
-void GameClient::SendPacket(GamePacket&  payload) {
+void GameClient::SendPacket(GamePacket&  payload, int flags) {
 
-	ENetPacket* packet = enet_packet_create(&payload, payload.GetTotalSize(), 0);
+	ENetPacket* packet = enet_packet_create(&payload, payload.GetTotalSize(), flags);
 	enet_peer_send(netPeer, 0, packet);
 
 }
