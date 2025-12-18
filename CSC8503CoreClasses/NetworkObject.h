@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "NetworkBase.h"
 #include "NetworkState.h"
+#include "Transform.h"
 
 namespace NCL::CSC8503 {
 	class GameObject;
@@ -34,7 +35,8 @@ namespace NCL::CSC8503 {
 		Quaternion	orientation;
 
 		ClientPacket() {
-			size = sizeof(ClientPacket);
+			// size should be payload size excluding the GamePacket header
+			size = sizeof(ClientPacket) - sizeof(GamePacket);
 		}
 	};
 
@@ -55,6 +57,9 @@ namespace NCL::CSC8503 {
 		}
 		int GetLatestStateID() const {
 			return lastFullState.stateID;
+		}
+		void SetToObjectTransform(Transform& t) {
+			this->object.SetTransform(t);
 		}
 	protected:
 

@@ -1,4 +1,5 @@
 #include "NetworkObject.h"
+#include "Transform.h"
 #include "./enet/enet.h"
 using namespace NCL;
 using namespace CSC8503;
@@ -11,6 +12,8 @@ NetworkObject::NetworkObject(GameObject& o, int id) : object(o)	{
 
 NetworkObject::~NetworkObject()	{
 }
+
+
 
 bool NetworkObject::ReadPacket(GamePacket& p) {
 	if (p.type == Delta_State) {
