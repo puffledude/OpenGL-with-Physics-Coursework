@@ -12,6 +12,7 @@ enum BasicNetworkMessages {
 	Delta_State,	//1 byte per channel since the last state
 	Full_State,		//Full transform etc
 	Received_State, //received from a client, informs that its received packet n
+	Ack_State,
 	Player_Connected,
 	Player_Disconnected,
 	Shutdown
@@ -64,6 +65,16 @@ struct PlayerPacket : public GamePacket {
 	}
 };
 
+struct ackPacket : public GamePacket {
+	int objectID;
+	int lastID;
+	ackPacket() {
+		type = Ack_State;
+		size = sizeof(int)*2;
+		objectID = -1;
+		lastID = -1;
+	}
+};
 
 class PacketReceiver {
 public:
