@@ -26,6 +26,13 @@ NCL::CSC8503::PushdownState::PushdownResult GameMainMenu::OnUpdate(float dt, NCL
 		*pushFunc = new InGameServer(gameWorld, physics, renderer, networkedGame, menuWidth, menuHeight);
 		return NCL::CSC8503::PushdownState::Push;
 	}
+	if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::J)) {
+		NCL::CSC8503::NetworkedGame* networkedGame = new NCL::CSC8503::NetworkedGame(*gameWorld, *renderer, *physics);
+		networkedGame->StartAsClient(127, 0, 0, 1);
+		*pushFunc = new InGameClient(gameWorld, physics, renderer, networkedGame, menuWidth, menuHeight);
+		return NCL::CSC8503::PushdownState::Push;
+	}
+
 
 	return NCL::CSC8503::PushdownState::NoChange;
 }
