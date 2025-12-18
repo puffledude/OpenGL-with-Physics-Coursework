@@ -58,5 +58,6 @@ namespace NCL::CSC8503 {
 		std::map <int, int> confirmedStates;
 		GameObject* localPlayer;
 		int localClientID = -1;
+		bool localClientPending = false; // true when StartAsServer created a local client but server hasn't linked it yet
 	};
 }
