@@ -11,10 +11,10 @@ GameObject::GameObject(const std::string& objectName)
 	name			= objectName;
 	worldID			= -1;
 	isActive		= true;
-	boundingVolume	= nullptr;
-	physicsObject	= nullptr;
-	renderObject	= nullptr;
-	networkObject	= nullptr;
+	boundingVolume		= nullptr;
+	physicsObject		= nullptr;
+	renderObject		= nullptr;
+	networkObject		= nullptr;
 }
 
 GameObject::~GameObject()	
