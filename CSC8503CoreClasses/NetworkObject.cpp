@@ -1,4 +1,5 @@
 #include "NetworkObject.h"
+#include "PhysicsObject.h"
 #include "./enet/enet.h"
 using namespace NCL;
 using namespace CSC8503;
@@ -38,10 +39,15 @@ bool NetworkObject::ReadDeltaPacket(DeltaPacket &p) {
 
 	Vector3 fullpos = lastFullState.position;
 	Quaternion fullor = lastFullState.orientation;
+	Vector3 fullvel = lastFullState.velocity;
 
 	fullpos.x += (float)p.pos[0];
 	fullpos.y += (float)p.pos[1];
 	fullpos.z += (float)p.pos[2];
+	
+	fullvel.x += (float)p.vel[0];
+	fullvel.y += (float)p.vel[1];
+	fullvel.z += (float)p.vel[2];
 
 	fullor.x += ((float)p.orientation[0]) / 127.0f;
 	fullor.y += ((float)p.orientation[1]) / 127.0f;
@@ -49,6 +55,7 @@ bool NetworkObject::ReadDeltaPacket(DeltaPacket &p) {
 	fullor.w += ((float)p.orientation[3]) / 127.0f;
 
 	object.GetTransform().SetPosition(fullpos);
+	object.GetPhysicsObject()->SetLinearVelocity(fullvel);
 	object.GetTransform().SetOrientation(fullor);
 
 	return true;
@@ -62,6 +69,7 @@ bool NetworkObject::ReadFullPacket(FullPacket &p) {
 	lastFullState = p.fullState;
 
 	object.GetTransform().SetPosition(lastFullState.position);
+	object.GetPhysicsObject()->SetLinearVelocity(lastFullState.velocity);
 	object.GetTransform().SetOrientation(lastFullState.orientation);
 	stateHistory.push_back(lastFullState);
 	return true;
@@ -81,6 +89,10 @@ bool NetworkObject::WriteDeltaPacket(GamePacket**p, int stateID) {
 	dp->pos[1] = (char)currentPos.y;
 	dp->pos[2] = (char)currentPos.z;
 
+	dp->vel[0] = (char)(object.GetPhysicsObject()->GetLinearVelocity().x);
+	dp->vel[1] = (char)(object.GetPhysicsObject()->GetLinearVelocity().y);
+	dp->vel[2] = (char)(object.GetPhysicsObject()->GetLinearVelocity().z);
+
 	dp->orientation[0] = (char)(currentOr.x*127.0f);
 	dp->orientation[1] = (char)(currentOr.y * 127.0f);
 	dp->orientation[2] = (char)(currentOr.z * 127.0f);
@@ -94,6 +106,7 @@ bool NetworkObject::WriteFullPacket(GamePacket**p) {
 	FullPacket* fp = new FullPacket();
 	fp->objectID = networkID;
 	fp->fullState.position = object.GetTransform().GetPosition();
+	fp->fullState.velocity = object.GetPhysicsObject()->GetLinearVelocity();
 	fp->fullState.orientation = object.GetTransform().GetOrientation();
 	fp->fullState.stateID = lastFullState.stateID++;
 	*p = fp;

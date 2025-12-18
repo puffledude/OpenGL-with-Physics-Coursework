@@ -10,6 +10,7 @@ namespace NCL {
 			virtual ~NetworkState();
 
 			Vector3		position;
+			Vector3 	velocity;
 			Quaternion	orientation;
 			int			stateID;
 		};

@@ -20,6 +20,7 @@ namespace NCL::CSC8503 {
 		int		fullID		= -1;
 		int		objectID	= -1;
 		char	pos[3];
+		char	vel[3];
 		char	orientation[4];
 
 		DeltaPacket() {
