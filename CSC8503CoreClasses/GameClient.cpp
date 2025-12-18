@@ -45,7 +45,7 @@ void GameClient::UpdateClient() {
 
 }
 
-bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
+bool GameClient::UpdateClient(GamePacket*& recivedPacket, int& source) {
 	if (netHandle == nullptr) {
 		return false;
 	}
@@ -58,10 +58,13 @@ bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
 		else if (event.type == ENET_EVENT_TYPE_RECEIVE) {
 			std::cout << "Packet Recieved from server." << std::endl;
 			GamePacket* packet = (GamePacket*)event.packet->data;
-			recivedPacket = *packet;
+			int totalSize = packet->GetTotalSize();
+			recivedPacket = (GamePacket*)malloc(totalSize);
+			memcpy(recivedPacket, packet, totalSize);
 			// use incomingPeerID to match server's peer numbering
 			source = event.peer->incomingPeerID;
 			std::cout << "Client: packet from server with peer incomingPeerID=" << source << std::endl;
+			enet_packet_destroy(event.packet);
 			return true;
 		}
 		else if (event.type == ENET_EVENT_TYPE_DISCONNECT) {

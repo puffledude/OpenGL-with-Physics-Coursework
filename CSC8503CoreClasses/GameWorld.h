@@ -91,7 +91,7 @@ namespace NCL {
 				return sunColour;
 			}
 
-			PlayerObject* GetPlayer() const 
+			PlayerObject* GetMainPlayer() const 
 				{
 					return playerObject;
 				}
@@ -115,10 +115,11 @@ namespace NCL {
 					return playerObjects[i];
 			}
 
-			void SetPlayer(PlayerObject* p, int i =0) 
+
+			/*void SetPlayer(PlayerObject* p, int i =0) 
 				{
 					playerObjects[i];
-			}
+			}*/
 
 			GlassObject* GetGlassObject() const 
 			{
