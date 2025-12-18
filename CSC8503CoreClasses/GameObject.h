@@ -114,6 +114,7 @@ namespace NCL::CSC8503 {
 		}
 
 		void createNetworkObject();
+		void createNetworkObject(int id); // create with explicit network id
 
 	protected:
 		Transform			transform;
