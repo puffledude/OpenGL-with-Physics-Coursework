@@ -57,11 +57,15 @@ struct StringPacket : public GamePacket {
 // Packet sent by server to notify a client of their assigned player id
 struct PlayerPacket : public GamePacket {
 	int playerID;
+	int objectNetworkID; // the network ID of the spawned player object on server
+	char isAssignment;   // 1 = assignment to that client, 0 = notification about another player
 
 	PlayerPacket() {
 		type = Player_Connected;
-		size = sizeof(int);
+		size = sizeof(int) * 2 + sizeof(char); // playerID + objectNetworkID + isAssignment
 		playerID = -1;
+		objectNetworkID = -1;
+		isAssignment = 0;
 	}
 };
 
