@@ -96,6 +96,22 @@ void NetworkedGame::UpdateGame(float dt) {
 		StartAsClient(127,0,0,1);
 	}
 
+	// Apply local inputs each frame for client-side prediction (not tied to network tick)
+	if (thisClient && world.GetMainPlayer()) {
+		char localButtons[8];
+		world.GetMainPlayer()->CreateButtonStates(localButtons);
+
+		// record this input with dt and seq
+		PendingInput in;
+		memcpy(in.buttons, localButtons, 8);
+		in.dt = dt;
+		in.seq = nextInputSeq++;
+		pendingInputs.push_back(in);
+
+		// apply locally
+		world.GetMainPlayer()->ApplyButtonStates(localButtons, dt);
+	}
+
 	TutorialGame::UpdateGame(dt);
 }
 
@@ -157,17 +173,27 @@ void NetworkedGame::UpdateAsClient(float dt) {
 		recievedPacket = nullptr;
 
 	}
-	ClientPacket newPacket;
-	newPacket.type = Received_State;
-	world.GetMainPlayer()->CreateButtonStates(newPacket.buttonstates);
-	Quaternion orientation = world.GetMainPlayer()->GetTransform().GetOrientation();
-	newPacket.orientation = orientation;
+	// Send buffered inputs in one packet (up to ClientPacket::inputs capacity)
+	if (!pendingInputs.empty()) {
+		ClientPacket packet;
+		packet.lastID = thisClient->GetLastStateID();
+		packet.inputCount = 0;
+		Quaternion orientation = world.GetMainPlayer()->GetTransform().GetOrientation();
+		packet.orientation = orientation;
 
-	newPacket.lastID = thisClient->GetLastStateID();
+		int maxToSend = std::min((int)pendingInputs.size(), (int)std::size(packet.inputs));
+		for (int i = 0; i < maxToSend; ++i) {
+			packet.inputs[i].seq = pendingInputs[i].seq;
+			packet.inputs[i].dt = pendingInputs[i].dt;
+			memcpy(packet.inputs[i].buttonstates, pendingInputs[i].buttons, 8);
+			packet.inputCount++;
+		}
 
-	thisClient->SendPacket(newPacket);
-	
+		thisClient->SendPacket(packet);
 
+		// remove sent inputs from buffer
+		pendingInputs.erase(pendingInputs.begin(), pendingInputs.begin() + maxToSend);
+	}
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -311,28 +337,30 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 	case Received_State: {
 		ClientPacket* p = (ClientPacket*)payload;
 		stateIDs[source] = p->lastID;  // Updates the last received state ID from this client
-		if (p->buttonstates != nullptr) {
-			PlayerObject* player = nullptr;
-			if (thisServer) {
-				auto it = serverPlayers.find(source);
-				if (it != serverPlayers.end()) {
-					player = dynamic_cast<PlayerObject*>(it->second);
-				} else {
-					std::cout << "Server: Received input from unknown client " << source << std::endl;
-				}
-			} else if (thisClient) {
-				// On a client, map the incoming source to the local player index if appropriate
-				if (localClientID >= 0) {
-					// try to find our local player by index 0 or stored mapping
-					// fallback to main player
-					player = world.GetMainPlayer();
-				}
+		PlayerObject* player = nullptr;
+		if (thisServer) {
+			auto it = serverPlayers.find(source);
+			if (it != serverPlayers.end()) {
+				player = dynamic_cast<PlayerObject*>(it->second);
+			} else {
+				std::cout << "Server: Received input from unknown client " << source << std::endl;
 			}
+		} else if (thisClient) {
+			// On a client, map the incoming source to the local player index if appropriate
+			if (localClientID >= 0) {
+				// try to find our local player by index 0 or stored mapping
+				// fallback to main player
+				player = world.GetMainPlayer();
+			}
+		}
 
-			if (player) {
-				player->ApplyButtonStates(p->buttonstates, dt);
-				player->GetTransform().SetOrientation(p->orientation);
+		if (player) {
+			// Apply any buffered inputs carried in the packet
+			for (int i = 0; i < p->inputCount; ++i) {
+				player->ApplyButtonStates(p->inputs[i].buttonstates, p->inputs[i].dt);
 			}
+			// Always update orientation from incoming packet
+			player->GetTransform().SetOrientation(p->orientation);
 		}
 		UpdateMinimumState();
 		break;
