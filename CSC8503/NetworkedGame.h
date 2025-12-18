@@ -29,6 +29,8 @@ namespace NCL::CSC8503 {
 		// PacketReceiver override
 		void ReceivePacket(int type, GamePacket* payload, int source) override;
 
+		void SendAck(int objectID, int stateID);
+
 		void ServerProcessReceived(float dt);
 		void ReceivePacketWithDT(int type, GamePacket* payload, int source, float dt);
 		void ServerSendObjects();
