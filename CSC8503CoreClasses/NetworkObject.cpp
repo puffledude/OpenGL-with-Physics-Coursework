@@ -1,16 +1,17 @@
 #include "NetworkObject.h"
 #include "PhysicsObject.h"
 #include "./enet/enet.h"
+#include <cmath>
 using namespace NCL;
 using namespace CSC8503;
 
-NetworkObject::NetworkObject(GameObject& o, int id) : object(o)	{
+NetworkObject::NetworkObject(GameObject& o, int id) : object(o) {
 	deltaErrors = 0;
-	fullErrors  = 0;
-	networkID   = id;
+	fullErrors = 0;
+	networkID = id;
 }
 
-NetworkObject::~NetworkObject()	{
+NetworkObject::~NetworkObject() {
 }
 
 bool NetworkObject::ReadPacket(GamePacket& p) {
@@ -75,28 +76,44 @@ bool NetworkObject::ReadFullPacket(FullPacket &p) {
 	return true;
 }
 
+static inline int CharClamp(float v) {
+	if (v > 127.0f) return 127;
+	if (v < -128.0f) return -128;
+	return (int)std::lround(v);
+}
+
 bool NetworkObject::WriteDeltaPacket(GamePacket**p, int stateID) {
 	DeltaPacket* dp = new DeltaPacket();
 	NetworkState state;
-	if (!GetNetworkState(stateID, state)) { return false; }
-	dp->fullID = networkID;
+	if (!GetNetworkState(stateID, state)) { delete dp; return false; }
+	// fullID should reference the base state's id that this delta is relative to
+	dp->fullID = state.stateID;
 	dp->objectID = networkID;
 
 	Vector3 currentPos = object.GetTransform().GetPosition();
 	Quaternion currentOr = object.GetTransform().GetOrientation();
 
-	dp->pos[0] = (char)currentPos.x;
-	dp->pos[1] = (char)currentPos.y;
-	dp->pos[2] = (char)currentPos.z;
+	Vector3 posDelta = currentPos - state.position;
+	Vector3 velDelta = object.GetPhysicsObject()->GetLinearVelocity() - state.velocity;
+	Quaternion orDelta;
+	orDelta.x = currentOr.x - state.orientation.x;
+	orDelta.y = currentOr.y - state.orientation.y;
+	orDelta.z = currentOr.z - state.orientation.z;
+	orDelta.w = currentOr.w - state.orientation.w;
 
-	dp->vel[0] = (char)(object.GetPhysicsObject()->GetLinearVelocity().x);
-	dp->vel[1] = (char)(object.GetPhysicsObject()->GetLinearVelocity().y);
-	dp->vel[2] = (char)(object.GetPhysicsObject()->GetLinearVelocity().z);
+	// store deltas in compact char form (same packing as read path expects)
+	dp->pos[0] = (char)CharClamp(posDelta.x);
+	dp->pos[1] = (char)CharClamp(posDelta.y);
+	dp->pos[2] = (char)CharClamp(posDelta.z);
 
-	dp->orientation[0] = (char)(currentOr.x*127.0f);
-	dp->orientation[1] = (char)(currentOr.y * 127.0f);
-	dp->orientation[2] = (char)(currentOr.z * 127.0f);
-	dp->orientation[3] = (char)(currentOr.w * 127.0f);
+	dp->vel[0] = (char)CharClamp(velDelta.x);
+	dp->vel[1] = (char)CharClamp(velDelta.y);
+	dp->vel[2] = (char)CharClamp(velDelta.z);
+
+	dp->orientation[0] = (char)CharClamp(orDelta.x * 127.0f);
+	dp->orientation[1] = (char)CharClamp(orDelta.y * 127.0f);
+	dp->orientation[2] = (char)CharClamp(orDelta.z * 127.0f);
+	dp->orientation[3] = (char)CharClamp(orDelta.w * 127.0f);
 	*p = dp;
 	return true;
 	
