@@ -1,4 +1,5 @@
 #include "NetworkedGame.h"
+#include "PhysicsSystem.h"
 #include "NetworkPlayer.h"
 #include "NetworkObject.h"
 #include "GameServer.h"
@@ -59,6 +60,7 @@ void NetworkedGame::StartAsServer() {
 	thisServer->RegisterPacketHandler(Player_Connected, this);
 	thisServer->RegisterPacketHandler(Player_Disconnected, this);
 	thisServer->RegisterPacketHandler(Ack_State, this);
+
 
 	StartLevel();
 }
@@ -224,7 +226,8 @@ PlayerObject* NetworkedGame::SpawnPlayer() {
 }
 
 void NetworkedGame::StartLevel() {
-	useGravity = true;
+	this->useGravity = true;
+	this->physics.UseGravity(true);
 }
 
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
@@ -303,9 +306,27 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 		ClientPacket* p = (ClientPacket*)payload;
 		stateIDs[source] = p->lastID;  // Updates the last received state ID from this client
 		if (p->buttonstates != nullptr) {
-			PlayerObject* player = world.GetPlayerFromArray(source);
-			player->ApplyButtonStates(p->buttonstates, dt);
-			player->GetTransform().SetOrientation(p->orientation);
+			PlayerObject* player = nullptr;
+			if (thisServer) {
+				auto it = serverPlayers.find(source);
+				if (it != serverPlayers.end()) {
+					player = dynamic_cast<PlayerObject*>(it->second);
+				} else {
+					std::cout << "Server: Received input from unknown client " << source << std::endl;
+				}
+			} else if (thisClient) {
+				// On a client, map the incoming source to the local player index if appropriate
+				if (localClientID >= 0) {
+					// try to find our local player by index 0 or stored mapping
+					// fallback to main player
+					player = world.GetPlayer();
+				}
+			}
+
+			if (player) {
+				player->ApplyButtonStates(p->buttonstates, dt);
+				player->GetTransform().SetOrientation(p->orientation);
+			}
 		}
 		UpdateMinimumState();
 		break;
