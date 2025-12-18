@@ -255,6 +255,12 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 		}
 		else if (thisClient) {
 			// client-side behaviour: create a local player object to represent self
+			if (payload != nullptr && payload->type == Player_Connected) {
+				// interpret payload as PlayerPacket
+				PlayerPacket* pp = (PlayerPacket*)payload;
+				localClientID = pp->playerID;
+				std::cout << "Client: Received assigned playerID = " << localClientID << std::endl;
+			}
 			this->SpawnPlayer();
 		}
 		break;
