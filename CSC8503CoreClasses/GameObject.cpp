@@ -63,3 +63,7 @@ void GameObject::UpdateBroadphaseAABB()
 void GameObject::createNetworkObject() {
 	this->networkObject = new NetworkObject(*this, worldID);
 }
+
+void GameObject::createNetworkObject(int id) {
+	this->networkObject = new NetworkObject(*this, id);
+}
