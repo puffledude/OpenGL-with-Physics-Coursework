@@ -100,7 +100,7 @@ void GameServer::UpdateServer() {
 			if (GetPacketHandlers(Player_Connected, first, last)) {
 				for (auto it = first; it != last; ++it) {
 					it->second->ReceivePacket(Player_Connected, &pkt, peer);
-		}
+				}
 			}
 		}
 
@@ -113,7 +113,7 @@ void GameServer::UpdateServer() {
 				for (auto it = first; it != last; ++it) {
 					it->second->ReceivePacket(Player_Disconnected, nullptr, peer);
 				}
-		}
+			}
 		}
 		else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
 			GamePacket* packet = (GamePacket*)event.packet->data;
