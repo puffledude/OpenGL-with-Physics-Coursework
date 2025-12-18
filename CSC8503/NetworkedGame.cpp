@@ -58,7 +58,7 @@ void NetworkedGame::StartAsServer() {
 	thisServer->RegisterPacketHandler(Received_State, this);
 	thisServer->RegisterPacketHandler(Player_Connected, this);
 	thisServer->RegisterPacketHandler(Player_Disconnected, this);
-
+	thisServer->RegisterPacketHandler(Ack_State, this);
 
 	StartLevel();
 }
@@ -149,6 +149,7 @@ void NetworkedGame::UpdateAsClient(float dt) {
 	while (thisClient->UpdateClient(recievedPacket, source)) {
 		// use non-dt path for client processed packets
 		this->ReceivePacket(recievedPacket.type,&recievedPacket, source);
+
 	}
 	ClientPacket newPacket;
 	newPacket.type = Received_State;
@@ -231,6 +232,16 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 	ReceivePacketWithDT(type, payload, source, 0.0f);
 }
 
+void NetworkedGame::SendAck(int objectID, int stateID) {
+	ackPacket ack;
+	ack.objectID = objectID;
+	ack.lastID = stateID;
+	if (thisClient) {
+		// send ACK reliably so server receives it (ENet reliable flag = 1)
+		thisClient->SendPacket(ack, 1);
+	}
+}
+
 void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int source, float dt) {
 	switch (type) {
 	case Player_Connected: {
@@ -307,11 +318,12 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 				break;
 			}
 		}
-		ClientPacket ackPacket;
+		this->SendAck(p->objectID, p->fullID);
+		/*ClientPacket ackPacket;
 		ackPacket.type = Received_State;
 		ackPacket.lastID = thisClient->GetLastStateID();
 		thisClient->SendPacket(ackPacket);
-		break;
+		break;*/
 	}
 	case Full_State: {
 		FullPacket* p = (FullPacket*)payload;
@@ -322,9 +334,29 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 			}
 		}
 		thisClient->SetLastStateID(p->fullState.stateID);
+		this->SendAck(p->objectID, p->fullState.stateID);
+		break;
+	}
+
+	case Ack_State:
+	{
+		if (!payload) break;
+		ackPacket* a = (ackPacket*)payload;
+		int objectID = a->objectID;
+		int stateID  = a->lastID;
+
+		if (thisServer) {
+			// ensure map for this client exists
+			auto &ackMap = clientObjectAcks[source];
+			ackMap[objectID] = stateID;
+			std::cout << "Server: Received ACK from client " << source << " for object " << objectID << " state " << stateID << std::endl;
+		}
+		// clients don't need to process object acks
 		break;
 	}
 	}
+
+	
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {
