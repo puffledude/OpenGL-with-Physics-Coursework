@@ -59,5 +59,15 @@ namespace NCL::CSC8503 {
 		PlayerObject* localPlayer;
 		int localClientID = -1;
 		bool localClientPending = false; // true when StartAsServer created a local client but server hasn't linked it yet
+
+		// Input buffering for client-side prediction / reconciliation
+		struct PendingInput {
+			char buttons[8];
+			float dt;
+			int seq;
+		};
+
+		std::vector<PendingInput> pendingInputs; // unacked inputs
+		int nextInputSeq = 0;
 	};
 }
