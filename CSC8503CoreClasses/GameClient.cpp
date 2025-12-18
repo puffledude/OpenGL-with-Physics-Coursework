@@ -63,7 +63,6 @@ bool GameClient::UpdateClient(GamePacket& recivedPacket, int& source) {
 			source = event.peer->incomingPeerID;
 			std::cout << "Client: packet from server with peer incomingPeerID=" << source << std::endl;
 			return true;
-			//ProcessPacket(packet);
 		}
 		else if (event.type == ENET_EVENT_TYPE_DISCONNECT) {
 			std::cout << "Client Disconnected from server." << std::endl;
