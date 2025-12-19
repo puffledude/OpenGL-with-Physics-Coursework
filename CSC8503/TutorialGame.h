@@ -19,7 +19,7 @@ namespace NCL {
 
 		class TutorialGame {
 		public:
-			TutorialGame(GameWorld& gameWorld, GameTechRendererInterface& renderer, PhysicsSystem& physics);
+			TutorialGame(GameWorld& gameWorld, GameTechRendererInterface& renderer, PhysicsSystem& physics, bool client = false);
 			~TutorialGame();
 
 			virtual void UpdateGame(float dt);
@@ -122,6 +122,7 @@ namespace NCL {
 			StateGameObject* testStateGameObject;
 
 			NavigationMesh* navGrid;
+			bool isClient = false;
 		};
 	}
 }

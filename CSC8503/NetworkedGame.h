@@ -14,7 +14,7 @@ namespace NCL::CSC8503 {
 	class NetworkedGame : public TutorialGame, public PacketReceiver 
 	{
 	public:
-		NetworkedGame(GameWorld& gameWorld, GameTechRendererInterface& renderer, PhysicsSystem& physics);
+		NetworkedGame(GameWorld& gameWorld, GameTechRendererInterface& renderer, PhysicsSystem& physics, bool isClient=false);
 		~NetworkedGame();
 
 		void StartAsServer();
@@ -69,5 +69,6 @@ namespace NCL::CSC8503 {
 
 		std::vector<PendingInput> pendingInputs; // unacked inputs
 		int nextInputSeq = 0;
+		bool isClient = false;
 	};
 }
