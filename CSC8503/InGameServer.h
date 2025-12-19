@@ -24,7 +24,11 @@ public:
 		networkedGame->UpdateGame(dt);
 		gameWorld->UpdateWorld(dt);
 		physics->Update(dt);
-		//renderer->Update(dt);
+		
+		if (networkedGame->IsGameFinished()) {
+			*pushFunc = new FinishedGameState();
+			return PushdownResult::Push;
+		}
 		return PushdownResult::NoChange;
 	}
 

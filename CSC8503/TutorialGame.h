@@ -24,6 +24,9 @@ namespace NCL {
 
 			virtual void UpdateGame(float dt);
 
+			bool IsGameFinished() const {
+				return levelCompleted;
+			}
 		protected:
 			void InitCamera();
 
@@ -74,6 +77,8 @@ namespace NCL {
 			GameObject* AddPunchBoxToWorld(const NCL::Maths::Vector3& position, NCL::Maths::Vector3 direction, NCL::Maths::Vector3 dimensions, float punchForce, float punchDistance, float inverseMass);
 			GameObject* AddGooseToWorld(std::vector<Vector3>& patrolPath, Vector3 position, float speed);
 
+			GameObject* AddWinBoxToWorld(const NCL::Maths::Vector3& position, NCL::Maths::Vector3 dimensions);
+
 			GameWorld& world;
 			GameTechRendererInterface& renderer;
 			PhysicsSystem& physics;
@@ -123,6 +128,7 @@ namespace NCL {
 
 			NavigationMesh* navGrid;
 			bool isClient = false;
+			bool levelCompleted = false;
 		};
 	}
 }
