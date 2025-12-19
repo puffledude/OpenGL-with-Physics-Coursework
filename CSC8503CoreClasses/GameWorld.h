@@ -4,6 +4,7 @@
 #include "../CSC8503/PlayerCamera.h"
 #include "../CSC8503/GlassObject.h"
 #include "../CSC8503/Goose.h"
+#include "../CSC8503/WinBox.h"
 #include "NavigationMesh.h"
 #include <string>
 
@@ -143,6 +144,14 @@ namespace NCL {
 			{
 				gooseEnemy = g;
 			}
+			WinBox* GetWinBox() const 
+			{
+				return winBox;
+			}
+			void SetWinBox(WinBox* w) 
+			{
+				winBox = w;
+			}
 			
 		protected:
 			std::vector<GameObject*> gameObjects;
@@ -153,6 +162,8 @@ namespace NCL {
 			PlayerObject* playerObject;
 			GlassObject* glassObject;
 			Goose* gooseEnemy;
+			Goose* gooseEnemy2;
+			WinBox* winBox;
 			NavigationMesh* navigationMesh = new NavigationMesh("Level.navmesh");
 
 
