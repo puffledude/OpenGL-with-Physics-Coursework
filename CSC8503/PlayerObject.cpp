@@ -144,7 +144,7 @@ void PlayerObject::SyncCamera(NCL::PerspectiveCamera cam) {
 void PlayerObject::ApplyButtonStates(const char(&buttonStates)[8], float dt) {
 
 	moved = false;
-	float speedMultiplier = 2000.0f;
+	float speedMultiplier = 2500.0f;
 	Quaternion currentOr = this->GetTransform().GetOrientation();
 	Vector3 forward = Vector::Normalise(currentOr * Vector3(0, 0, 1));
 	Vector3 right = Vector::Normalise(currentOr * Vector3(1, 0, 0));
@@ -181,7 +181,7 @@ void PlayerObject::ApplyButtonStates(const char(&buttonStates)[8], float dt) {
 	}
 	if (buttonStates[5] && this->CanJump()) {
 		float inverseMass = this->GetPhysicsObject()->GetInverseMass();
-		this->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 25, 0));
+		this->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 40, 0));
 		this->SetJumpCooldown(0.1f);
 	}
 }
