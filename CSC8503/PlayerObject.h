@@ -66,16 +66,24 @@ public:
 		freeCamMode = !freeCamMode;
 	}
 
+	bool getHasWon() const {
+		return hasWon;
+	}
+	void setHasWon(bool val) {
+		hasWon = val;
+	}
+
 protected:
 	Vector3 checkPointPos = Vector3(0,0,0);
 	float groundCheckTime = 6.0f;
 	float jumpCooldown = 0.0f;
+	GameObject* heldItem = nullptr;
+	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
+	NCL::CSC8503::GameWorld* world = nullptr;
 	bool inAir = false;
 	bool freeCamMode = false;
 	bool outOfBounds = false;
 	bool canJump = false;
 	bool moved = false;
-	GameObject* heldItem = nullptr;
-	NCL::CSC8503::PositionConstraint* itemConstraint = nullptr;
-	NCL::CSC8503::GameWorld* world = nullptr;
+	bool hasWon = false;
 };

@@ -12,6 +12,7 @@
 #include "FloatingBox.h"
 #include "PunchBox.h"
 #include "DeathBox.h"
+#include "WinBox.h"
 
 #include "PositionConstraint.h"
 #include "OrientationConstraint.h"
@@ -32,7 +33,6 @@
 
 using namespace NCL;
 using namespace CSC8503;
-
 
 
 
@@ -188,6 +188,10 @@ void TutorialGame::UpdateGame(float dt) {
 		world.GetMainPlayer()->ApplyButtonStates(buttonStates, dt);
 	}
 	
+	for (PlayerObject* player : world.GetAllPlayers()) {
+		if (player->getHasWon())
+			levelCompleted = true;
+	}
 
 	//Assume out of bounds if not touched floor for too long
 	if (world.GetMainPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
@@ -243,6 +247,8 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(115.53, -0.43, -9.81) * 8.0f, Vector3(8.70, 4.67, 4.85) * 4.0f, 0);
 	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
 	LoadFallbox();
+	AddWinBoxToWorld(Vector3(523.223, 27.0f, 314.0f), Vector3(45.0f, 1.0f, 45.0f));
+	//Win box should be at 541.044, 30.9303, 322.495
 }
 
 void TutorialGame::LoadFallbox() {
@@ -264,6 +270,24 @@ void TutorialGame::LoadFallbox() {
 	fallfloor->GetPhysicsObject()->InitCubeInertia();
 
 	world.AddGameObject(fallfloor);
+
+}
+
+GameObject* TutorialGame::AddWinBoxToWorld(const Vector3& position, Vector3 dimensions) {
+	WinBox* box = new WinBox();
+	AABBVolume* volume = new AABBVolume(dimensions);
+	box->SetBoundingVolume(volume);
+	box->GetTransform()
+		.SetPosition(position)
+		.SetScale(dimensions);
+	
+	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, warningMaterial));
+	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
+	box->GetPhysicsObject()->SetInverseMass(0);
+	/*box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, &warningMaterial));
+	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));*/
+	world.AddGameObject(box);
+	return box;
 
 }
 
@@ -345,16 +369,6 @@ void TutorialGame::InitWorld() {
 	selectionObject = nullptr;
 	lockedObject = nullptr;
 	objClosest = nullptr;
-
-	//Need to spawn player at -135.822, 121.127, 340.848
-
-	//CreatedMixedGrid(15, 15, 3.5f, 3.5f);
-
-	//InitGameExamples();
-
-	//AddFloorToWorld(Vector3(0, -20, 0));
-
-	//BridgeConstraintTest();
 	
 	LoadLevel();
 	LoadDynamic();

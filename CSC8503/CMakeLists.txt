@@ -22,6 +22,8 @@ set(PROJECT_NAME CSC8503)
 #    "InGame.h"
 #    "InGameClient.h"
 #    "InGameServer.h"
+#    "FinishedGameState.h"
+#    "WindBox.h"
 #)
 file(GLOB Header_Files *.h)
 source_group("Header Files" FILES ${Header_Files})
