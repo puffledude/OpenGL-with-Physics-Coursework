@@ -30,8 +30,15 @@ public:
 	void SetSmashed(bool state) {
 		smashed = state;
 	}
+	Vector3 GetResetPosition() const {
+		return resetPosition;
+	}
+	void SetResetPosition(const Vector3& pos) {
+		resetPosition = pos;
+	}
 
 protected:
+	Vector3 resetPosition;
 	float forceResistance;
 	bool smashed = false;
 
