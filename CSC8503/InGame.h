@@ -20,10 +20,10 @@ class InGame : public NCL::CSC8503::PushdownState
 		gameWorld(world), physics(physics), renderer(renderer), tutorialGame(tutorialgame), width(width), height(height) {
 	}
 	PushdownResult OnUpdate(float dt, PushdownState** pushFunc) override {
-		/*if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::P)) {
+		if (NCL::Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::P)) {
 			*pushFunc = new GamePause();
 			return PushdownResult::Push;
-		}*/
+		}
 		tutorialGame->UpdateGame(dt);
 		gameWorld->UpdateWorld(dt);
 		physics->Update(dt);
