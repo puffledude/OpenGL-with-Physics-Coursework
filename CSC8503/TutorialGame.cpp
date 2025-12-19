@@ -225,9 +225,7 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(-6.38, -2.54, -18.84) * 8.0f, Vector3(23.35, 0.28, 7.81) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(-13.98, 2.16, 22.93) * 8.0f, Vector3(14.45, 1.70, 20.18) * 4.0f, Quaternion(0.30071, 0.00000, 0.00000, -0.95372), 0);
 	AddCubeToWorld(Vector3(21.86, -2.90, -20.90) * 8.0f, Vector3(33.17, 0.76, 3.69) * 4.0f, 0);
-	AddCubeToWorld(Vector3(46.90, 0.11, -20.76) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
 	AddCubeToWorld(Vector3(49.74, 1.01, -20.74) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
-	AddCubeToWorld(Vector3(44.47, -0.77, -20.76) * 8.0f, Vector3(2.14, 0.37, 2.57) * 4.0f, 0);
 	AddCubeToWorld(Vector3(100.68, -1.32, -25.72) * 8.0f, Vector3(4.24, 3.12, 4.26) * 4.0f, 0);
 	AddCubeToWorld(Vector3(125.03, -0.86, 39.41) * 8.0f, Vector3(4.77, 4.10, 3.36) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(82.36, 0.93, 7.54) * 8.0f, Vector3(7.45, 51.33, 1.34) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
@@ -239,7 +237,6 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(83.95, 0.74, -18.35) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
 	AddCubeToWorld(Vector3(83.61, 0.70, -23.43) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
 	AddCubeToWorld(Vector3(52.85, 1.29, 38.72) * 8.0f, Vector3(5.31, 3.19, 5.06) * 4.0f, 0);
-	AddCubeToWorld(Vector3(41.50, -1.94, -20.88) * 8.0f, Vector3(2.90, 0.26, 3.65) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(109.07, -3.74, 7.99) * 8.0f, Vector3(1.95, 53.96, 79.31) * 4.0f, Quaternion(0.00000, 0.00000, 0.70711, -0.70711), 0);
 	AddOBBCubeToWorld(Vector3(82.55, -0.99, -27.42) * 8.0f, Vector3(3.52, 7.47, 1.12) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
 	AddCubeToWorld(Vector3(136.57, -1.10, 8.58) * 8.0f, Vector3(0.79, 4.08, 80.56) * 4.0f, 0);
@@ -254,6 +251,8 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
 	AddCubeToWorld(Vector3(85.41, -1.29, -20.98) * 8.0f, Vector3(2.11, 0.52, 1.76) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(68.68, -0.50, 38.74) * 8.0f, Vector3(27.01, 1.03, 4.83) * 4.0f, Quaternion(0.00000, 0.00000, 0.10887, -0.99406), 0);
+	AddOBBCubeToWorld(Vector3(44.83, -1.05, -20.93) * 8.0f, Vector3(13.34, 0.30, 4.69) * 4.0f, Quaternion(0.00000, 0.00000, -0.13053, -0.99144), 0);
+
 
 	LoadFallbox();
 	AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 1.0f, 45.0f));
@@ -318,15 +317,16 @@ void TutorialGame::LoadDynamic() {
 	}
 
 	Vector3 floatingBoxPositions[] = {
-	Vector3(431.402, 8.19425, -166.86),
-	Vector3(470.568, 7.19425, -150.193),
-	Vector3(488.506, 7.69425, -186.568),
-	Vector3(505.196, 8.3, -148.537),
-	Vector3(530.865, 8.19425, -172.795),
-	Vector3(560.242, 9.19425, -167.378)
+	Vector3(424.121, 7.69425, -167.417),
+	Vector3(455.908, 7.69425, -167.417),
+	Vector3(477.97, 7.69425, -167.561),
+	Vector3(506.403, 7.69425, -168.077),
+	Vector3(530.493, 7.69425, -168.444),
+	Vector3(558.371, 7.69425, -168.543),
+	Vector3(582.029, 7.69425, -168.274)
 	};
 	for (Vector3 pos : floatingBoxPositions) {
-		AddFloatingBoxToWorld(pos, Vector3(5.0f, 2.0f, 5.0f));
+		AddFloatingBoxToWorld(pos, Vector3(12.0f, 2.0f, 12.0f));
 	}
 	direction = Vector3(0.0384597, 0, -0.99926);
 	//std::cout << "Punch box direction vector is: " << Vector::Normalise(direction) << std::endl;
@@ -852,13 +852,14 @@ GameObject* TutorialGame::AddFloatingBoxToWorld(const Vector3& position, Vector3
 
 	cube->GetTransform()
 		.SetPosition(position)
-		.SetScale(dimensions * 2.0f);
+		.SetScale(dimensions);
 
 	cube->SetRenderObject(new RenderObject(cube->GetTransform(), cubeMesh, warningMaterial));
 	cube->SetPhysicsObject(new PhysicsObject(cube->GetTransform(), cube->GetBoundingVolume()));
 
-	cube->GetPhysicsObject()->SetInverseMass(1);
-	cube->GetPhysicsObject()->SetIgnoreGravity(true);
+	cube->SetResetPos();
+	cube->GetPhysicsObject()->SetInverseMass(0);
+	//cube->GetPhysicsObject()->SetIgnoreGravity(true);
 	cube->GetPhysicsObject()->InitCubeInertia();
 	world.AddGameObject(cube);
 	cube->createNetworkObject();
