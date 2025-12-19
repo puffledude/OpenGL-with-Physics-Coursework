@@ -40,8 +40,8 @@ void PunchBox::Update(float dt) {
 
 void PunchBox::OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) {
 	//Reset position on collision end
-	this->GetTransform().SetPosition(intialPosition);
-	this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
-	this->GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
-	this->GetPhysicsObject()->ClearForces();
+	//this->GetTransform().SetPosition(intialPosition);
+	//this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+	//this->GetPhysicsObject()->SetAngularVelocity(Vector3(0, 0, 0));
+	//this->GetPhysicsObject()->ClearForces();
 }
