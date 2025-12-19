@@ -251,7 +251,7 @@ void TutorialGame::LoadLevel() {
 	AddOBBCubeToWorld(Vector3(68.68, -0.50, 38.74) * 8.0f, Vector3(27.01, 1.03, 4.83) * 4.0f, Quaternion(0.00000, 0.00000, 0.10887, -0.99406), 0);
 
 	LoadFallbox();
-	AddWinBoxToWorld(Vector3(425.223, 23.5.0f, 313.0f), Vector3(45.0f, 1.0f, 45.0f));
+	AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 1.0f, 45.0f));
 	//Win box should be at 541.044, 30.9303, 322.495
 }
 
