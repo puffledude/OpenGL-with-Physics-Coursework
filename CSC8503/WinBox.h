@@ -1,3 +1,4 @@
+#pragma once
 #include "GameObject.h"
 #include "PlayerObject.h"
 #include <string>
@@ -9,13 +10,16 @@ public:
 	~WinBox();
 
 	void OnCollisionBegin(NCL::CSC8503::GameObject* otherObject) override {
-		if (otherObject->GetName() == "PlayerObject") {
+		if (otherObject->GetName() == "Glass") {
 			// Trigger win condition
-			PlayerObject* player = static_cast<PlayerObject*>(otherObject);
-			player->setHasWon(true);
+			GameWon = true;
 			//std::cout << "Player has reached the WinBox! You win!" << std::endl;
 			// Additional logic to end the game or transition to a win state can be added here
 		}
 	}
-
+	bool IsGameWon() const {
+		return GameWon;
+	}
+protected:
+	bool GameWon = false;
 };

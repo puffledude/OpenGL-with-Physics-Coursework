@@ -193,10 +193,14 @@ void TutorialGame::UpdateGame(float dt) {
 		world.GetMainPlayer()->ApplyButtonStates(buttonStates, dt);
 	}
 	
-	for (PlayerObject* player : world.GetAllPlayers()) {
+	WinBox* winBox = world.GetWinBox();
+	if (winBox->IsGameWon()) {
+		levelCompleted = true;
+	}
+	/*for (PlayerObject* player : world.GetAllPlayers()) {
 		if (player->getHasWon())
 			levelCompleted = true;
-	}
+	}*/
 
 	//Assume out of bounds if not touched floor for too long
 	if (world.GetMainPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
@@ -255,7 +259,8 @@ void TutorialGame::LoadLevel() {
 
 
 	LoadFallbox();
-	AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 1.0f, 45.0f));
+	WinBox* w = static_cast<WinBox*> (AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 1.0f, 45.0f)));
+	world.SetWinBox(w);
 	//Win box should be at 541.044, 30.9303, 322.495
 }
 
