@@ -213,6 +213,8 @@ void TutorialGame::UpdateGame(float dt) {
 		PhysicsSystem* newPhysics = new PhysicsSystem(*newWorld);
 		GameTechRendererInterface* newRenderer = new GameTechRendererInterface(*newWorld);*/
 		world.GetMainPlayer()->ResetPos();
+		world.GetMainPlayer()->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+		world.GetGlassObject()->SetSmashed(false);
 	}
 
 	if(testStateGameObject)
@@ -348,7 +350,7 @@ void TutorialGame::LoadDynamic() {
 
 	};
 	for (Vector3 pos : punchBoxPositions) {
-		AddPunchBoxToWorld(pos, direction, Vector3(3.0f, 6.0f, 3.0f), 500.0f, 34.0f, 0.5f);
+		AddPunchBoxToWorld(pos, direction, Vector3(3.0f, 6.0f, 3.0f), 3000.0f, 34.0f, 0.5f);
 		direction = -direction;
 	}
 
