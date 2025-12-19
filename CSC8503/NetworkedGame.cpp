@@ -98,6 +98,9 @@ void NetworkedGame::UpdateGame(float dt) {
 
 	// Apply local inputs each frame for client-side prediction (not tied to network tick)
 	if (thisClient && world.GetMainPlayer()) {
+		// Ensure player orientation matches camera before applying movement so forward is correct
+		world.GetMainPlayer()->SyncCamera(world.GetMainCamera());
+
 		char localButtons[8];
 		world.GetMainPlayer()->CreateButtonStates(localButtons);
 
@@ -108,7 +111,7 @@ void NetworkedGame::UpdateGame(float dt) {
 		in.seq = nextInputSeq++;
 		pendingInputs.push_back(in);
 
-		// apply locally
+		// apply locally (prediction)
 		world.GetMainPlayer()->ApplyButtonStates(localButtons, dt);
 	}
 
@@ -191,7 +194,9 @@ void NetworkedGame::UpdateAsClient(float dt) {
 
 		thisClient->SendPacket(packet);
 
-		// remove sent inputs from buffer
+		// move sent inputs to unackedInputs for reconciliation
+		unackedInputs.insert(unackedInputs.end(), pendingInputs.begin(), pendingInputs.begin() + maxToSend);
+		// remove sent inputs from pending buffer
 		pendingInputs.erase(pendingInputs.begin(), pendingInputs.begin() + maxToSend);
 	}
 }
@@ -348,21 +353,19 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 				std::cout << "Server: Received input from unknown client " << source << std::endl;
 			}
 		} else if (thisClient) {
-			// On a client, map the incoming source to the local player index if appropriate
-			if (localClientID >= 0) {
-				// try to find our local player by index 0 or stored mapping
-				// fallback to main player
-				player = world.GetMainPlayer();
-			}
+			// On a client, Received_State is not expected - ignore inputs echoed back by server to avoid double-application
+			// (server processes these packets)
 		}
 
 		if (player) {
-			// Apply any buffered inputs carried in the packet
+			// Server-side: apply any buffered inputs carried in the packet
 			for (int i = 0; i < p->inputCount; ++i) {
 				player->ApplyButtonStates(p->inputs[i].buttonstates, p->inputs[i].dt);
 			}
-			// Always update orientation from incoming packet
+			// Always update orientation from incoming packet (server authoritative)
 			player->GetTransform().SetOrientation(p->orientation);
+
+			// If server, nothing else to do here client-side; client reconciliation happens when receiving Full/Delta states
 		}
 		UpdateMinimumState();
 		break;
@@ -371,11 +374,31 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 		DeltaPacket* p = (DeltaPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
-				// don't overwrite the locally predicted main player on clients
-				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
-					break;
-				}
+				// Save local position for correction check
+				Vector3 priorPos = o->GetGameObject()->GetTransform().GetPosition();
 				o->ReadPacket(*p);
+
+				// If this update is for our local player on a client, consider reconciliation
+				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
+					PlayerObject* player = world.GetMainPlayer();
+					Vector3 serverPos = o->GetGameObject()->GetTransform().GetPosition();
+					float dist = Vector::Length(serverPos - priorPos);
+					const float snapThreshold = 1.0f; // meters - tune as needed
+					if (dist > snapThreshold) {
+						// large correction: accept server state and drop unacked inputs to avoid ping-pong
+						unackedInputs.clear();
+						// ensure local camera orientation remains in control
+						player->SyncCamera(world.GetMainCamera());
+					} else {
+						// small correction: re-apply unacked inputs for smooth prediction
+						for (auto &in : unackedInputs) {
+							player->ApplyButtonStates(in.buttons, in.dt);
+						}
+						// restore camera orientation so movement direction matches view
+						player->SyncCamera(world.GetMainCamera());
+					}
+				}
+
 				break;
 			}
 		}
@@ -386,11 +409,29 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 		FullPacket* p = (FullPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
-				// don't overwrite the locally predicted main player on clients
-				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
-					break;
-				}
+				// Save local position for correction check
+				Vector3 priorPos = o->GetGameObject()->GetTransform().GetPosition();
 				o->ReadPacket(*p);
+
+				// If this update is for our local player on a client, consider reconciliation
+				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
+					PlayerObject* player = world.GetMainPlayer();
+					Vector3 serverPos = o->GetGameObject()->GetTransform().GetPosition();
+					float dist = Vector::Length(serverPos - priorPos);
+					const float snapThreshold = 0.5f; // meters - tune as needed
+					if (dist > snapThreshold) {
+						// large correction: accept server state and drop unacked inputs to avoid ping-pong
+						unackedInputs.clear();
+						player->SyncCamera(world.GetMainCamera());
+					} else {
+						// small correction: re-apply unacked inputs for smooth prediction
+						for (auto &in : unackedInputs) {
+							player->ApplyButtonStates(in.buttons, in.dt);
+						}
+						player->SyncCamera(world.GetMainCamera());
+					}
+				}
+
 				break;
 			}
 		}

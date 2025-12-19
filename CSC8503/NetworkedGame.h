@@ -68,6 +68,7 @@ namespace NCL::CSC8503 {
 		};
 
 		std::vector<PendingInput> pendingInputs; // unacked inputs
+		std::vector<PendingInput> unackedInputs; // inputs sent to server but awaiting server snapshot for reconciliation
 		int nextInputSeq = 0;
 		bool isClient = false;
 	};
