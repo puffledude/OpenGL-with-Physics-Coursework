@@ -10,17 +10,32 @@ void PunchBox::Update(float dt) {
 	Vector3 currentPos = this->GetTransform().GetPosition();
 	float distanceFromInitial = Vector::Length(currentPos - intialPosition);
 	if (distanceFromInitial >= punchDistance && !flipped) {
-		this->physicsObject->SetLinearVelocity(Vector3(0, 0, 0)); //Kill momentum
+		//Clamp to max distance and kill any accumulated momentum/forces
+		Vector3 dir = Vector::Normalise(currentPos - intialPosition);
+		this->GetTransform().SetPosition(intialPosition + dir * punchDistance);
+		if (this->GetPhysicsObject()) {
+			this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); //Kill momentum
+			this->GetPhysicsObject()->ClearForces();
+		}
 
 		punchDirection = -punchDirection;
 		flipped = true;
 	}
 	else if (distanceFromInitial <= 0.1f && flipped) {
-		this->physicsObject->SetLinearVelocity(Vector3(0, 0, 0)); //Kill momentum
+		//Return to initial position and kill momentum/forces
+		this->GetTransform().SetPosition(intialPosition);
+		if (this->GetPhysicsObject()) {
+			this->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0)); //Kill momentum
+			this->GetPhysicsObject()->ClearForces();
+		}
 		punchDirection = -punchDirection;
 		flipped = false;
 	}
-	this->physicsObject->AddForce(punchDirection * punchForce*dt);
+
+	//Apply movement force for this frame
+	if (this->GetPhysicsObject()) {
+		this->GetPhysicsObject()->AddForce(punchDirection * punchForce * dt);
+	}
 }
 
 void PunchBox::OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) {
