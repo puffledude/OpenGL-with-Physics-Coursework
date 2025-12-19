@@ -259,7 +259,7 @@ void TutorialGame::LoadLevel() {
 
 
 	LoadFallbox();
-	WinBox* w = static_cast<WinBox*> (AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 1.0f, 45.0f)));
+	WinBox* w = static_cast<WinBox*> (AddWinBoxToWorld(Vector3(425.223, 23.5f, 313.0f), Vector3(45.0f, 3.0f, 45.0f)));
 	world.SetWinBox(w);
 	//Win box should be at 541.044, 30.9303, 322.495
 }
@@ -297,6 +297,8 @@ GameObject* TutorialGame::AddWinBoxToWorld(const Vector3& position, Vector3 dime
 	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, checkpointMaterial));
 	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
 	box->GetPhysicsObject()->SetInverseMass(0);
+	box->GetPhysicsObject()->InitCubeInertia();
+	box->SetTrigger(true);
 	/*box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, &warningMaterial));
 	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));*/
 	world.AddGameObject(box);
