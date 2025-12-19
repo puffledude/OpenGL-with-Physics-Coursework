@@ -144,7 +144,7 @@ void PlayerObject::SyncCamera(NCL::PerspectiveCamera cam) {
 void PlayerObject::ApplyButtonStates(const char(&buttonStates)[8], float dt) {
 
 	moved = false;
-	float speedMultiplier = 1000.0f;
+	float speedMultiplier = 2000.0f;
 	Quaternion currentOr = this->GetTransform().GetOrientation();
 	Vector3 forward = Vector::Normalise(currentOr * Vector3(0, 0, 1));
 	Vector3 right = Vector::Normalise(currentOr * Vector3(1, 0, 0));
