@@ -66,6 +66,9 @@ namespace NCL::CSC8503 {
 		int GetLatestStateID() const {
 			return lastFullState.stateID;
 		}
+
+		// Expose the associated GameObject pointer for higher-level logic
+		GameObject* GetGameObject() const { return &object; }
 	protected:
 
 		NetworkState& GetLatestNetworkState();
