@@ -76,6 +76,7 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 	checkerTex	= renderer.LoadTexture("checkerboard.png");
 	glassTex	= renderer.LoadTexture("stainedglass.tga");
 	warningTex = renderer.LoadTexture("WarningRed.png");
+	checkpointTex = renderer.LoadTexture("Checkpoint Blue.png");
 
 	checkerMaterial.type		= MaterialType::Opaque;
 	checkerMaterial.diffuseTex	= checkerTex;
@@ -85,6 +86,10 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 
 	warningMaterial.type = MaterialType::Opaque;
 	warningMaterial.diffuseTex = warningTex;
+
+	checkpointMaterial.type = MaterialType::Transparent;
+	checkpointMaterial.diffuseTex = checkpointTex;
+
 
 	InitWorld();
 	InitCamera();
@@ -285,7 +290,7 @@ GameObject* TutorialGame::AddWinBoxToWorld(const Vector3& position, Vector3 dime
 		.SetPosition(position)
 		.SetScale(dimensions);
 	
-	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, warningMaterial));
+	box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, checkpointMaterial));
 	box->SetPhysicsObject(new PhysicsObject(box->GetTransform(), box->GetBoundingVolume()));
 	box->GetPhysicsObject()->SetInverseMass(0);
 	/*box->SetRenderObject(new RenderObject(box->GetTransform(), cubeMesh, &warningMaterial));
