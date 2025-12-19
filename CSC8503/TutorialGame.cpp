@@ -44,7 +44,8 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 {
 
 	forceMagnitude	= 10.0f;
-	useGravity		= false;
+	useGravity		= true;
+	physics.UseGravity(useGravity);
 	inSelectionMode = false;
 
 	controller = new KeyboardMouseController(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse());
@@ -90,7 +91,7 @@ TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRend
 	checkpointMaterial.type = MaterialType::Transparent;
 	checkpointMaterial.diffuseTex = checkpointTex;
 
-
+	
 	InitWorld();
 	InitCamera();
 	
