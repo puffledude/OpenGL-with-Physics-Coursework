@@ -36,10 +36,11 @@ using namespace CSC8503;
 
 
 
-TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRenderer, PhysicsSystem& inPhysics)
+TutorialGame::TutorialGame(GameWorld& inWorld, GameTechRendererInterface& inRenderer, PhysicsSystem& inPhysics, bool client)
 	:	world(inWorld),
 		renderer(inRenderer),
-		physics(inPhysics)
+		physics(inPhysics),
+	isClient(client)
 {
 
 	forceMagnitude	= 10.0f;
@@ -183,7 +184,10 @@ void TutorialGame::UpdateGame(float dt) {
 	char buttonStates[8];
 	world.GetMainPlayer()->CreateButtonStates(buttonStates);
 	world.GetMainPlayer()->SyncCamera(world.GetMainCamera());
-	world.GetMainPlayer()->ApplyButtonStates(buttonStates, dt);
+	if (!isClient) {
+		world.GetMainPlayer()->ApplyButtonStates(buttonStates, dt);
+	}
+	
 
 	//Assume out of bounds if not touched floor for too long
 	if (world.GetMainPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
