@@ -20,7 +20,7 @@ void PunchBox::Update(float dt) {
 		punchDirection = -punchDirection;
 		flipped = false;
 	}
-	this->physicsObject->AddForce(punchDirection * punchForce);
+	this->physicsObject->AddForce(punchDirection * punchForce*dt);
 }
 
 void PunchBox::OnCollisionEnd(NCL::CSC8503::GameObject* otherObject) {
