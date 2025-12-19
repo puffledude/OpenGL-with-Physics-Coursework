@@ -383,7 +383,7 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 					PlayerObject* player = world.GetMainPlayer();
 					Vector3 serverPos = o->GetGameObject()->GetTransform().GetPosition();
 					float dist = Vector::Length(serverPos - priorPos);
-					const float snapThreshold = 1.0f; // meters - tune as needed
+					const float snapThreshold = 0.5f; // meters - tune as needed
 					if (dist > snapThreshold) {
 						// large correction: accept server state and drop unacked inputs to avoid ping-pong
 						unackedInputs.clear();
