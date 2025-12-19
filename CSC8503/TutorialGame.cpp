@@ -195,7 +195,7 @@ void TutorialGame::UpdateGame(float dt) {
 
 	//Assume out of bounds if not touched floor for too long
 	if (world.GetMainPlayer()->IsOutOfBounds() && physics.IsUsingGravity()) {
-		InitWorld();
+		world.GetMainPlayer()->ResetPos();
 	}
 
 	//Glass broken, reset the level.
@@ -203,7 +203,7 @@ void TutorialGame::UpdateGame(float dt) {
 		/*GameWorld* newWorld = new GameWorld();
 		PhysicsSystem* newPhysics = new PhysicsSystem(*newWorld);
 		GameTechRendererInterface* newRenderer = new GameTechRendererInterface(*newWorld);*/
-		InitWorld();
+		world.GetMainPlayer()->ResetPos();
 	}
 
 	if(testStateGameObject)
@@ -213,6 +213,7 @@ void TutorialGame::UpdateGame(float dt) {
 //Probabbly redesign to be more puzzly.
 //E.G 3 items for three different locations. 
 void TutorialGame::LoadLevel() {
+
 	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 8.0f, Vector3(14.47, 5.32, 9.42) * 4.0f, 0);
 	AddCubeToWorld(Vector3(-14.00, 6.09, 35.26) * 8.0f, Vector3(14.47, 5.32, 9.42) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(-13.89, -2.53, -0.19) * 8.0f, Vector3(29.45, 0.27, 8.20) * 4.0f, Quaternion(0.00000, 0.70711, 0.00000, -0.70711), 0);
@@ -225,14 +226,14 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(100.68, -1.32, -25.72) * 8.0f, Vector3(4.24, 3.12, 4.26) * 4.0f, 0);
 	AddCubeToWorld(Vector3(125.03, -0.86, 39.41) * 8.0f, Vector3(4.77, 4.10, 3.36) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(82.36, 0.93, 7.54) * 8.0f, Vector3(7.45, 51.33, 1.34) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
-	AddCubeToWorld(Vector3(105.72, -1.63, -18.22) * 8.0f, Vector3(4.76, 2.51, 4.35) * 4.0f, 0);
+	AddCubeToWorld(Vector3(105.72, -1.55, -18.22) * 8.0f, Vector3(4.76, 2.51, 4.35) * 4.0f, 0);
 	AddCubeToWorld(Vector3(92.24, -0.60, -5.38) * 8.0f, Vector3(4.14, 3.81, 2.09) * 4.0f, 0);
 	AddCubeToWorld(Vector3(98.51, -1.11, -14.20) * 8.0f, Vector3(2.67, 3.36, 2.68) * 4.0f, 0);
 	AddCubeToWorld(Vector3(78.67, 0.85, -20.76) * 8.0f, Vector3(8.89, 0.37, 2.57) * 4.0f, 0);
 	AddCubeToWorld(Vector3(109.08, -0.96, -31.40) * 8.0f, Vector3(53.87, 3.61, 0.49) * 4.0f, 0);
 	AddCubeToWorld(Vector3(83.95, 0.74, -18.35) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
 	AddCubeToWorld(Vector3(83.61, 0.70, -23.43) * 8.0f, Vector3(4.54, 7.00, 0.44) * 4.0f, 0);
-	AddCubeToWorld(Vector3(65.78, 1.59, 38.72) * 8.0f, Vector3(5.31, 3.19, 5.06) * 4.0f, 0);
+	AddCubeToWorld(Vector3(52.85, 1.29, 38.72) * 8.0f, Vector3(5.31, 3.19, 5.06) * 4.0f, 0);
 	AddCubeToWorld(Vector3(41.50, -1.94, -20.88) * 8.0f, Vector3(2.90, 0.26, 3.65) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(109.07, -3.74, 7.99) * 8.0f, Vector3(1.95, 53.96, 79.31) * 4.0f, Quaternion(0.00000, 0.00000, 0.70711, -0.70711), 0);
 	AddOBBCubeToWorld(Vector3(82.55, -0.99, -27.42) * 8.0f, Vector3(3.52, 7.47, 1.12) * 4.0f, Quaternion(0.50000, -0.50000, -0.50000, 0.50000), 0);
@@ -244,10 +245,13 @@ void TutorialGame::LoadLevel() {
 	AddCubeToWorld(Vector3(104.97, -0.15, 42.44) * 8.0f, Vector3(7.33, 5.23, 6.04) * 4.0f, 0);
 	AddOBBCubeToWorld(Vector3(88.84, 0.27, 16.89) * 8.0f, Vector3(5.82, 11.63, 11.03) * 4.0f, Quaternion(0.00000, 0.00000, 0.70711, -0.70711), 0);
 	AddCubeToWorld(Vector3(132.34, -0.99, -15.16) * 8.0f, Vector3(7.27, 3.55, 18.68) * 4.0f, 0);
-	AddCubeToWorld(Vector3(115.53, -0.43, -9.81) * 8.0f, Vector3(8.70, 4.67, 4.85) * 4.0f, 0);
+	AddCubeToWorld(Vector3(115.80, -0.60, -9.81) * 8.0f, Vector3(8.70, 4.67, 4.85) * 4.0f, 0);
 	AddCubeToWorld(Vector3(126.05, -0.61, 23.45) * 8.0f, Vector3(8.13, 4.31, 5.81) * 4.0f, 0);
+	AddCubeToWorld(Vector3(85.41, -1.29, -20.98) * 8.0f, Vector3(2.11, 0.52, 1.76) * 4.0f, 0);
+	AddOBBCubeToWorld(Vector3(68.68, -0.50, 38.74) * 8.0f, Vector3(27.01, 1.03, 4.83) * 4.0f, Quaternion(0.00000, 0.00000, 0.10887, -0.99406), 0);
+
 	LoadFallbox();
-	AddWinBoxToWorld(Vector3(523.223, 27.0f, 314.0f), Vector3(45.0f, 1.0f, 45.0f));
+	AddWinBoxToWorld(Vector3(425.223, 23.5.0f, 313.0f), Vector3(45.0f, 1.0f, 45.0f));
 	//Win box should be at 541.044, 30.9303, 322.495
 }
 
