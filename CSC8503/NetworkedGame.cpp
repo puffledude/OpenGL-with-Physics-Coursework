@@ -45,7 +45,7 @@ NetworkedGame::NetworkedGame(GameWorld& gameWorld, GameTechRendererInterface& re
 	}
 }
 
-NetworkedGame::~NetworkedGame()	{
+NetworkedGame::~NetworkedGame() {
 	delete thisServer;
 	delete thisClient;
 }
@@ -306,6 +306,8 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 					localClientID = pp->playerID;
 					this->world.SetMainPlayer( this->SpawnPlayer());
 					this->world.GetMainCamera().SetPlayer(this->world.GetMainPlayer());
+					// ensure initial orientation matches camera
+					this->world.GetMainPlayer()->SyncCamera(this->world.GetMainCamera());
 				}
 				else {
 					this->SpawnPlayer();
@@ -369,21 +371,25 @@ void NetworkedGame::ReceivePacketWithDT(int type, GamePacket* payload, int sourc
 		DeltaPacket* p = (DeltaPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
+				// don't overwrite the locally predicted main player on clients
+				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
+					break;
+				}
 				o->ReadPacket(*p);
 				break;
 			}
 		}
 		this->SendAck(p->objectID, p->fullID);
-		/*ClientPacket ackPacket;
-		ackPacket.type = Received_State;
-		ackPacket.lastID = thisClient->GetLastStateID();
-		thisClient->SendPacket(ackPacket);
-		break;*/
+		break;
 	}
 	case Full_State: {
 		FullPacket* p = (FullPacket*)payload;
 		for (NetworkObject* o : networkObjects) {
 			if (o->GetNetworkID() == p->objectID) {
+				// don't overwrite the locally predicted main player on clients
+				if (thisClient && world.GetMainPlayer() && o->GetGameObject() == world.GetMainPlayer()) {
+					break;
+				}
 				o->ReadPacket(*p);
 				break;
 			}
