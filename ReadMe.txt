@@ -1,4 +1,4 @@
-This is the coursework of Joe Derrett for CSC8503.
+This is the coursework of Joe Derrett for Newcastle University Module CSC8503.
 Controls:
 W: Forward
 A: Left
